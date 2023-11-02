@@ -1,0 +1,12 @@
+C:\Users\CSS\Source\Repos\grad_project\Databases\bin\Debug\net7.0\Databases.deps.json
+C:\Users\CSS\Source\Repos\grad_project\Databases\bin\Debug\net7.0\Databases.dll
+C:\Users\CSS\Source\Repos\grad_project\Databases\bin\Debug\net7.0\Databases.pdb
+C:\Users\CSS\Source\Repos\grad_project\Databases\obj\Debug\net7.0\Databases.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\CSS\Source\Repos\grad_project\Databases\obj\Debug\net7.0\Databases.AssemblyInfoInputs.cache
+C:\Users\CSS\Source\Repos\grad_project\Databases\obj\Debug\net7.0\Databases.AssemblyInfo.cs
+C:\Users\CSS\Source\Repos\grad_project\Databases\obj\Debug\net7.0\Databases.csproj.CoreCompileInputs.cache
+C:\Users\CSS\Source\Repos\grad_project\Databases\obj\Debug\net7.0\Databases.dll
+C:\Users\CSS\Source\Repos\grad_project\Databases\obj\Debug\net7.0\refint\Databases.dll
+C:\Users\CSS\Source\Repos\grad_project\Databases\obj\Debug\net7.0\Databases.pdb
+C:\Users\CSS\Source\Repos\grad_project\Databases\obj\Debug\net7.0\ref\Databases.dll
+C:\Users\CSS\source\repos\grad_project\Databases\obj\Debug\net7.0\Databases.csproj.AssemblyReference.cache

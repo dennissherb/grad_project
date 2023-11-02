@@ -1,0 +1,5 @@
+{
+  "ConnectionStrings": {
+    "MySqlConnection": "Server=localhost;Database=project;User=root;Password=josh17rog;"
+  }
+}
