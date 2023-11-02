@@ -16,9 +16,10 @@ namespace Databases
             this.acc_emails = acc_emails;
             this.acc_usr_names = acc_usr_names;
             this.acc_dobs = acc_dobs;
-
             config.ConnectionString = base.settings.GetConnectionString("MySqlConnection");
+            
         }
+
 
 
     }
