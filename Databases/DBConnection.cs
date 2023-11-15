@@ -10,7 +10,7 @@ namespace Database
         private DBConnection()
         {
             //Create json reader
-            string fileName = "WeatherForecast.json";
+            string fileName = "appsettings.json";
             string jsonString = File.ReadAllText(fileName);
             DBConnection connection = JsonSerializer.Deserialize<DBConnection>(jsonString)!;
 
@@ -48,7 +48,7 @@ namespace Database
             {
                 if (String.IsNullOrEmpty(DatabaseName))
                     return false;
-                string connstring = string.Format("Server={0}; database={1}; UID={2}; password={3}", Server, DatabaseName, UserName, Password);
+                string connstring = string.Format("Server={0}; database={1}; UID={2}; password={3}", Server, DatabaseName, User, Password);
                 Connection = new MySqlConnection(connstring);
                 Connection.Open();
             }
