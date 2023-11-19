@@ -4,7 +4,7 @@ using System.Configuration;
 
 namespace Databases
 {
-    public class Account_table : Table
+    public class Account_table 
     {
         List<string> acc_emails;
         List<string> acc_usr_names;

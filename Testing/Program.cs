@@ -5,6 +5,7 @@ namespace Testing
     {
         public static void Main(string[] args)
         {
+            List<string> gmail_users = DBConnection.ExecuteQuery("SELECT * FROM table ").Result;
         }
     }
 }

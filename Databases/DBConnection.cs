@@ -14,6 +14,7 @@ namespace Database
             string jsonString = File.ReadAllText(fileName);
             DBConnection connection = JsonSerializer.Deserialize<DBConnection>(jsonString)!;
 
+
             //Get values from json file
             this.Server = connection.Server;
             this.DatabaseName = connection.DatabaseName;
@@ -21,44 +22,32 @@ namespace Database
             this.Password = connection.Password;
 
             //Create the connection string
-            this.ConnectionString = $"Server={this.Server};Database={this.DatabaseName};Uid={this.User};Pwd={this.Password};"
+            this.ConnectionString = String.Format("Server={0};Database={1};Uid={2};Pwd={3};", this.Server, this.DatabaseName, this.User, this.Password);
         }
 
         public string Server { get { return Server; }  set { Server = value; } }
         public string DatabaseName { get { return DatabaseName; } set { DatabaseName = value; } }
         public string User { get { return User; } set { User = value; } }
         public string Password { get { return Password; } set { Password = value; } }
-
-        //Complete connection string (compound of values)
         public string ConnectionString { get { return ConnectionString; } set { ConnectionString = value; } }
 
-        public MySqlConnection Connection { get; set; }
 
-        private static DBConnection _instance = null;
-        public static DBConnection Instance()
+        public static async Task<List<Type>> ExecuteQuery(string query)
         {
-            if (_instance == null)
-                _instance = new DBConnection();
-            return _instance;
-        }
+            DBConnection connectionObj = new DBConnection();
+            List<Type> result = new List<Type>();
+            using var connection = new MySqlConnection(connectionObj.ConnectionString);
 
-        public bool IsConnect()
-        {
-            if (Connection == null)
+            await connection.OpenAsync();
+
+            using var command = new MySqlCommand(query, connection);
+            using var reader = await command.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
             {
-                if (String.IsNullOrEmpty(DatabaseName))
-                    return false;
-                string connstring = string.Format("Server={0}; database={1}; UID={2}; password={3}", Server, DatabaseName, User, Password);
-                Connection = new MySqlConnection(connstring);
-                Connection.Open();
+                var value = reader.GetValue(0);
+                Console.WriteLine(reader.GetValue(0));
             }
-
-            return true;
-        }
-
-        public void Close()
-        {
-            Connection.Close();
+            return result;
         }
     }
 }
