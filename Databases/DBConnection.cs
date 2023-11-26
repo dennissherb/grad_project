@@ -3,7 +3,7 @@ using MySql.Data;
 using MySql.Data.MySqlClient;
 using System.Text.Json;
 
-namespace Database
+namespace Databases
 {
     public class DBConnection
     {
@@ -36,15 +36,22 @@ namespace Database
         public static async Task<List<Object>> ExecuteQuery(string query)
         {
             DBConnection connectionObj = new DBConnection();
-            List<Object> result = new List<Object>();
+            List<List<Object>> result = new List<List<Object>>();
             using var connection = new MySqlConnection(connectionObj.ConnectionString);
             await connection.OpenAsync();
             using var command = new MySqlCommand(query, connection);
             using var reader = await command.ExecuteReaderAsync();
             while (await reader.ReadAsync())
             {
-                var value = reader.GetValue(0);
-                Console.WriteLine(reader.GetValue(0));
+                int count;
+                for (int i = 0; i < reader.FieldCount; i++) 
+                {
+                    Console.Write(reader.GetValue(i) + " ");
+                    result.();
+                }
+                Console.WriteLine("\n---------------------------------------------");
+                // var value = reader.GetValue(0);
+                
             }
             await connection.CloseAsync();
             return result;

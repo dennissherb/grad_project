@@ -1,4 +1,4 @@
-﻿using Database;
+﻿using Databases;
 using Databases.TableClasses;
 
 namespace Testing
@@ -7,9 +7,12 @@ namespace Testing
     {
         public static void Main(string[] args)
         {
-            List<AccountTable> gmail_users = DBConnection.ExecuteQuery("SELECT accounts_email FROM my_project.accounts \r\n").Result;
-            Console.WriteLine(gmail_users.Count); ;
-            Console.Read();
+            List<Object> gmail_users = DBConnection.ExecuteQuery("SELECT accounts.* FROM my_project.accounts \r\n WHERE accounts_email LIKE '%gmail%'").Result;
+            foreach (var item in gmail_users)
+            {
+                Console.WriteLine(item);
+            }
+
         }
 
     }
