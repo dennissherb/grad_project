@@ -1,32 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\CSS\\source\\repos\\grad_project\\Testing\\Testing.csproj": {}
+    "/home/dennis/Documents/grad_project/Testing/Testing.csproj": {}
   },
   "projects": {
-    "C:\\Users\\CSS\\source\\repos\\grad_project\\Databases\\Databases.csproj": {
+    "/home/dennis/Documents/grad_project/Databases/Databases.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\CSS\\source\\repos\\grad_project\\Databases\\Databases.csproj",
+        "projectUniqueName": "/home/dennis/Documents/grad_project/Databases/Databases.csproj",
         "projectName": "Databases",
-        "projectPath": "C:\\Users\\CSS\\source\\repos\\grad_project\\Databases\\Databases.csproj",
-        "packagesPath": "C:\\Users\\CSS\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\CSS\\source\\repos\\grad_project\\Databases\\obj\\",
+        "projectPath": "/home/dennis/Documents/grad_project/Databases/Databases.csproj",
+        "packagesPath": "/home/dennis/.nuget/packages/",
+        "outputPath": "/home/dennis/Documents/grad_project/Databases/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\CSS\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/home/dennis/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net7.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -74,41 +67,34 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.404\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.100/RuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\CSS\\source\\repos\\grad_project\\Testing\\Testing.csproj": {
+    "/home/dennis/Documents/grad_project/Testing/Testing.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\CSS\\source\\repos\\grad_project\\Testing\\Testing.csproj",
+        "projectUniqueName": "/home/dennis/Documents/grad_project/Testing/Testing.csproj",
         "projectName": "Testing",
-        "projectPath": "C:\\Users\\CSS\\source\\repos\\grad_project\\Testing\\Testing.csproj",
-        "packagesPath": "C:\\Users\\CSS\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\CSS\\source\\repos\\grad_project\\Testing\\obj\\",
+        "projectPath": "/home/dennis/Documents/grad_project/Testing/Testing.csproj",
+        "packagesPath": "/home/dennis/.nuget/packages/",
+        "outputPath": "/home/dennis/Documents/grad_project/Testing/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\CSS\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/home/dennis/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net7.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net7.0": {
             "targetAlias": "net7.0",
             "projectReferences": {
-              "C:\\Users\\CSS\\source\\repos\\grad_project\\Databases\\Databases.csproj": {
-                "projectPath": "C:\\Users\\CSS\\source\\repos\\grad_project\\Databases\\Databases.csproj"
+              "/home/dennis/Documents/grad_project/Databases/Databases.csproj": {
+                "projectPath": "/home/dennis/Documents/grad_project/Databases/Databases.csproj"
               }
             }
           }
@@ -138,7 +124,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.404\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.100/RuntimeIdentifierGraph.json"
         }
       }
     }

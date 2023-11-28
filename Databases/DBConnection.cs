@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration;
 using MySql.Data;
 using MySql.Data.MySqlClient;
 using System.Text.Json;
@@ -33,28 +33,25 @@ namespace Databases
         public string ConnectionString { get; set; }
 
 
-        public static async Task<List<Object>> ExecuteQuery(string query)
+        public static async Task<List<Dictionary<string,string>>> ExecuteQuery(string query)
         {
             DBConnection connectionObj = new DBConnection();
-            List<List<Object>> result = new List<List<Object>>();
             using var connection = new MySqlConnection(connectionObj.ConnectionString);
             await connection.OpenAsync();
             using var command = new MySqlCommand(query, connection);
             using var reader = await command.ExecuteReaderAsync();
+            List<Dictionary<string,string>> queryResult = new List<Dictionary<string,string>>();
             while (await reader.ReadAsync())
             {
-                int count;
+                Dictionary<string,string> row = new Dictionary<string, string>(); 
                 for (int i = 0; i < reader.FieldCount; i++) 
                 {
-                    Console.Write(reader.GetValue(i) + " ");
-                    result.();
+                    row.Add(reader.GetName(i).ToString(), reader.GetValue(i).ToString());
                 }
-                Console.WriteLine("\n---------------------------------------------");
-                // var value = reader.GetValue(0);
-                
+                queryResult.Add(row);
             }
             await connection.CloseAsync();
-            return result;
+            return queryResult;
         }
     }
 }
