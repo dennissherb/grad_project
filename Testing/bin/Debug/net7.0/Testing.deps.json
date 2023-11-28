@@ -8,7 +8,8 @@
     ".NETCoreApp,Version=v7.0": {
       "Testing/1.0.0": {
         "dependencies": {
-          "Databases": "1.0.0"
+          "Databases": "1.0.0",
+          "QueryClasses": "1.0.0"
         },
         "runtime": {
           "Testing.dll": {}
@@ -406,6 +407,14 @@
         "runtime": {
           "Databases.dll": {}
         }
+      },
+      "QueryClasses/1.0.0": {
+        "dependencies": {
+          "Databases": "1.0.0"
+        },
+        "runtime": {
+          "QueryClasses.dll": {}
+        }
       }
     }
   },
@@ -696,6 +705,11 @@
       "hashPath": "zstdsharp.port.0.7.1.nupkg.sha512"
     },
     "Databases/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "QueryClasses/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

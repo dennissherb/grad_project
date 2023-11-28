@@ -707,6 +707,19 @@
         "runtime": {
           "bin/placeholder/Databases.dll": {}
         }
+      },
+      "QueryClasses/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v7.0",
+        "dependencies": {
+          "Databases": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/QueryClasses.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/QueryClasses.dll": {}
+        }
       }
     }
   },
@@ -2172,11 +2185,17 @@
       "type": "project",
       "path": "../Databases/Databases.csproj",
       "msbuildProject": "../Databases/Databases.csproj"
+    },
+    "QueryClasses/1.0.0": {
+      "type": "project",
+      "path": "../QueryClasses/QueryClasses.csproj",
+      "msbuildProject": "../QueryClasses/QueryClasses.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net7.0": [
-      "Databases >= 1.0.0"
+      "Databases >= 1.0.0",
+      "QueryClasses >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -2206,6 +2225,9 @@
           "projectReferences": {
             "/home/dennis/Documents/grad_project/Databases/Databases.csproj": {
               "projectPath": "/home/dennis/Documents/grad_project/Databases/Databases.csproj"
+            },
+            "/home/dennis/Documents/grad_project/QueryClasses/QueryClasses.csproj": {
+              "projectPath": "/home/dennis/Documents/grad_project/QueryClasses/QueryClasses.csproj"
             }
           }
         }

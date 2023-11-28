@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Databases\Databases.csproj" />
+    <ProjectReference Include="..\QueryClasses\QueryClasses.csproj" />
   </ItemGroup>
 
 </Project>
