@@ -12,8 +12,8 @@ namespace AccountQueryTests
         public async Task TestTryLogin_ValidCredentials()
         {
             // Assuming you have valid test credentials for login
-            string validEmail = "test@example.com";
-            string validPassword = "testPassword123";
+            string validEmail = "john.doe@gmail.com";
+            string validPassword = "password123";
 
             bool loginResult = await AccountQuery.TryLogin(validEmail, validPassword);
 
@@ -50,7 +50,7 @@ namespace AccountQueryTests
         public async Task TestReadAccountByEmail()
         {
             // Assuming you have a test email for reading an existing account
-            string existingEmail = "existing@example.com";
+            string existingEmail = "newuser@example.com";
 
             var accountDetails = await AccountQuery.ReadAccountByEmail(existingEmail);
 
@@ -61,7 +61,7 @@ namespace AccountQueryTests
         public async Task TestUpdateAccount()
         {
             // Assuming you have a test email and updated details for an account
-            string testEmail = "userToUpdate@example.com";
+            string testEmail = "newuser@example.com";
             string updatedUserName = "UpdatedUserName";
             DateTime updatedDateOfBirth = DateTime.Parse("1985-05-05");
             string updatedPassword = "updatedPassword123";
@@ -74,8 +74,15 @@ namespace AccountQueryTests
         [TestMethod]
         public async Task TestDeleteAccount()
         {
-            // Assuming you have a test email for an account to delete
-            string testEmailToDelete = "userToDelete@example.com";
+
+            //create account to delete
+            string testEmail = "todelete@example.com";
+            string testUserName = "NewUser";
+            DateTime testDateOfBirth = DateTime.Parse("1990-01-01");
+            string testPassword = "newPassword123";
+            await AccountQuery.CreateAccount(testEmail, testUserName, testDateOfBirth, testPassword);
+
+            string testEmailToDelete = "todelete@example.com";
 
             bool deleteResult = await AccountQuery.DeleteAccount(testEmailToDelete);
 
