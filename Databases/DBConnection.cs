@@ -7,36 +7,31 @@ namespace Databases
 {
     public class DBConnection
     {
-        private DBConnection()
+        private readonly IConfiguration _configuration;
+
+        public DBConnection()
         {
-            //Create json reader
-            //string filePath = Path.Combine(Directory.GetParent(System.IO.Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName, "Databases\\appsetting.json");
-            //string jsonString = File.ReadAllText(@"C:\Users\CSS\source\repos\grad_project\Databases\appsetting.json");
-            //DBConnection connection = JsonSerializer.Deserialize<DBConnection>(jsonString)!;
+            IConfigurationRoot configuration = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .Build();
 
-
-            //Get values from json file
-            //this.Server = connection.Server;
-            //this.DatabaseName = connection.DatabaseName;
-            //this.User = connection.User;
-            //this.Password = connection.Password;
-
-            //Create the connection string
-            //this.ConnectionString = String.Format("Server={0};Database={1};Uid={2};Pwd={3};", this.Server, this.DatabaseName, this.User, this.Password);
-            this.ConnectionString = "Server=localhost;Database=my_project;Uid=root;Pwd=josh17rog";
+            _configuration = configuration.GetSection("DBConnection");
         }
-
-        //public string Server { get { return Server; }  set { Server = value; } }
-        //public string DatabaseName { get { return DatabaseName; } set { DatabaseName = value; } }
-        //public string User { get { return User; } set { User = value; } }
-        //public string Password { get { return Password; } set { Password = value; } }
         public string ConnectionString { get; set; }
+        private string GetConnectionString()
+        {
+            string server = _configuration["Server"];
+            string databaseName = _configuration["DatabaseName"];
+            string user = _configuration["User"];
+            string password = _configuration["Password"];
 
+            return $"Server={server};Database={databaseName};Uid={user};Pwd={password};";
+        }
 
         public static async Task<List<Dictionary<string,string>>> ExecuteQuery(string query)
         {
             DBConnection connectionObj = new DBConnection();
-            using var connection = new MySqlConnection(connectionObj.ConnectionString);
+            using var connection = new MySqlConnection(connectionObj.GetConnectionString());
             await connection.OpenAsync();
             using var command = new MySqlCommand(query, connection);
             using var reader = await command.ExecuteReaderAsync();
