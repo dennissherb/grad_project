@@ -1,14 +1,14 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34024.191
 MinimumVisualStudioVersion = 10.0.40219.1
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{E93AB0D5-1714-4A0B-A352-3E575178BA8E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "Tests\Tests.csproj", "{E93AB0D5-1714-4A0B-A352-3E575178BA8E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QueryClasses", "QueryClasses\QueryClasses.csproj", "{A0EAC425-C6CA-4B39-81A2-5302F5BDF73D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QueryClasses", "QueryClasses\QueryClasses.csproj", "{A0EAC425-C6CA-4B39-81A2-5302F5BDF73D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Databases", "Databases\Databases.csproj", "{CFE9FD43-CA48-44A1-A628-0AB4A8E39B1A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Databases", "Databases\Databases.csproj", "{CFE9FD43-CA48-44A1-A628-0AB4A8E39B1A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
