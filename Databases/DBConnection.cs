@@ -11,8 +11,13 @@ namespace Databases
 
         public DBConnection()
         {
+            string defaultPath = "C:\\Users\\CSS\\source\\repos\\grad_project\\Databases\\appsettings.json";
+            if (!Directory.Exists(defaultPath))
+            {
+                defaultPath = "Enter linux path!";
+            }
             IConfigurationRoot configuration = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json")
+                .AddJsonFile("C:\\Users\\CSS\\source\\repos\\grad_project\\Databases\\appsettings.json")
                 .Build();
 
             _configuration = configuration.GetSection("DBConnection");
@@ -24,6 +29,7 @@ namespace Databases
             string databaseName = _configuration["DatabaseName"];
             string user = _configuration["User"];
             string password = _configuration["Password"];
+            Console.WriteLine(server, databaseName, user, password);
 
             return $"Server={server};Database={databaseName};Uid={user};Pwd={password};";
         }
