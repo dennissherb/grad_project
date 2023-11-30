@@ -8,20 +8,11 @@ namespace AccountQueryTests
     [TestClass]
     public class AccountQueryTests
     {
-        [TestMethod]
-        public async Task TestTryLogin_ValidCredentials()
-        {
-            // Assuming you have valid test credentials for login
-            string validEmail = "john.doe@gmail.com";
-            string validPassword = "password123";
-
-            bool loginResult = await AccountQuery.TryLogin(validEmail, validPassword);
-
-            Assert.IsTrue(loginResult, "Login with valid credentials should succeed.");
-        }
+   
+        
 
         [TestMethod]
-        public async Task TestTryLogin_InvalidCredentials()
+        public async Task Test1TryLogin_InvalidCredentials()
         {
             // Assuming you have invalid test credentials for login
             string invalidEmail = "invalid@example.com";
@@ -33,7 +24,7 @@ namespace AccountQueryTests
         }
 
         [TestMethod]
-        public async Task TestCreateAccount()
+        public async Task Test2CreateAccount()
         {
             // Assuming you have test data for account creation
             string testEmail = "newuser@example.com";
@@ -47,7 +38,7 @@ namespace AccountQueryTests
         }
 
         [TestMethod]
-        public async Task TestReadAccountByEmail()
+        public async Task Test3ReadAccountByEmail()
         {
             // Assuming you have a test email for reading an existing account
             string existingEmail = "newuser@example.com";
@@ -58,7 +49,7 @@ namespace AccountQueryTests
         }
 
         [TestMethod]
-        public async Task TestUpdateAccount()
+        public async Task Test4UpdateAccount()
         {
             // Assuming you have a test email and updated details for an account
             string testEmail = "newuser@example.com";
@@ -72,21 +63,27 @@ namespace AccountQueryTests
         }
 
         [TestMethod]
-        public async Task TestDeleteAccount()
+        public async Task Test5TryLogin_ValidCredentials()
+        {
+            // Assuming you have valid test credentials for login
+            string validEmail = "newuser@example.com";
+            string validPassword = "updatedPassword123";
+
+            bool loginResult = await AccountQuery.TryLogin(validEmail, validPassword);
+
+            Assert.IsTrue(loginResult, "Login with valid credentials should succeed.");
+        }
+
+        [TestMethod]
+        public async Task Test6DeleteAccount()
         {
 
-            //create account to delete
-            string testEmail = "todelete@example.com";
-            string testUserName = "NewUser";
-            DateTime testDateOfBirth = DateTime.Parse("1990-01-01");
-            string testPassword = "newPassword123";
-            await AccountQuery.CreateAccount(testEmail, testUserName, testDateOfBirth, testPassword);
-
-            string testEmailToDelete = "todelete@example.com";
+            string testEmailToDelete = "newuser@example.com";
 
             bool deleteResult = await AccountQuery.DeleteAccount(testEmailToDelete);
 
             Assert.IsTrue(deleteResult, "Account deletion should succeed.");
         }
+
     }
 }
