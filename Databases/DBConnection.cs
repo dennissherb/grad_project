@@ -54,5 +54,16 @@ namespace Databases
             await connection.CloseAsync();
             return queryResult;
         }
+        public static async Task<int> ExecuteNonQuery(string query)
+        {
+            DBConnection connectionObj = new DBConnection();
+            using var connection = new MySqlConnection(connectionObj.GetConnectionString());
+            await connection.OpenAsync();
+            using var command = new MySqlCommand(query, connection);
+            using System.Data.Common.DbDataReader reader = await command.ExecuteReaderAsync();
+            int RecordsAffected = reader.RecordsAffected;
+            await connection.CloseAsync();
+            return RecordsAffected;
+        }
     }
 }

@@ -46,9 +46,9 @@ namespace QueryClasses
                 string query = $@"INSERT INTO my_project.accounts (accounts_email, accounts_user_name, accounts_date_of_birth, accounts_password)
                                     VALUES ('{email}', '{userName}', '{formattedDateOfBirth}', '{password}')";
 
-                List<Dictionary<string, string>> result = await DBConnection.ExecuteQuery(query);
+                int result = await DBConnection.ExecuteNonQuery(query);
 
-                return result != null && result.Count > 0;
+                return result != null && result > 0;
             }
             catch (Exception ex)
             {
@@ -90,9 +90,9 @@ namespace QueryClasses
                                         accounts_password = '{newPassword}'
                                     WHERE accounts_email = '{email}'";
 
-                List<Dictionary<string, string>> result = await DBConnection.ExecuteQuery(query);
+                int result = await DBConnection.ExecuteNonQuery(query);
 
-                return result != null && result.Count > 0;
+                return result != null && result > 0;
             }
             catch (Exception ex)
             {
@@ -110,9 +110,9 @@ namespace QueryClasses
 
                 string query = $@"DELETE FROM my_project.accounts WHERE accounts_email = '{sanitizedEmail}'";
 
-                List<Dictionary<string, string>> result = await DBConnection.ExecuteQuery(query);
+                int result = await DBConnection.ExecuteNonQuery(query);
 
-                return result != null && result.Count > 0;
+                return result != null && result > 0;
             }
             catch (Exception ex)
             {
