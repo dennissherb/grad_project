@@ -14,10 +14,10 @@ namespace Databases
             string defaultPath = "C:\\Users\\CSS\\source\\repos\\grad_project\\Databases\\appsettings.json";
             if (!Directory.Exists(defaultPath))
             {
-                defaultPath = "Enter linux path!";
+                defaultPath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "../../../../Databases/appsettings.json" ));
             }
             IConfigurationRoot configuration = new ConfigurationBuilder()
-                .AddJsonFile("C:\\Users\\CSS\\source\\repos\\grad_project\\Databases\\appsettings.json")
+                .AddJsonFile(defaultPath)
                 .Build();
 
             _configuration = configuration.GetSection("DBConnection");
