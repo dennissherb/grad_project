@@ -8,9 +8,6 @@ namespace AccountQueryTests
     [TestClass]
     public class AccountQueryTests
     {
-   
-        
-
         [TestMethod]
         public async Task Test1TryLogin_InvalidCredentials()
         {
