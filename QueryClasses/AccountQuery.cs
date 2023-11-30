@@ -112,7 +112,7 @@ namespace QueryClasses
 
                 int result = await DBConnection.ExecuteNonQuery(query);
 
-                return result != null && result > 0;
+                return result > 0;
             }
             catch (Exception ex)
             {
