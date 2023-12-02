@@ -1,0 +1,35 @@
+﻿@page "/content"
+@rendermode InteractiveServer
+@using QueryClasses 
+@inject Dictionary<string, string> Account
+@inject NavigationManager navman
+
+<div>
+    @if(isLoggedIn) {
+        <h1>If you are seeing this you have been successfully authorized!</h1>
+    }
+    else {
+        <h1>Redirecting...</h1>
+    } 
+</div>
+
+
+}
+
+@code {
+
+    string safetyValue;
+    bool isLoggedIn;
+    public bool IsLoggedIn() {
+        if (Account.ContainsKey("accounts_id") && Account["accounts_id"] != "0")
+            return true;
+        else
+            navman.NavigateTo("/login");
+            return false;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender){
+        isLoggedIn = IsLoggedIn();
+    }
+
+}

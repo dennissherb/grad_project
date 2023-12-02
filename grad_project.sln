@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QueryClasses", "QueryClasse
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Databases", "Databases\Databases.csproj", "{CFE9FD43-CA48-44A1-A628-0AB4A8E39B1A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorApp", "BlazorApp\BlazorApp.csproj", "{94756E48-CACC-4045-9AFD-EA9C493C8C13}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +49,10 @@ Global
 		{4FC0C502-CD49-4403-B46F-9532FB39475D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4FC0C502-CD49-4403-B46F-9532FB39475D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4FC0C502-CD49-4403-B46F-9532FB39475D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94756E48-CACC-4045-9AFD-EA9C493C8C13}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94756E48-CACC-4045-9AFD-EA9C493C8C13}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94756E48-CACC-4045-9AFD-EA9C493C8C13}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94756E48-CACC-4045-9AFD-EA9C493C8C13}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

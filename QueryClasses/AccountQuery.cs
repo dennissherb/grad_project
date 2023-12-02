@@ -14,9 +14,7 @@ namespace QueryClasses
                 string sanitizedField1 = SanitizeInput(field1);
                 string sanitizedField2 = SanitizeInput(field2);
 
-                string query = $@"SELECT accounts_id FROM my_project.accounts 
-                                  WHERE accounts_email = '{sanitizedField1}' 
-                                  AND accounts_password = '{sanitizedField2}'";
+                string query = $@"SELECT accounts_id FROM my_project.accounts WHERE accounts_email = '{sanitizedField1}' AND accounts_password = '{sanitizedField2}'";
 
                 List<Dictionary<string, string>> result = await DBConnection.ExecuteQuery(query);
 
@@ -43,8 +41,7 @@ namespace QueryClasses
             {
                 string formattedDateOfBirth = dateOfBirth.ToString("yyyy-MM-dd"); // Example date format
 
-                string query = $@"INSERT INTO my_project.accounts (accounts_email, accounts_user_name, accounts_date_of_birth, accounts_password)
-                                    VALUES ('{email}', '{userName}', '{formattedDateOfBirth}', '{password}')";
+                string query = $@"INSERT INTO my_project.accounts (accounts_email, accounts_user_name, accounts_date_of_birth, accounts_password) VALUES ('{email}', '{userName}', '{formattedDateOfBirth}', '{password}')";
 
                 int result = await DBConnection.ExecuteNonQuery(query);
 
@@ -84,11 +81,7 @@ namespace QueryClasses
             {
                 string formattedNewDateOfBirth = newDateOfBirth.ToString("yyyy-MM-dd"); // Example date format
 
-                string query = $@"UPDATE my_project.accounts 
-                                    SET accounts_user_name = '{newUserName}', 
-                                        accounts_date_of_birth = '{formattedNewDateOfBirth}', 
-                                        accounts_password = '{newPassword}'
-                                    WHERE accounts_email = '{email}'";
+                string query = $@"UPDATE my_project.accounts SET accounts_user_name = '{newUserName}', accounts_date_of_birth = '{formattedNewDateOfBirth}', accounts_password = '{newPassword}' WHERE accounts_email = '{email}'";
 
                 int result = await DBConnection.ExecuteNonQuery(query);
 

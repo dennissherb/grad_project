@@ -14,7 +14,7 @@ namespace Databases
             string defaultPath = "C:\\Users\\CSS\\source\\repos\\grad_project\\Databases\\appsettings.json";
             if (!Directory.Exists(defaultPath))
             {
-                defaultPath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "../../../../Databases/appsettings.json" ));
+                defaultPath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "../Databases/appsettings.json" ));
             }
             IConfigurationRoot configuration = new ConfigurationBuilder()
                 .AddJsonFile(defaultPath)
