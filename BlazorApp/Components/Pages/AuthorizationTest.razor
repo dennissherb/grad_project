@@ -1,7 +1,9 @@
 ﻿@page "/content"
 @rendermode InteractiveServer
+
 @using QueryClasses 
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+
 @inject Dictionary<string, string> Account
 @inject NavigationManager navman
 @inject ProtectedSessionStorage MySession
@@ -15,12 +17,8 @@
     } 
 </div>
 
-
-}
-
 @code {
 
-    string safetyValue;
     bool isLoggedIn;
     public bool IsLoggedIn() {
         if (Account.ContainsKey("accounts_id") && Account["accounts_id"] != "0")
@@ -31,9 +29,15 @@
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender){
-        Account = (await MySession.GetAsync<Dictionary<string,string>>("LoggedUser")).Value;
 
+        //Get Account from session storage  
+        Account = (await MySession.GetAsync<Dictionary<string,string>>("LoggedUser")).Value;
+        
+        //Run login check
         isLoggedIn = IsLoggedIn();
+        
+        //Rerender component to show content after log in
+        StateHasChanged();
     }
 
 }
