@@ -1,0 +1,71 @@
+﻿@page "/register"
+@rendermode InteractiveServer
+@using QueryClasses 
+@inject Dictionary<string, string> Account
+@inject NavigationManager navman
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedSessionStorage MySession
+@inject IJSRuntime JS;
+
+
+<h1>Register</h1>
+<div>
+    <label>Email:</label>
+    <input @bind-value="@email" @bind-value:event="onchange" type="email"/>
+</div>
+
+<div>
+    <label>username:</label>
+    <input @bind-value="@username" @bind-value:event="onchange" type="username" />
+</div>
+
+<div>
+    <label>Date Of birth:</label>
+    <input @bind-value="@dateOfBirth" @bind-value:event="onchange" type="date" />
+</div>
+
+<div>
+    <label>Password:</label>
+    <input @bind-value="@password" @bind-value:event="onchange" type="password" />
+</div>
+
+<div> <label>Password:</label> <input @bind-value="@passwordConfirm" @bind-value:event="onchange" type="password" /> </div> <button @onclick="SendDataCreate" class="btn btn-primary">Register</button>
+
+
+
+@code {
+    private string email = "";
+    private string username = "";
+    private DateTime dateOfBirth;
+    private string password = "";
+    private string passwordConfirm = "";
+    private string message = "";
+
+    public async Task SendDataCreate()
+    {
+        if (password.Equals(passwordConfirm))   
+        {
+            bool result = await AccountQuery.CreateAccount(email, username, dateOfBirth, password);
+
+            if (result)
+            {
+                await JS.InvokeVoidAsync("alert", "Registration successful!"); // Show success alert
+
+                // Redirect to login page after confirmation
+                bool confirmed = await JS.InvokeAsync<bool>("confirm", "Do you want to proceed to login?");
+                if (confirmed)
+                {
+                    navman.NavigateTo("/login");
+                }
+            }
+            else
+            {
+                await JS.InvokeVoidAsync("alert", "Registration failed. Please try again."); // Show failure alert
+            }
+        }
+        else
+        {
+            await JS.InvokeVoidAsync("alert", "Passwords do not match."); // Show passwords mismatch alert
+        }
+    }
+}
