@@ -1,8 +1,10 @@
 ﻿@page "/content"
 @rendermode InteractiveServer
 @using QueryClasses 
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject Dictionary<string, string> Account
 @inject NavigationManager navman
+@inject ProtectedSessionStorage MySession
 
 <div>
     @if(isLoggedIn) {
@@ -25,10 +27,12 @@
             return true;
         else
             navman.NavigateTo("/login");
-            return false;
+        return false;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender){
+        Account = (await MySession.GetAsync<Dictionary<string,string>>("LoggedUser")).Value;
+
         isLoggedIn = IsLoggedIn();
     }
 
