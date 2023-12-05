@@ -3,7 +3,7 @@ using MySql.Data;
 using MySql.Data.MySqlClient;
 using System.Text.Json;
 
-namespace Databases
+namespace Datalayer
 {
     public class DBConnection
     {
@@ -11,15 +11,10 @@ namespace Databases
 
         public DBConnection()
         {
-            string defaultPath = "C:\\Users\\CSS\\source\\repos\\grad_project\\Databases\\appsettings.json";
-            if (!Directory.Exists(defaultPath))
-            {
-                defaultPath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "../Databases/appsettings.json" ));
-            }
+            string filepath = Path.GetFullPath(Path.Combine( Directory.GetParent(Directory.GetCurrentDirectory())?.Parent?.Parent?.Parent?.Parent?.Parent?.FullName, "backend", "config", "mysql-config.json"));
             IConfigurationRoot configuration = new ConfigurationBuilder()
-                .AddJsonFile(defaultPath)
+                .AddJsonFile(filepath)
                 .Build();
-
             _configuration = configuration.GetSection("DBConnection");
         }
         public string ConnectionString { get; set; }

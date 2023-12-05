@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Databases;
+using Datalayer;
 
-namespace QueryClasses
+namespace Datalayer.Queries
 {
     public class AccountQuery
     {
