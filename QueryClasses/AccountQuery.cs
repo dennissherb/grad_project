@@ -74,6 +74,23 @@ namespace QueryClasses
                 return null;
             }
         }
+        public static async Task<List<Dictionary<string, string>>> ReadAccounts()
+        {
+            try
+            {
+                string query = $@"SELECT * FROM my_project.accounts";
+
+                List<Dictionary<string, string>> result = await DBConnection.ExecuteQuery(query);
+
+                return result != null && result.Count > 0 ? result : null;
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions or log errors appropriately
+                Console.WriteLine($"Error reading account by email: {ex.Message}");
+                return null;
+            }
+        }
 
         public static async Task<bool> UpdateAccount(string email, string newUserName, DateTime newDateOfBirth, string newPassword)
         {
