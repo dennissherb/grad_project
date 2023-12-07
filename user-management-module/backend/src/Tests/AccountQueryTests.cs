@@ -74,7 +74,6 @@ namespace AccountQueryTests
         [TestMethod]
         public void  Test6DeleteAccount()
         {
-
             string testEmailToDelete = "newuser@example.com";
 
             bool deleteResult = AccountQuery.DeleteAccount(testEmailToDelete).Result;

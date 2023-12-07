@@ -4,7 +4,7 @@ using Datalayer.Queries;
 
 namespace WebAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/AccountController")]
     [ApiController]
     public class AccountActionsController : ControllerBase
     {
@@ -14,19 +14,17 @@ namespace WebAPI.Controllers
             this._logger = logger;
         }
 
-        [HttpGet("{email:long}")]
+        [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<AccountActionsController> Get(long uid, string pass)
+        public async Task<ActionResult<AccountActionsController>> GetAccount()
         {
-            if (uid <= 0) { return BadRequest(); }
-            Dictionary<string, string> account = AccountQuery.ReadAccountByEmail(email) ;
-            if (bu == null) { return NotFound(); }
-            return Ok(bu);
+            //if (email == "") { return BadRequest(); }
+            //Dictionary<string, string> account = await AccountQuery.ReadAccountByEmail(email);
+            //if (!account.ContainsKey("id")) { return NotFound(); }
+            //return Ok(account);
+            return Ok("ok");
         }
-
-
-
     }
 }
