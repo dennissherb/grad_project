@@ -2,9 +2,10 @@
 
 @rendermode InteractiveServer
 @using Datalayer.Queries
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@using Newtonsoft.Json;
 @inject Dictionary<string, string> Account
 @inject NavigationManager navman
-@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject ProtectedSessionStorage MySession
 @inject IJSRuntime JS;
 
@@ -86,10 +87,12 @@ else
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         string value;
+        string apiRequest = "https://localhost:5005/api/Account/GetEntireTable";
         Account = (await MySession.GetAsync<Dictionary<string,string>>("LoggedUser")).Value;
         Account.TryGetValue("accounts_isAdmin", out value);
         if ((value == "1" || value == "True") && !hasLoaded) {
-            dataList = await AccountQuery.ReadAccounts(); 
+            string jsonString = await client.GetStringAsync(apiRequest);
+            dataList = JsonConvert.DeserializeObject<List<Dictionary<string,string>>>(jsonString);
             StateHasChanged(); // Refresh the component
             hasLoaded = true; // Set the flag to true to prevent repeated reloading
         }
