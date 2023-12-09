@@ -11,7 +11,7 @@ namespace Datalayer
 
         public DBConnection()
         {
-            string filepath = Path.GetFullPath(Path.Combine( Directory.GetParent(Directory.GetCurrentDirectory())?.Parent?.Parent?.Parent?.Parent?.Parent?.FullName, "backend", "config", "mysql-config.json"));
+            string filepath = Path.GetFullPath(Path.Combine( Directory.GetParent(Directory.GetCurrentDirectory())?.FullName, "backend", "config", "mysql-config.json"));
             IConfigurationRoot configuration = new ConfigurationBuilder()
                 .AddJsonFile(filepath)
                 .Build();
