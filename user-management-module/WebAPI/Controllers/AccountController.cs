@@ -21,7 +21,7 @@ namespace WebAPI.Controllers
         {
             if (email == null) { return BadRequest(); }
             Dictionary<string, string> account = await AccountQuery.ReadAccountByEmail(email);
-            if (!account.ContainsKey("id")) { return NotFound(); }
+            if (!account.ContainsKey("accounts_id")) { return NotFound(); }
             return Ok(account);
         }
     }
