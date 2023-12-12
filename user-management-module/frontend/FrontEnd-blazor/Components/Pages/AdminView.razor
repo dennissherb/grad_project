@@ -1,126 +1,16 @@
 ﻿@page "/management/View"
 
 @rendermode InteractiveServer
+
 @using Datalayer.Queries
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @using Newtonsoft.Json;
+
 @inject Dictionary<string, string> Account
 @inject NavigationManager navman
 @inject ProtectedSessionStorage MySession
 @inject IJSRuntime JS;
+@inject HttpClient client;
+
 
 <h1>Data Display Page</h1>
-@if (dataList != null && dataList.Any())
-{
-    <table class="table">
-        <thead>
-            <tr>
-                @foreach (var key in dataList.First().Keys)
-                {
-                    @if (key != "accounts_id") // Exclude the accounts_id column
-                    {
-                        <th>@key</th>
-                    }
-                }
-                <th>Actions</th> <!-- Add a column for actions -->
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var data in dataList)
-            {
-                <tr>
-                    @foreach (var keyValuePair in data)
-                    {
-                        @if (keyValuePair.Key != "accounts_id") // Exclude the accounts_id column
-                        {
-                            <td>@keyValuePair.Value</td>
-                        }
-                    }
-                    <td>
-                        <button class="btn btn-primary" @onclick="() => EditData(data)">Edit</button>
-                        <button class="btn btn-danger" @onclick="() => DeleteData(data)">Delete</button>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-
-    <!-- Modal for Edit -->
-    <div class="modal" id="editModal" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Edit Data</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    @foreach (var key in dataList.First().Keys)
-                    {
-                        @if (key != "accounts_id") // Exclude the accounts_id column
-                        {
-                            <input placeholder="@key"/>
-                        }
-                    }
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" @onclick="SaveEditedData">Save changes</button>
-                </div>
-            </div>
-        </div>
-    </div>
-}
-else
-{
-    <p>No data available</p>
-}
-
-@code {
-    List<Dictionary<string, string>> dataList;
-    bool hasLoaded = false;
-
-    Dictionary<string, string> editedData;
-
-    // This method populates dataList (for example)
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        string value;
-        string apiRequest = "https://localhost:5005/api/Account/GetEntireTable";
-        Account = (await MySession.GetAsync<Dictionary<string,string>>("LoggedUser")).Value;
-        Account.TryGetValue("accounts_isAdmin", out value);
-        if ((value == "1" || value == "True") && !hasLoaded) {
-            string jsonString = await client.GetStringAsync(apiRequest);
-            dataList = JsonConvert.DeserializeObject<List<Dictionary<string,string>>>(jsonString);
-            StateHasChanged(); // Refresh the component
-            hasLoaded = true; // Set the flag to true to prevent repeated reloading
-        }
-        else if (!hasLoaded) {
-            navman.NavigateTo("/content");
-            hasLoaded = true; // Set the flag to true to prevent repeated navigation
-        }
-    }
-
-    // Method to edit data
-    void EditData(Dictionary<string, string> data)
-    {
-        editedData = data; // Store the data to be edited
-        // Show the edit modal
-        JS.InvokeVoidAsync("$('#editModal').modal", "show");
-    }
-
-    // Method to save edited data
-    void SaveEditedData()
-    {
-        // Save the edited data logic goes here
-        // Once saved, close the modal
-        JS.InvokeVoidAsync("$('#editModal').modal", "hide");
-    }
-
-    // Method to delete data
-    void DeleteData(Dictionary<string, string> data)
-    {
-        // Delete data logic goes here
-    }
-}
