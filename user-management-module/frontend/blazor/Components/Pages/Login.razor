@@ -1,0 +1,94 @@
+﻿@page "/login"
+
+@rendermode InteractiveServer
+
+@using System.Text.Json
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+
+@inject HttpClient httpClient
+@inject Dictionary<string,string> userData 
+@inject ProtectedSessionStorage MySession
+
+
+<h3>Login</h3>
+@if (@userData != null && @userData.ContainsKey("accounts_user_name"))
+{
+    <p></p> 
+}
+
+@if (errorMessage != null)
+{
+    <p style="color: red;">@errorMessage, @errorMessage_Session</p>
+}
+
+@if (userData != null && userData.Any())
+{
+    <p>User data retrieved:</p>
+    <ul>
+        @foreach (var item in userData)
+        {
+            <li>@item.Key: @item.Value</li>
+        }
+    </ul>
+}
+
+<form @onsubmit="HandleLogin">
+    <label>
+        Username:
+        <input type="text" @bind="username" />
+    </label><br />
+
+    <label>
+        Password:
+        <input type="password" @bind="password" />
+    </label><br />
+
+    <button type="submit">Login</button>
+</form>
+
+
+@code { 
+    private string username;
+    private string password;
+    private string errorMessage;
+    private string errorMessage_Session;
+
+    private async Task HandleLogin()
+    {
+        try
+        {
+            var loginData = new { accounts_email = username, accounts_password = password };
+            string test = JsonSerializer.Serialize(loginData);
+            var response = await httpClient.PostAsJsonAsync("http://localhost:5005/api/Account/login", loginData);
+
+            if (response.IsSuccessStatusCode)
+            {
+                errorMessage = null;
+                userData = JsonSerializer.Deserialize<Dictionary<string,string>>(await response.Content.ReadAsStringAsync());
+                    try
+                    {
+                       ValueTask success = MySession.SetAsync("user", userData);
+                    }
+                    catch(Exception ex)
+                    {
+                        errorMessage_Session = "An error occurred: " + ex.Message;
+                    } 
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+                errorMessage = "Incorrect username or password.";
+                userData = null;
+            }
+            else
+            {
+                errorMessage = "An error occurred during login.";
+                userData = null;
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "An error occurred: " + ex.Message;
+            userData = null;
+        }
+    }
+}

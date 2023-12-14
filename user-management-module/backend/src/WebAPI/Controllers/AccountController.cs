@@ -35,5 +35,18 @@ namespace WebAPI.Controllers
             if(table.Count < 0) return NotFound();
             return Ok(table);
         }
+
+        [HttpPost("login")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+
+        public async Task<ActionResult<Dictionary<string,string>>> TryLogin([FromBody] Dictionary<string,string> user ) {
+            if (user["accounts_email"] == null && user["accounts_password"] == null) return BadRequest();
+            if (await AccountQuery.TryLogin(user["accounts_email"], user["accounts_password"])) {
+                user = await AccountQuery.ReadAccountByEmail(user["accounts_email"]);
+                return Ok(user);
+            }
+            return Unauthorized();
+        }
     }
 }
