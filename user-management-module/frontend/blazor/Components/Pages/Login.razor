@@ -8,43 +8,49 @@
 @inject HttpClient httpClient
 @inject Dictionary<string,string> userData 
 @inject ProtectedSessionStorage MySession
+@inject NavigationManager Navman
 
 
-<h3>Login</h3>
-@if (@userData != null && @userData.ContainsKey("accounts_user_name"))
+@if (@loggedIn) 
 {
-    <p></p> 
-}
-
-@if (errorMessage != null)
-{
-    <p style="color: red;">@errorMessage, @errorMessage_Session</p>
-}
-
-@if (userData != null && userData.Any())
-{
-    <p>User data retrieved:</p>
-    <ul>
-        @foreach (var item in userData)
+    <div id="ProtectedContent">
+        <h3>Login</h3>
+        @if (@userData != null && @userData.ContainsKey("accounts_user_name"))
         {
-            <li>@item.Key: @item.Value</li>
+            <p></p> 
         }
-    </ul>
+
+        @if (errorMessage != null)
+        {
+            <p style="color: red;">@errorMessage, @errorMessage_Session</p>
+        }
+
+        @if (userData != null && userData.Any())
+        {
+            <p>User data retrieved:</p>
+            <ul>
+                @foreach (var item in userData)
+                {
+                    <li>@item.Key: @item.Value</li>
+                }
+            </ul>
+        }
+
+        <form @onsubmit="HandleLogin">
+            <label>
+                Username:
+                <input type="text" @bind="username" />
+            </label><br />
+
+            <label>
+                Password:
+                <input type="password" @bind="password" />
+            </label><br />
+
+            <button type="submit">Login</button>
+        </form>
+    </div>
 }
-
-<form @onsubmit="HandleLogin">
-    <label>
-        Username:
-        <input type="text" @bind="username" />
-    </label><br />
-
-    <label>
-        Password:
-        <input type="password" @bind="password" />
-    </label><br />
-
-    <button type="submit">Login</button>
-</form>
 
 
 @code { 
@@ -52,6 +58,17 @@
     private string password;
     private string errorMessage;
     private string errorMessage_Session;
+
+    protected bool loggedIn = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if ((await MySession.GetAsync<Dictionary<string,string>>("user")).Value != null && ((await MySession.GetAsync<Dictionary<string,string>>("user")).Value.ContainsKey("accounts_id"))) 
+            Navman.NavigateTo("/");
+        loggedIn = (await MySession.GetAsync<object>("user")).Value == null;
+            if(firstRender)
+                StateHasChanged();
+    }
 
     private async Task HandleLogin()
     {
@@ -68,6 +85,7 @@
                     try
                     {
                        ValueTask success = MySession.SetAsync("user", userData);
+                        Navman.NavigateTo("/");
                     }
                     catch(Exception ex)
                     {

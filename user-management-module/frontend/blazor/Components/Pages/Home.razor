@@ -1,7 +1,47 @@
 ﻿@page "/"
 
-<PageTitle>Home</PageTitle>
+@rendermode InteractiveServer
 
-<h1>Hello, world!</h1>
+@using System.Text.Json
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@using blazor
 
-Welcome to your new app.
+@inject NavigationManager Navman
+@inject HttpClient HttpClient
+@inject Dictionary<string,string> userData 
+@inject ProtectedSessionStorage MySession
+@inject IJSRuntime JSRuntime
+
+@if (@loggedIn == true)
+    {
+        <div id="ProtectedContent"> 
+            <PageTitle>Home</PageTitle>
+            <h1>Hello, world!</h1>
+            Welcome to your new app.
+            <button @onclick="SignOut">Sign Out</button>
+        </div>
+    }
+
+
+@code 
+{
+    bool loggedIn = false;
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        loggedIn = (await MySession.GetAsync<object>("user")).Value == null;
+        if ( (await MySession.GetAsync<Dictionary<string,string>>("user")).Value != null &&  (await MySession.GetAsync<Dictionary<string,string>>("user")).Value.ContainsKey("accounts_id")) 
+            {
+                loggedIn = true;
+                if (firstRender)
+                    StateHasChanged();
+            } 
+        else
+            Navman.NavigateTo("/login");
+    }
+
+    protected async Task SignOut() {
+        MySession.DeleteAsync("user");
+        loggedIn = false;
+        Navman.NavigateTo("/login");
+    }
+}
