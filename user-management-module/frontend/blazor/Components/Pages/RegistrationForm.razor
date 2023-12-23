@@ -1,0 +1,87 @@
+﻿@page "/register"
+
+@rendermode InteractiveServer
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+
+@inject HttpClient httpClient
+@inject NavigationManager Navman
+@inject ProtectedSessionStorage MySession
+
+@if (!registered)
+{
+    <div id="RegistrationForm">
+        <h3>Register</h3>
+
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <p style="color: red;">@errorMessage</p>
+        }
+
+        <form @onsubmit="HandleRegistration">
+            <label>
+                Username:
+                <input type="text" @bind="username" />
+            </label><br />
+
+            <label>
+                Email:
+                <input type="email" @bind="email" />
+            </label><br />
+
+            <label>
+                Password:
+                <input type="password" @bind="password" />
+            </label><br />
+
+            <button type="submit">Register</button>
+        </form>
+    </div>
+}
+else
+{
+    <p>You have successfully registered!</p>
+    <p><button @onclick="NavigateToLogin">Login</button></p>
+}
+
+@code {
+    private string username;
+    private string email;
+    private string password;
+    private string errorMessage;
+    private bool registered = false;
+    protected bool loggedIn = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        //Check if user is logged in
+        if ((await MySession.GetAsync<Dictionary<string,string>>("user")).Value != null && ((await MySession.GetAsync<Dictionary<string,string>>("user")).Value.ContainsKey("accounts_id"))) 
+            Navman.NavigateTo("/");
+    }
+    private async Task HandleRegistration()
+    {
+        try
+        {
+            var registrationData = new { accounts_username = username, accounts_email = email, accounts_password = password };
+            var response = await httpClient.PostAsJsonAsync("http://localhost:5005/api/Account/register", registrationData);
+
+            if (response.IsSuccessStatusCode)
+            {
+                errorMessage = null;
+                registered = true;
+            }
+            else
+            {
+                errorMessage = "An error occurred during registration.";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "An error occurred: " + ex.Message;
+        }
+    }
+
+    private void NavigateToLogin()
+    {
+        Navman.NavigateTo("/login");
+    }
+}
