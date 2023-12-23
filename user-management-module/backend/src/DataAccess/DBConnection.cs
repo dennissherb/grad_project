@@ -1,7 +1,5 @@
 using Microsoft.Extensions.Configuration;
-using MySql.Data;
 using MySql.Data.MySqlClient;
-using System.Text.Json;
 
 namespace Datalayer
 {
@@ -11,24 +9,44 @@ namespace Datalayer
 
         public DBConnection()
         {
-            string filepath = Path.GetFullPath(Path.Combine( Directory.GetParent(Directory.GetCurrentDirectory())?.Parent?.FullName, "config", "mysql-config.json"));
-            IConfigurationRoot configuration = new ConfigurationBuilder()
-                .AddJsonFile(filepath)
-                .Build();
-            _configuration = configuration.GetSection("DBConnection");
+            string filepath = Path.GetFullPath(Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory())?.Parent?.FullName, "config", "mysql-config.json"));
+            if (File.Exists("filepath")) 
+            {
+                IConfigurationRoot configuration = new ConfigurationBuilder()
+                    .AddJsonFile(filepath)
+                    .Build();
+                _configuration = configuration.GetSection("DBConnection");
+            }
+            else 
+            {
+                _configuration = null;
+            }
         }
         public string ConnectionString { get; set; }
         private string GetConnectionString()
         {
-            string server = _configuration["Server"];
-            string databaseName = _configuration["DatabaseName"];
-            string user = _configuration["User"];
-            string password = _configuration["Password"];
-            Console.WriteLine(server, databaseName, user, password);
+            string server;
+            string databaseName;
+            string user;
+            string password;
+
+            if (_configuration != null) 
+            {
+                server = _configuration["Server"];
+                databaseName = _configuration["DatabaseName"];
+                user = _configuration["User"];
+                password = _configuration["Password"];
+            }
+            else 
+            {
+                server = "localhost";
+                databaseName = "my_project";
+                user = "root";
+                password = "josh17rog";
+            }
 
             return $"Server={server};Database={databaseName};Uid={user};Pwd={password};";
         }
-
         public static async Task<List<Dictionary<string,string>>> ExecuteQuery(string query)
         {
             DBConnection connectionObj = new DBConnection();
