@@ -39,14 +39,27 @@ namespace WebAPI.Controllers
         [HttpPost("login")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
 
         public async Task<ActionResult<Dictionary<string,string>>> TryLogin([FromBody] Dictionary<string,string> user ) {
-            if (user["accounts_email"] == null && user["accounts_password"] == null) return BadRequest();
+            if (user["accounts_email"] == null || user["accounts_password"] == null) return BadRequest();
             if (await AccountQuery.TryLogin(user["accounts_email"], user["accounts_password"])) {
                 user = await AccountQuery.ReadAccountByEmail(user["accounts_email"]);
                 return Ok(user);
             }
             return Unauthorized();
+        }
+
+        [HttpPost("register")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+
+        public async Task<ActionResult<Dictionary<string,string>>> TryRegister([FromBody] Dictionary<string,string> user) {
+            if (user["accounts_email"] == null || user["accounts_password"] == null) return BadRequest();
+            else if (AccountQuery.ReadAccountByEmail(user["accounts_email"]) != null) return BadRequest();
+            else AccountQuery.CreateAccount(user);
+            return Ok(AccountQuery.ReadAccountByEmail(user));
         }
     }
 }
