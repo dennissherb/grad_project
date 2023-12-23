@@ -7,6 +7,13 @@ namespace Datalayer.Queries
 {
     public class AccountQuery
     {
+        private static string SanitizeInput(string input)
+        {
+            // Perform necessary input sanitization to prevent SQL injection
+            // For simplicity, this example uses basic string replace to escape single quotes
+            return input.Replace("'", "''");
+        }
+
         public static async Task<bool> TryLogin(string field1, string field2)
         {
             try
@@ -27,14 +34,31 @@ namespace Datalayer.Queries
                 return false;
             }
         }
-
-        private static string SanitizeInput(string input)
+        //if I knew I would just use the json request bodys I wouldn't have even implemented the above...
+        public static async Task<bool> TryLogin(Dictionary<string,string> user)
         {
-            // Perform necessary input sanitization to prevent SQL injection
-            // For simplicity, this example uses basic string replace to escape single quotes
-            return input.Replace("'", "''");
+            try
+            {
+                string sanitizedField1 = SanitizeInput(user["accounts_email"]);
+                string sanitizedField2 = SanitizeInput(user["accounts_password"]);
+
+                string query = $@"SELECT accounts_id FROM my_project.accounts WHERE accounts_email = '{sanitizedField1}' AND accounts_password = '{sanitizedField2}'";
+
+                List<Dictionary<string, string>> result = await DBConnection.ExecuteQuery(query);
+
+                return (result.Count != 0);
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions or log errors appropriately
+                Console.WriteLine($"Error during login attempt: {ex.Message}");
+                return false;
+            }
         }
 
+
+
+        //register using 4 variables, why did I even implement this 
         public static async Task<bool> CreateAccount(string email, string userName, DateTime dateOfBirth, string password)
         {
             try
@@ -55,11 +79,50 @@ namespace Datalayer.Queries
             }
         }
 
+        //register using dictionary instead of 4 variables which is dumb
+        public static async Task<bool> CreateAccount(Dictionary<string,string> user)
+        {
+            try
+            {
+
+                string query = $@"INSERT INTO my_project.accounts (accounts_email, accounts_user_name, accounts_date_of_birth, accounts_password) VALUES ('{user["accounts_email"]}', '{user["accounts_user_name"]}', '{user["accounts_date_of_birth"]}', '{user["accounts_password"]}')";
+
+                int result = await DBConnection.ExecuteNonQuery(query);
+
+                return result > 0;
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions or log errors appropriately
+                Console.WriteLine($"Error creating account: {ex.Message}");
+                return false;
+            }
+        }
+
         public static async Task<Dictionary<string, string>> ReadAccountByEmail(string email)
         {
             try
             {
                 string sanitizedEmail = SanitizeInput(email);
+
+                string query = $@"SELECT * FROM my_project.accounts WHERE accounts_email = '{sanitizedEmail}'";
+
+                List<Dictionary<string, string>> result = await DBConnection.ExecuteQuery(query);
+
+                return result != null && result.Count > 0 ? result[0] : null;
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions or log errors appropriately
+                Console.WriteLine($"Error reading account by email: {ex.Message}");
+                return null;
+            }
+        }
+        public static async Task<Dictionary<string, string>> ReadAccountByEmail(Dictionary<string,string> user)
+        {
+            try
+            {
+                string sanitizedEmail = SanitizeInput(user["accounts_email"]);
 
                 string query = $@"SELECT * FROM my_project.accounts WHERE accounts_email = '{sanitizedEmail}'";
 
@@ -112,6 +175,27 @@ namespace Datalayer.Queries
             }
         }
 
+
+        //Only need to provide email and password for oldUser for authorization
+        public static async Task<bool> UpdateAccount(Dictionary<string,string> oldUser, Dictionary<string,string> newUser)
+        {
+            try
+            {
+                //check password and email of oldUser to authorize update
+                string query = $@"UPDATE my_project.accounts SET accounts_user_name = '{newUser["accounts_user_name"]}', accounts_date_of_birth = '{newUser["accounts_date_of_birth"]}', accounts_password = '{newUser["accounts_password"]}' WHERE accounts_email = '{oldUser["accounts_email"]}' AND accounts_password = '{oldUser["accounts_password"]}'";
+
+                int result = await DBConnection.ExecuteNonQuery(query);
+
+                return result > 0;
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions or log errors appropriately
+                Console.WriteLine($"Error updating account: {ex.Message}");
+                return false;
+            }
+        }
+
         public static async Task<bool> DeleteAccount(string email)
         {
             try
@@ -119,6 +203,27 @@ namespace Datalayer.Queries
                 string sanitizedEmail = SanitizeInput(email);
 
                 string query = $@"DELETE FROM my_project.accounts WHERE accounts_email = '{sanitizedEmail}'";
+
+                int result = await DBConnection.ExecuteNonQuery(query);
+
+                return result > 0;
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions or log errors appropriately
+                Console.WriteLine($"Error deleting account: {ex.Message}");
+                return false;
+            }
+        }
+
+        public static async Task<bool> DeleteAccount(Dictionary<string,string> user)
+        {
+            try
+            {
+                string sanitizedField1 = SanitizeInput(user["accounts_email"]);
+                string sanitizedField2 = SanitizeInput(user["accounts_password"]);
+
+                string query = $@"DELETE FROM my_project.accounts WHERE accounts_email = '{user["accounts_email"]}' AND accounts_password = '{user["accounts_password"]}'";
 
                 int result = await DBConnection.ExecuteNonQuery(query);
 
