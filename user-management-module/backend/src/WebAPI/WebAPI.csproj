@@ -12,7 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\backend\src\DataAccess\Datalayer.csproj" />
     <ProjectReference Include="..\DataAccess\Datalayer.csproj" />
   </ItemGroup>
 

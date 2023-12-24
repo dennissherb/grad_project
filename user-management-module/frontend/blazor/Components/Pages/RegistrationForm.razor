@@ -30,8 +30,14 @@
 
             <label>
                 Password:
-                <input type="password" @bind="password" />
+                <input type="password" @bind="dateOfBirth" />
             </label><br />
+
+            <label>
+                Date of Birth:
+                <input type="date" @bind="password" />
+            </label><br />
+
 
             <button type="submit">Register</button>
         </form>
@@ -47,6 +53,7 @@ else
     private string username;
     private string email;
     private string password;
+    private string dateOfBirth;
     private string errorMessage;
     private bool registered = false;
     protected bool loggedIn = false;
@@ -61,7 +68,7 @@ else
     {
         try
         {
-            var registrationData = new { accounts_username = username, accounts_email = email, accounts_password = password };
+            var registrationData = new { accounts_username = username, accounts_email = email, accounts_password = password, accounts_date_of_birth = dateOfBirth };
             var response = await httpClient.PostAsJsonAsync("http://localhost:5005/api/Account/register", registrationData);
 
             if (response.IsSuccessStatusCode)

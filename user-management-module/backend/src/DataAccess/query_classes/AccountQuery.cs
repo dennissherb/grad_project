@@ -84,8 +84,16 @@ namespace Datalayer.Queries
         {
             try
             {
-
-                string query = $@"INSERT INTO my_project.accounts (accounts_email, accounts_user_name, accounts_date_of_birth, accounts_password) VALUES ('{user["accounts_email"]}', '{user["accounts_user_name"]}', '{user["accounts_date_of_birth"]}', '{user["accounts_password"]}')";
+                string query = $@"INSERT INTO my_project.accounts
+                (accounts_email,
+                accounts_user_name,
+                accounts_date_of_birth,
+                accounts_password) 
+                    VALUES (
+                    '{user["accounts_email"]}',
+                    '{user["accounts_user_name"]}',
+                    '{user["accounts_date_of_birth"]}',
+                    '{user["accounts_password"]}')";
 
                 int result = await DBConnection.ExecuteNonQuery(query);
 
@@ -155,11 +163,13 @@ namespace Datalayer.Queries
             }
         }
 
+
+        //DO NOT USE THIS ONE THIS IS BROKEN WILL ONLY WORK IF ALL ARGUMENTS ARE PROVIDED THIS IS ONLY TO AVOID REWRITING TESTS
         public static async Task<bool> UpdateAccount(string email, string newUserName, DateTime newDateOfBirth, string newPassword)
         {
             try
             {
-                string formattedNewDateOfBirth = newDateOfBirth.ToString("yyyy-MM-dd"); // Example date format
+                string formattedNewDateOfBirth = newDateOfBirth.ToString("yyyy-MM-dd"); 
 
                 string query = $@"UPDATE my_project.accounts SET accounts_user_name = '{newUserName}', accounts_date_of_birth = '{formattedNewDateOfBirth}', accounts_password = '{newPassword}' WHERE accounts_email = '{email}'";
 
@@ -179,10 +189,16 @@ namespace Datalayer.Queries
         //Only need to provide email and password for oldUser for authorization
         public static async Task<bool> UpdateAccount(Dictionary<string,string> oldUser, Dictionary<string,string> newUser)
         {
+            oldUser = await AccountQuery.ReadAccountByEmail(oldUser);
             try
             {
                 //check password and email of oldUser to authorize update
-                string query = $@"UPDATE my_project.accounts SET accounts_user_name = '{newUser["accounts_user_name"]}', accounts_date_of_birth = '{newUser["accounts_date_of_birth"]}', accounts_password = '{newUser["accounts_password"]}' WHERE accounts_email = '{oldUser["accounts_email"]}' AND accounts_password = '{oldUser["accounts_password"]}'";
+                string query = $@"UPDATE my_project.accounts SET 
+accounts_user_name =     '{(newUser.ContainsKey("accounts_user_name")       && newUser["accounts_user_name"] != null        ? newUser["accounts_user_name"]     : oldUser["accounts_user_name"])}',
+accounts_date_of_birth = '{(newUser.ContainsKey("accounts_date_of_birth")   && newUser["accounts_date_of_birth"] != null    ? newUser["accounts_date_of_birth"] : oldUser["accounts_date_of_birth"])}',
+accounts_password =      '{(newUser.ContainsKey("accounts_password")        && newUser["accounts_password"] != null         ? newUser["accounts_password"]      : oldUser["accounts_password"])}'
+WHERE accounts_email =   '{(newUser.ContainsKey("accounts_email")           && newUser["accounts_email"] != null            ? newUser["accounts_email"]         : oldUser["accounts_email"])}'
+AND accounts_password =  '{(newUser.ContainsKey("accounts_password")        && newUser["accounts_password"] != null         ? newUser["accounts_password"]      : oldUser["accounts_password"])}'";
 
                 int result = await DBConnection.ExecuteNonQuery(query);
 
@@ -222,8 +238,9 @@ namespace Datalayer.Queries
             {
                 string sanitizedField1 = SanitizeInput(user["accounts_email"]);
                 string sanitizedField2 = SanitizeInput(user["accounts_password"]);
-
-                string query = $@"DELETE FROM my_project.accounts WHERE accounts_email = '{user["accounts_email"]}' AND accounts_password = '{user["accounts_password"]}'";
+                string query = $@"DELETE FROM my_project.accounts WHERE
+                    accounts_email =    '{user["accounts_email"]}' AND
+                    accounts_password = '{user["accounts_password"]}'";
 
                 int result = await DBConnection.ExecuteNonQuery(query);
 
