@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  mysql-workbench:
+    image: lscr.io/linuxserver/mysql-workbench:latest
+    ports:
+      - "3000-3001:3000-3001"
+    networks:
+      - my-network
+
+  mysql-server:
+    image: docker.io/library/mysql:latest
+    volumes: 
+      - mysql-data:/var/lib/mysql
+    container_name: mysqld
+    ports:
+      - "3306:3306"
+    networks:
+      - my-network
+    environment:
+      # MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+       MYSQL_ROOT_PASSWORD: josh17rog 
+
+networks:
+  my-network:
+    driver: bridge
+
+volumes:
+  mysql-data:
