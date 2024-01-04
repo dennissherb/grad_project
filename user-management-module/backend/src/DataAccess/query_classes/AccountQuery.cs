@@ -42,7 +42,7 @@ namespace Datalayer.Queries
                 string sanitizedField1 = SanitizeInput(user["accounts_email"]);
                 string sanitizedField2 = SanitizeInput(user["accounts_password"]);
 
-                string query = $@"SELECT accounts_id FROM my_project.accounts WHERE accounts_email = '{sanitizedField1}' AND accounts_password = '{sanitizedField2}'";
+                string query = $@"SELECT accounts_id FROM my_project.accounts WHERE (accounts_email = '{sanitizedField1}' OR accounts_user_name = '{sanitizedField1}') AND accounts_password = '{sanitizedField2}'";
 
                 List<Dictionary<string, string>> result = await DBConnection.ExecuteQuery(query);
 
@@ -126,13 +126,13 @@ namespace Datalayer.Queries
                 return null;
             }
         }
-        public static async Task<Dictionary<string, string>> ReadAccountByEmail(Dictionary<string,string> user)
+        public static async Task<Dictionary<string, string>> ReadAccountByUQ(Dictionary<string,string> user)
         {
             try
             {
                 string sanitizedEmail = SanitizeInput(user["accounts_email"]);
 
-                string query = $@"SELECT * FROM my_project.accounts WHERE accounts_email = '{sanitizedEmail}'";
+                string query = $@"SELECT * FROM my_project.accounts WHERE accounts_email = '{sanitizedEmail}' OR accounts_user_name = '{sanitizedEmail}'";
 
                 List<Dictionary<string, string>> result = await DBConnection.ExecuteQuery(query);
 
@@ -189,7 +189,7 @@ namespace Datalayer.Queries
         //Only need to provide email and password for oldUser for authorization
         public static async Task<bool> UpdateAccount(Dictionary<string,string> oldUser, Dictionary<string,string> newUser)
         {
-            oldUser = await AccountQuery.ReadAccountByEmail(oldUser);
+            oldUser = await AccountQuery.ReadAccountByUQ(oldUser);
             try
             {
                 //check password and email of oldUser to authorize update

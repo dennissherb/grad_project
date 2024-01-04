@@ -43,8 +43,8 @@ namespace WebAPI.Controllers
 
         public async Task<ActionResult<Dictionary<string,string>>> TryLogin([FromBody] Dictionary<string,string> user ) {
             if (user["accounts_email"] == null || user["accounts_password"] == null) return BadRequest();
-            if (await AccountQuery.TryLogin(user["accounts_email"], user["accounts_password"])) {
-                user = await AccountQuery.ReadAccountByEmail(user["accounts_email"]);
+            if (await AccountQuery.TryLogin(user)) {
+                user = await AccountQuery.ReadAccountByUQ(user);
                 return Ok(user);
             }
             return Unauthorized();
@@ -56,14 +56,14 @@ namespace WebAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
 
         public async Task<ActionResult<Dictionary<string,string>>> TryRegister([FromBody] Dictionary<string,string> user) {
-            Dictionary<string, string> userCheck = await AccountQuery.ReadAccountByEmail(user);
+            Dictionary<string, string> userCheck = await AccountQuery.ReadAccountByUQ(user);
             if (user["accounts_email"] == null || user["accounts_password"] == null) return BadRequest();
             else if (userCheck != null && userCheck.Count != 0)
             {
                  return BadRequest();
             } 
             else AccountQuery.CreateAccount(user);
-            return Ok(AccountQuery.ReadAccountByEmail(user));
+            return Ok(AccountQuery.ReadAccountByUQ(user));
         }
     }
 }
