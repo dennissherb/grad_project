@@ -56,14 +56,14 @@ namespace WebAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
 
         public async Task<ActionResult<Dictionary<string,string>>> TryRegister([FromBody] Dictionary<string,string> user) {
-            Dictionary<string, string> userCheck = await AccountQuery.ReadAccountByUQ(user);
             if (user["accounts_email"] == null || user["accounts_password"] == null) return BadRequest();
-            else if (userCheck != null && userCheck.Count != 0)
+            Dictionary<string, string> userCheck = await AccountQuery.ReadAccountByUQ(user);
+            if (userCheck != null && userCheck.Count != 0)
             {
                  return BadRequest();
             } 
             else AccountQuery.CreateAccount(user);
-            return Ok(AccountQuery.ReadAccountByUQ(user));
+            return Ok(user);
         }
     }
 }
