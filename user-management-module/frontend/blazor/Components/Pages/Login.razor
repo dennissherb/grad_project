@@ -53,7 +53,7 @@
 }
 
 
-@code { 
+@code {
     private string username;
     private string password;
     private string errorMessage;
@@ -66,8 +66,8 @@
         if ((await MySession.GetAsync<Dictionary<string,string>>("user")).Value != null && ((await MySession.GetAsync<Dictionary<string,string>>("user")).Value.ContainsKey("accounts_id"))) 
             Navman.NavigateTo("/");
         loggedIn = (await MySession.GetAsync<object>("user")).Value == null;
-            if(firstRender)
-                StateHasChanged();
+        if(firstRender)
+            StateHasChanged();
     }
 
     private async Task HandleLogin()

@@ -22,7 +22,7 @@ namespace WebAPI.Controllers
         {
             if (email == null) { return BadRequest(); }
             Dictionary<string, string> account = await AccountQuery.ReadAccountByEmail(email);
-            if (!account.ContainsKey("accounts_id")) { return NotFound(); }
+            if (account == null || !account.ContainsKey("accounts_id")) { return NotFound(); }
             return Ok(account);
         }
 
@@ -64,6 +64,26 @@ namespace WebAPI.Controllers
             } 
             else AccountQuery.CreateAccount(user);
             return Ok(user);
+        }
+
+        [HttpPost("delete_as_admin")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+
+        public async Task<ActionResult<bool>> TryDeleteByAdmin([FromBody] Dictionary<string,string> user)
+        {
+            if (user["accounts_email"] == null) return BadRequest();
+            Dictionary<string, string> userCheck = await AccountQuery.ReadAccountByUQ(user);
+            if (userCheck == null || userCheck.Count == 0)
+            {
+                return NotFound();
+            }
+            else
+            {
+                if(await AccountQuery.DeleteAccount(user));
+                    return Ok();
+            }
         }
     }
 }

@@ -11,11 +11,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Datalayer", "backend\src\Da
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "backend\src\Tests\Tests.csproj", "{A804DF8C-97D4-4A55-960A-1E3C13079691}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAPI", "backend\src\WebAPI\WebAPI.csproj", "{B8B06533-6555-426A-9400-486C9C2CD399}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAPI", "backend\src\WebAPI\WebAPI.csproj", "{B8B06533-6555-426A-9400-486C9C2CD399}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "frontend", "frontend", "{77A79E08-F970-4AB9-9B46-54A8BF5448DF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blazor", "frontend\blazor\blazor.csproj", "{BBADEFF4-0FC1-4A65-99C7-089C5AAF8AA5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blazor", "frontend\blazor\blazor.csproj", "{BBADEFF4-0FC1-4A65-99C7-089C5AAF8AA5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
