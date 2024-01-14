@@ -212,13 +212,12 @@ AND accounts_password =  '{(newUser.ContainsKey("accounts_password")        && n
             }
         }
 
-        public static async Task<bool> DeleteAccount(string email)
+        public static async Task<bool> DeleteAccountAsAdmin(Dictionary<string,string> user)
         {
             try
             {
-                string sanitizedEmail = SanitizeInput(email);
 
-                string query = $@"DELETE FROM my_project.accounts WHERE accounts_email = '{sanitizedEmail}'";
+                string query = $@"DELETE FROM my_project.accounts WHERE accounts_email = '{user["accounts_email"]}'";
 
                 int result = await DBConnection.ExecuteNonQuery(query);
 

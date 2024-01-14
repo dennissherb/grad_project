@@ -65,7 +65,7 @@ namespace WebAPI.Controllers
             else AccountQuery.CreateAccount(user);
             return Ok(user);
         }
-
+        
         [HttpPost("delete_as_admin")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -81,7 +81,7 @@ namespace WebAPI.Controllers
             }
             else
             {
-                if(await AccountQuery.DeleteAccount(user));
+                if(await AccountQuery.DeleteAccountAsAdmin(user));
                     return Ok();
             }
         }

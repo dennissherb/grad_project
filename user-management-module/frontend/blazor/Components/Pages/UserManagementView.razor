@@ -12,6 +12,7 @@
 
 @if (accountsTable != null && accountsTable.Any())
 {
+    <p color="red">@errMessage</p>
     <table class="table">
         <thead>
             <tr>
@@ -37,7 +38,7 @@
                         }
                     }
                     <td>
-                        <button @onclikc>Delete</button>
+                        <button @onclick="() => DeleteElementAsync(data)">Delete</button>
                         <button>Edit</button>
                     </td>
                 </tr>
@@ -53,7 +54,7 @@ else
 
 @code {
     List<Dictionary<string, string>> accountsTable;
-    string errMessage
+    string errMessage;
     protected override async Task OnInitializedAsync()
     {
         accountsTable = await httpClient.GetFromJsonAsync<List<Dictionary<string, string>>>("http://localhost:5005/api/Account/GetEntireTable");
@@ -63,6 +64,10 @@ else
     private async Task DeleteElementAsync(Dictionary<string,string> user)
     {
         var response = await httpClient.PostAsJsonAsync("http://localhost:5005/api/Account/delete_as_admin", user);
-        if (response.IsSuccessStatusCode)
+        if (!response.IsSuccessStatusCode)
+        {
+            errMessage = $"{response.StatusCode}";
+        }
+        else { errMessage = "Deletion successful"; };
     }
 }
