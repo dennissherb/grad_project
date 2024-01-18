@@ -1,6 +1,7 @@
 ﻿@page "/manage/user"
 
 @rendermode InteractiveServer
+@attribute [StreamRendering(true)]
 
 @using System.Text.Json
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
@@ -39,7 +40,7 @@
                     }
                     <td>
                         <button @onclick="() => DeleteElementAsync(data)">Delete</button>
-                        <button>Edit</button>
+                        <button >Edit</button>
                     </td>
                 </tr>
             }
@@ -64,10 +65,15 @@ else
     private async Task DeleteElementAsync(Dictionary<string,string> user)
     {
         var response = await httpClient.PostAsJsonAsync("http://localhost:5005/api/Account/delete_as_admin", user);
+        StateHasChanged();
         if (!response.IsSuccessStatusCode)
         {
             errMessage = $"{response.StatusCode}";
         }
-        else { errMessage = "Deletion successful"; };
+        else 
+        {
+            errMessage = "Deletion successful";
+            await OnInitializedAsync();
+        };
     }
 }

@@ -18,6 +18,7 @@ namespace WebAPI.Controllers
         [HttpGet("GetByEmail/{email}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Dictionary<string, string>>> GetAsync(string email)
         {
             if (email == null) { return BadRequest(); }
@@ -42,7 +43,7 @@ namespace WebAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
 
         public async Task<ActionResult<Dictionary<string,string>>> TryLogin([FromBody] Dictionary<string,string> user ) {
-            if (user["accounts_email"] == null || user["accounts_password"] == null) return BadRequest();
+            if (user["accounts_email"] == null && user["accounts_user_name"] == null || user["accounts_password"] == null) return BadRequest();
             if (await AccountQuery.TryLogin(user)) {
                 user = await AccountQuery.ReadAccountByUQ(user);
                 return Ok(user);
@@ -71,7 +72,7 @@ namespace WebAPI.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
 
-        public async Task<ActionResult<bool>> TryDeleteByAdmin([FromBody] Dictionary<string,string> user)
+        public async Task<ActionResult> TryDeleteByAdmin([FromBody] Dictionary<string,string> user)
         {
             if (user["accounts_email"] == null) return BadRequest();
             Dictionary<string, string> userCheck = await AccountQuery.ReadAccountByUQ(user);
@@ -81,9 +82,26 @@ namespace WebAPI.Controllers
             }
             else
             {
-                if(await AccountQuery.DeleteAccountAsAdmin(user));
+                if(await AccountQuery.DeleteAccountAsAdminByUQ(user));
                     return Ok();
             }
         }
+
+        [HttpPost("update_user")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+
+        //oldUser must contain at least one UQ to determine which entry to edit
+        public async Task<ActionResult> TryUpdateUser([FromBody] Dictionary<string,string> oldUser, [FromBody] Dictionary<string,string> newUser) 
+        {
+            if (!oldUser.ContainsKey("accounts_email") && !oldUser.ContainsKey("accounts_user_name") || oldUser["accounts_email"] == null && oldUser["accounts_user_name"] == null) 
+            {
+                return BadRequest();
+            }
+            AccountQuery.UpdateAccount(oldUser, newUser);
+            return Ok();
+        }
     }
+
 }

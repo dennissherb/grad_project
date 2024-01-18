@@ -7,7 +7,23 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Components\Pages\UserEdit.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Components\Pages\UserEdit.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Components\Pages\UserEdit.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Components\Pages\UserEdit.razor" />
   </ItemGroup>
 
 </Project>

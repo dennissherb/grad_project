@@ -190,16 +190,19 @@ namespace Datalayer.Queries
         public static async Task<bool> UpdateAccount(Dictionary<string,string> oldUser, Dictionary<string,string> newUser)
         {
             oldUser = await AccountQuery.ReadAccountByUQ(oldUser);
+            Dictionary<string, string> mergedDictionary = oldUser
+            .Concat(newUser)
+            .GroupBy(kv => kv.Key)
+            .ToDictionary(g => g.Key, g => g.Last().Value);
             try
             {
-                //check password and email of oldUser to authorize update
-                string query = $@"UPDATE my_project.accounts SET 
-accounts_user_name =     '{(newUser.ContainsKey("accounts_user_name")       && newUser["accounts_user_name"] != null        ? newUser["accounts_user_name"]     : oldUser["accounts_user_name"])}',
-accounts_date_of_birth = '{(newUser.ContainsKey("accounts_date_of_birth")   && newUser["accounts_date_of_birth"] != null    ? newUser["accounts_date_of_birth"] : oldUser["accounts_date_of_birth"])}',
-accounts_password =      '{(newUser.ContainsKey("accounts_password")        && newUser["accounts_password"] != null         ? newUser["accounts_password"]      : oldUser["accounts_password"])}'
-WHERE accounts_email =   '{(newUser.ContainsKey("accounts_email")           && newUser["accounts_email"] != null            ? newUser["accounts_email"]         : oldUser["accounts_email"])}'
-AND accounts_password =  '{(newUser.ContainsKey("accounts_password")        && newUser["accounts_password"] != null         ? newUser["accounts_password"]      : oldUser["accounts_password"])}'";
 
+                string query = $@"UPDATE my_project.accounts
+                                SET accounts_email = {mergedDictionary["accounts_email"]},
+                                    accounts_user_name = {mergedDictionary["accounts_user_name"]},
+                                    accounts_date_of_birth = {mergedDictionary["accounts_date_of_birth"]},
+                                    accounts_password = {mergedDictionary["accounts_password"]}
+                                WHERE accounts_email = {mergedDictionary["accounts_email"]} OR accounts_user_name = {mergedDictionary["accounts_user_name"]}";
                 int result = await DBConnection.ExecuteNonQuery(query);
 
                 return result > 0;
@@ -212,11 +215,11 @@ AND accounts_password =  '{(newUser.ContainsKey("accounts_password")        && n
             }
         }
 
-        public static async Task<bool> DeleteAccountAsAdmin(Dictionary<string,string> user)
+        //delete an account entry by referring to it with UQ without password
+        public static async Task<bool> DeleteAccountAsAdminByUQ(Dictionary<string,string> user)
         {
             try
             {
-
                 string query = $@"DELETE FROM my_project.accounts WHERE accounts_email = '{user["accounts_email"]}'";
 
                 int result = await DBConnection.ExecuteNonQuery(query);
@@ -231,6 +234,7 @@ AND accounts_password =  '{(newUser.ContainsKey("accounts_password")        && n
             }
         }
 
+        //delete an account entry by referring to tit with UQ and password
         public static async Task<bool> DeleteAccount(Dictionary<string,string> user)
         {
             try
