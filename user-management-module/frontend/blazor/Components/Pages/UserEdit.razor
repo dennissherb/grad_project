@@ -1,5 +1,16 @@
-﻿@page "/management/user/edit/{user_name_or_email}"
-<h3>Edit</h3>
+﻿@page "/management/user/edit/{user_email_param}"
+
+@rendermode InteractiveServer
+
+@using System.Text.Json
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+
+@inject HttpClient httpClient
+@inject Dictionary<string,string> userData 
+@inject ProtectedSessionStorage MySession
+@inject NavigationManager Navman
+
+<h3>Edit info</h3>
 
 <div> 
     <ul>
@@ -7,10 +18,38 @@
 </div>
 
 @code {
-    Dictionary<string,string> user = new()
+    [Parameter]
+    public string? user_email_param { get; set; }
+
+    Dictionary<string, string> user;
+    string user_email;
+    protected async override Task OnInitializedAsync()
     {
-        
-    } 
-
-
+        try
+        {
+            user_email = user_email_param ?? "-1";
+            var response = await httpClient.GetAsync($"http://localhost:5005/api/Account/GetByEmail/{user_email}");
+            if (response.IsSuccessStatusCode)
+            {
+                userData = JsonSerializer.Deserialize<Dictionary<string, string>>(await response.Content.ReadAsStringAsync());
+                try
+                {
+                    ValueTask success = MySession.SetAsync("user", userData);
+                    Navman.NavigateTo("/");
+                }
+                catch (Exception ex)
+                {
+                }
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+            }
+            else
+            {
+            }
+        }
+        catch (Exception ex) 
+        {
+        }
+    }
 }
