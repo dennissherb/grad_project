@@ -87,21 +87,7 @@ namespace WebAPI.Controllers
             }
         }
 
-        [HttpPost("update_user")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
 
-        //oldUser must contain at least one UQ to determine which entry to edit
-        public async Task<ActionResult> TryUpdateUser([FromBody] Dictionary<string,string> oldUser, [FromBody] Dictionary<string,string> newUser) 
-        {
-            if (!oldUser.ContainsKey("accounts_email") && !oldUser.ContainsKey("accounts_user_name") || oldUser["accounts_email"] == null && oldUser["accounts_user_name"] == null) 
-            {
-                return BadRequest();
-            }
-            AccountQuery.UpdateAccount(oldUser, newUser);
-            return Ok();
-        }
     }
 
 }
