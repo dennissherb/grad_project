@@ -25,17 +25,6 @@
             <p style="color: red;">@errorMessage, @errorMessage_Session</p>
         }
 
-        @if (userData != null && userData.Any())
-        {
-            <p>User data retrieved:</p>
-            <ul>
-                @foreach (var item in userData)
-                {
-                    <li>@item.Key: @item.Value</li>
-                }
-            </ul>
-        }
-
         <form @onsubmit="HandleLogin">
             <label>
                 Username:
@@ -82,22 +71,28 @@
             {
                 errorMessage = null;
                 userData = JsonSerializer.Deserialize<Dictionary<string,string>>(await response.Content.ReadAsStringAsync());
-                    try
-                    {
-                       ValueTask success = MySession.SetAsync("user", userData);
-                        Navman.NavigateTo("/");
-                    }
-                    catch(Exception ex)
-                    {
-                        errorMessage_Session = "An error occurred: " + ex.Message;
-                    } 
+                try
+                {
+                    ValueTask success = MySession.SetAsync("user", userData);
+                    Navman.NavigateTo("/");
+                }
+                catch(Exception ex)
+                {
+                    errorMessage_Session = "An error occurred: " + ex.Message;
+                } 
             }
-            else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            switch (response.StatusCode) {
+                case System.Net.HttpStatusCode.Unauthorized
+                    errorMessage = "Incorrect username or password"
+                    userData = null;
+                    break;
+            }
+        if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
             {
                 errorMessage = "Incorrect username or password.";
                 userData = null;
             }
-            else
+            else if ()
             {
                 errorMessage = "An error occurred during login.";
                 userData = null;

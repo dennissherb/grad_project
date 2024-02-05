@@ -62,9 +62,11 @@ namespace WebAPI.Controllers
             if (userCheck != null && userCheck.Count != 0)
             {
                  return BadRequest();
-            } 
-            else AccountQuery.CreateAccount(user);
-            return Ok(user);
+            }
+            if (await AccountQuery.CreateAccount(user))
+                return Ok(user);
+            else
+                return StatusCode(500, $"Error with account insert");
         }
         
         [HttpPost("delete_as_admin")]
