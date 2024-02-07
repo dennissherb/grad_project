@@ -66,36 +66,31 @@
             var loginData = new { accounts_email = username, accounts_password = password };
             string test = JsonSerializer.Serialize(loginData);
             var response = await httpClient.PostAsJsonAsync("http://localhost:5005/api/Account/login", loginData);
-
-            if (response.IsSuccessStatusCode)
+            switch (response.StatusCode) 
             {
-                errorMessage = null;
-                userData = JsonSerializer.Deserialize<Dictionary<string,string>>(await response.Content.ReadAsStringAsync());
-                try
-                {
-                    ValueTask success = MySession.SetAsync("user", userData);
-                    Navman.NavigateTo("/");
-                }
-                catch(Exception ex)
-                {
-                    errorMessage_Session = "An error occurred: " + ex.Message;
-                } 
-            }
-            switch (response.StatusCode) {
-                case System.Net.HttpStatusCode.Unauthorized
-                    errorMessage = "Incorrect username or password"
+                case System.Net.HttpStatusCode.OK:
+                    errorMessage = null;
+                    userData = JsonSerializer.Deserialize<Dictionary<string, string>>(await response.Content.ReadAsStringAsync());
+                    try
+                    {
+                        ValueTask success = MySession.SetAsync("user", userData);
+                        Navman.NavigateTo("/");
+                    }
+                    catch (Exception ex)
+                    {
+                        errorMessage_Session = "An error occurred: " + ex.Message;
+                    }
+                    break;
+
+                case System.Net.HttpStatusCode.Unauthorized:
+                    errorMessage = "Incorrect username or password";
                     userData = null;
                     break;
-            }
-        if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
-            {
-                errorMessage = "Incorrect username or password.";
-                userData = null;
-            }
-            else if ()
-            {
-                errorMessage = "An error occurred during login.";
-                userData = null;
+
+                case System.Net.HttpStatusCode.InternalServerError:
+                    errorMessage = "An error occurred during login";
+                    userData = null;
+                    break;
             }
         }
         catch (Exception ex)
