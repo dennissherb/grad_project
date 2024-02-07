@@ -84,9 +84,10 @@ namespace WebAPI.Controllers
             }
             else
             {
-                if(await AccountQuery.DeleteAccountAsAdminByUQ(user));
+                if(await AccountQuery.DeleteAccountAsAdminByUQ(user))
                     return Ok();
             }
+            return StatusCode(500, "An unknown error has occurred");
         }
     }
 }
