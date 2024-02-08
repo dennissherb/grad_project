@@ -10,16 +10,10 @@
 @inject ProtectedSessionStorage MySession
 @inject NavigationManager Navman
 
-
 @if (@loggedIn) 
 {
     <div id="ProtectedContent">
         <h3>Login</h3>
-        @if (@userData != null && @userData.ContainsKey("accounts_user_name"))
-        {
-            <p></p> 
-        }
-
         @if (errorMessage != null)
         {
             <p style="color: red;">@errorMessage, @errorMessage_Session</p>
@@ -40,7 +34,6 @@
         </form>
     </div>
 }
-
 
 @code {
     private string username;
@@ -66,9 +59,10 @@
             var loginData = new { accounts_email = username, accounts_password = password };
             string test = JsonSerializer.Serialize(loginData);
             var response = await httpClient.PostAsJsonAsync("http://localhost:5005/api/Account/login", loginData);
-            switch (response.StatusCode) 
+            if (response != null)
             {
-                case System.Net.HttpStatusCode.OK:
+                if (response.IsSuccessStatusCode)
+                {
                     errorMessage = null;
                     userData = JsonSerializer.Deserialize<Dictionary<string, string>>(await response.Content.ReadAsStringAsync());
                     try
@@ -80,17 +74,28 @@
                     {
                         errorMessage_Session = "An error occurred: " + ex.Message;
                     }
-                    break;
+                }
+                //switch case to deal with different status codes
+                //will not enter switch case if successful transaction
+                else
+                {
+                    switch (response.StatusCode)
+                    {
+                        case System.Net.HttpStatusCode.Unauthorized:
+                            errorMessage = "Incorrect username or password";
+                            userData = null;
+                            break;
 
-                case System.Net.HttpStatusCode.Unauthorized:
-                    errorMessage = "Incorrect username or password";
-                    userData = null;
-                    break;
-
-                case System.Net.HttpStatusCode.InternalServerError:
-                    errorMessage = "An error occurred during login";
-                    userData = null;
-                    break;
+                        default:
+                            errorMessage = "Unknown error has occurred";
+                            userData = null;
+                            break;
+                    }
+                }
+            }
+            else 
+            {
+                throw new Exception("Could not receive response from API");
             }
         }
         catch (Exception ex)

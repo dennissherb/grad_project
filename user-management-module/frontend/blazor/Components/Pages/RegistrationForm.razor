@@ -48,6 +48,7 @@ else
 {
     <p>You have successfully registered!</p>
     <p><button @onclick="NavigateToLogin">Login</button></p>
+    <p><button @onclick="()=>Navman.NavigateTo()">Login</button></p>
 }
 
 @code {
@@ -73,7 +74,6 @@ else
             dateOfBirth_s = dateOfBirth_d.ToString("yyyy-MM-dd");
             var registrationData = new { accounts_user_name = username, accounts_email = email, accounts_password = password, accounts_date_of_birth = dateOfBirth_s };
             var response = await httpClient.PostAsJsonAsync("http://localhost:5005/api/Account/register", registrationData);
-
             if (response.IsSuccessStatusCode)
             {
                 errorMessage = null;
@@ -81,7 +81,13 @@ else
             }
             else
             {
-                errorMessage = "An error occurred during registration.";
+                switch (response.StatusCode)
+                {
+                     default:
+                        errorMessage = "Unkown error has occurred";
+                        registered = false;
+                        break;
+                }
             }
         }
         catch (Exception ex)
