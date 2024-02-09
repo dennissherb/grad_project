@@ -16,29 +16,31 @@
         {
             <p style="color: red;">@errorMessage</p>
         }
-
         <form @onsubmit="HandleRegistration">
             <label>
                 Username:
-                <input type="text" @bind="username" />
+                <input type="text" @bind="username" style="@((string.IsNullOrEmpty(username) ? "border-color: red;" : ""))" required />
+                <span style="color: red;">@((string.IsNullOrEmpty(username) ? "*" : ""))</span>
             </label><br />
 
             <label>
                 Email:
-                <input type="email" @bind="email" />
+                <input type="email" @bind="email" style="@((string.IsNullOrEmpty(email) ? "border-color: red;" : ""))" required />
+                <span style="color: red;">@((string.IsNullOrEmpty(email) ? "*" : ""))</span>
             </label><br />
 
             <label>
                 Password:
-                <input type="password" @bind="password" />
+                <input type="password" @bind="password" style="@((string.IsNullOrEmpty(password) ? "border-color: red;" : ""))" required />
+                <span style="color: red;">@((string.IsNullOrEmpty(password) ? "*" : ""))</span>
             </label><br />
 
             <label>
                 Date of Birth:
-                <input type="date" @bind="dateOfBirth_d" />
+                <input type="date" @bind="dateOfBirth_d" style="@((dateOfBirth_d == null ? "border-color: red;" : ""))" required />
+                <span style="color: red;">@((dateOfBirth_d == null ? "*" : ""))</span>
             </label>
             <br />
-
 
             <button type="submit">Register</button>
         </form>
