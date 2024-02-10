@@ -50,7 +50,7 @@ else
 {
     <p>You have successfully registered!</p>
     <p><button @onclick="NavigateToLogin">Login</button></p>
-    <p><button @onclick="()=>Navman.NavigateTo()">Login</button></p>
+    <p><button @onclick="()=>Navman.NavigateTo(login_page_addr)">Login</button></p>
 }
 
 @code {
@@ -62,11 +62,13 @@ else
     private string errorMessage;
     private bool registered = false;
     protected bool loggedIn = false;
+    private string login_page_addr = "/login";
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        //Check if user is logged in
+        //is logged in
         if ((await MySession.GetAsync<Dictionary<string,string>>("user")).Value != null && ((await MySession.GetAsync<Dictionary<string,string>>("user")).Value.ContainsKey("accounts_id"))) 
+            //if logged in go to app
             Navman.NavigateTo("/");
     }
     private async Task HandleRegistration()
@@ -85,6 +87,7 @@ else
             {
                 switch (response.StatusCode)
                 {
+                    //TODO: add more cases to deal with different stauts codes
                      default:
                         errorMessage = "Unkown error has occurred";
                         registered = false;
