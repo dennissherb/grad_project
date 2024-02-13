@@ -11,8 +11,9 @@
 @inject NavigationManager Navman
 
 <h3>User Edit</h3>
+<p foreground-color="red">@errorMessage</p>
 
-@if (user == null)
+ @if (user == null)
 {
     <p>Loading user data...</p>
 }
@@ -20,74 +21,58 @@ else
 {
     <div>
     @foreach (var kvp in user) {
-            @if (kvp.Key != "accounts_perm_group")
+            @switch (kvp.Key.ToString())
             {
-                <label for="username">@kvp.Key:</label>
-                //<input id="username" @bind="kvp.Value"/>
-            }
-        }
-    </div>
+                case "accounts_perm_group":
+                    break;
 
-        <button @onclick="SaveUser">Save Changes</button>
+                case "accounts_id":
+                    break;
+
+                case "accounts_password":
+                    <label>@kvp.Key:</label>
+                    <input type="password"/>
+                    <p></p>
+                    break;
+
+                case "accounts_date_of_birth":
+                    <label>@kvp.Key:</label>
+                    <input type="date"/>
+                    <p></p>
+                    break;
+
+                default:
+					<label>@kvp.Key:</label>
+                    <input type="text"/>
+                    <p></p>
+                    break;
+
+            }
+	}
+    </div>
 }
 
 @code {
-    private Dictionary<string,string> user;
+    public Dictionary<string,string> user;
+    string errorMessage;
 
     [Parameter]
     public string UserId { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        await LoadUserData();
-    }
-
-    private async Task LoadUserData()
-    {
-        if (!string.IsNullOrEmpty(UserId))
+        try
         {
-            var response = await httpClient.GetAsync($"api/users/{UserId}");
-            if (response.IsSuccessStatusCode)
-            {
-                var content = await response.Content.ReadAsStringAsync();
-                user = JsonSerializer.Deserialize<User>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-            }
-            else
-            {
-                // Handle error, e.g., redirect to an error page
-                Navman.NavigateTo("/error");
-            }
+			user = await httpClient.GetFromJsonAsync<Dictionary<string, string>>($"http://localhost:5005/api/Account/GetByID/{UserId}");
         }
-    }
-
-    private async Task SaveUser()
-    {
-        // Perform validation and save changes to the user data
-        // You may want to send a PUT request to update the user on the server
-        var serializedUser = JsonSerializer.Serialize(user);
-        var content = new StringContent(serializedUser, Encoding.UTF8, "application/json");
-
-        var response = await httpClient.PutAsync($"api/users/{user.UserId}", content);
-
-        if (response.IsSuccessStatusCode)
+		catch (Exception ex)
         {
-            // User saved successfully, navigate to a confirmation page or back to the user list
-            Navman.NavigateTo("/manage/user");
+            errorMessage = "Exception was caught:" + ex.Message;
         }
-        else
-        {
-            // Handle error, e.g., display an error message
-            // You might want to implement more robust error handling
-            var errorMessage = await response.Content.ReadAsStringAsync();
-            // Display or log the error message
-        }
+
+        StateHasChanged();
     }
 
-    // Assuming a User class structure, adjust it based on your actual user model
-    public class User
-    {
-        public string UserId { get; set; }
-        public string Username { get; set; }
-        // Add other user properties as needed
-    }
+      
+
 }

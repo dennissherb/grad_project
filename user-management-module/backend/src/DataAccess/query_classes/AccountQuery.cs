@@ -126,6 +126,24 @@ namespace Datalayer.Queries
                 return null;
             }
         }
+        public static async Task<Dictionary<string, string>> ReadAccountById(int id)
+        {
+            try
+            {
+
+                string query = $@"SELECT * FROM my_project.accounts WHERE accounts_id = '{id}'";
+
+                List<Dictionary<string, string>> result = await DBConnection.ExecuteQuery(query);
+
+                return result != null && result.Count > 0 ? result[0] : null;
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions or log errors appropriately
+                Console.WriteLine($"Error reading account by id: {ex.Message}");
+                return null;
+            }
+        }
         public static async Task<Dictionary<string, string>> ReadAccountByUQ(Dictionary<string,string> user)
         {
             try

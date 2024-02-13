@@ -27,6 +27,18 @@ namespace WebAPI.Controllers
             return Ok(account);
         }
 
+        [HttpGet("GetByID/{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<Dictionary<string, string>>> GetAsync(int id)
+        {
+            if (id <= 0) { return BadRequest(); }
+            Dictionary<string, string> account = await AccountQuery.ReadAccountById(id);
+            if (account == null || !account.ContainsKey("accounts_id")) { return NotFound(); }
+            return Ok(account);
+        }
+
         [HttpGet("GetEntireTable")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
