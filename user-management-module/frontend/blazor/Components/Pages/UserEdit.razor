@@ -23,7 +23,7 @@ else
     @foreach (var kvp in user) {
             @switch (kvp.Key.ToString())
             {
-                case "accounts_perm_group":
+                case "accounts_permgroup":
                     break;
 
                 case "accounts_id":
@@ -67,7 +67,7 @@ else
         }
 		catch (Exception ex)
         {
-            errorMessage = "Exception was caught:" + ex.Message;
+            errorMessage = "Exception was caught: " + ex.Message;
         }
 
         StateHasChanged();
