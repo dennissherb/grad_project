@@ -23,7 +23,7 @@ else
     @foreach (var kvp in user) {
             @switch (kvp.Key.ToString())
             {
-                case "accounts_permgroup":
+                case "accounts_perm_group":
                     break;
 
                 case "accounts_id":
@@ -31,30 +31,34 @@ else
 
                 case "accounts_password":
                     <label>@kvp.Key:</label>
-                    <input type="password"/>
+                    <input type="password" @bind = "newUser[kvp.Key]">
                     <p></p>
                     break;
 
                 case "accounts_date_of_birth":
                     <label>@kvp.Key:</label>
-                    <input type="date"/>
+                    <input type="date" @bind = "date"/>
                     <p></p>
                     break;
 
                 default:
 					<label>@kvp.Key:</label>
-                    <input type="text"/>
+                    <input type="text" @bind = "newUser[kvp.Key]">
                     <p></p>
                     break;
 
             }
 	}
+    <button @onclick="UpdateUser">Update</button>
     </div>
 }
 
 @code {
     public Dictionary<string,string> user;
     string errorMessage;
+    public Dictionary<string, string> newUser;
+    public DateTime date;
+
 
     [Parameter]
     public string UserId { get; set; }
@@ -63,14 +67,20 @@ else
     {
         try
         {
-			user = await httpClient.GetFromJsonAsync<Dictionary<string, string>>($"http://localhost:5005/api/Account/GetByID/{UserId}");
+            user = await httpClient.GetFromJsonAsync<Dictionary<string, string>>($"http://localhost:5005/api/Account/GetByID/{UserId}");
         }
-		catch (Exception ex)
+        catch (Exception ex)
         {
             errorMessage = "Exception was caught: " + ex.Message;
         }
 
         StateHasChanged();
+    }
+
+    private async void UpdateUser()
+    {
+        newUser["accounts_date_of_birth"] = date.ToString("yyyy-MM-dd");
+        newUser = await httpClient.GetFromJsonAsync<>
     }
 
       
