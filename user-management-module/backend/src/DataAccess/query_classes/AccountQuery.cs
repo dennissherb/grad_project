@@ -126,6 +126,24 @@ namespace Datalayer.Queries
                 return null;
             }
         }
+        public static async Task<Dictionary<string, string>> ReadAccountById(Dictionary<string,string> user)
+        {
+            try
+            {
+
+                string query = $@"SELECT * FROM my_project.accounts WHERE accounts_id = '{user["accounts_id"]}'";
+
+                List<Dictionary<string, string>> result = await DBConnection.ExecuteQuery(query);
+
+                return result != null && result.Count > 0 ? result[0] : null;
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions or log errors appropriately
+                Console.WriteLine($"Error reading account by id: {ex.Message}");
+                return null;
+            }
+        }
         public static async Task<Dictionary<string, string>> ReadAccountById(int id)
         {
             try
@@ -205,7 +223,7 @@ namespace Datalayer.Queries
 
 
         //Only need to provide email and password for oldUser for authorization
-        public static async Task<bool> UpdateAccount(Dictionary<string,string> oldUser, Dictionary<string,string> newUser)
+        public static async Task<Dictionary<string,string>> UpdateAccount(Dictionary<string,string> oldUser, Dictionary<string,string> newUser)
         {
             oldUser = await AccountQuery.ReadAccountByUQ(oldUser);
             Dictionary<string, string> mergedDictionary = oldUser
@@ -220,16 +238,47 @@ namespace Datalayer.Queries
                                     accounts_user_name = {mergedDictionary["accounts_user_name"]},
                                     accounts_date_of_birth = {mergedDictionary["accounts_date_of_birth"]},
                                     accounts_password = {mergedDictionary["accounts_password"]}
-                                WHERE accounts_email = {mergedDictionary["accounts_email"]} OR accounts_user_name = {mergedDictionary["accounts_user_name"]}";
+                                WHERE accounts_email = {mergedDictionary["accounts_email"]} OR accounts_user_name = {mergedDictionary["accounts_user_name"]} OR accounts_id = {mergedDictionary["accounts_id"]}";
                 int result = await DBConnection.ExecuteNonQuery(query);
-
-                return result > 0;
+                if (result > 0)
+                    return mergedDictionary;
+                else
+                    return null;
             }
             catch (Exception ex)
             {
                 // Handle exceptions or log errors appropriately
                 Console.WriteLine($"Error updating account: {ex.Message}");
-                return false;
+                return null;
+            }
+        }
+        public static async Task<Dictionary<string,string>> UpdateAccount(Dictionary<string,string> newUser)
+        {
+            Dictionary<string, string> oldUser = await AccountQuery.ReadAccountById(newUser);
+            Dictionary<string, string> mergedDictionary = oldUser
+            .Concat(newUser)
+            .GroupBy(kv => kv.Key)
+            .ToDictionary(g => g.Key, g => g.Last().Value);
+            try
+            {
+
+                string query = $@"UPDATE my_project.accounts
+                                SET accounts_email = {mergedDictionary["accounts_email"]},
+                                    accounts_user_name = {mergedDictionary["accounts_user_name"]},
+                                    accounts_date_of_birth = {mergedDictionary["accounts_date_of_birth"]},
+                                    accounts_password = {mergedDictionary["accounts_password"]}
+                                WHERE accounts_id = {mergedDictionary["accounts_id"]}";
+                int result = await DBConnection.ExecuteNonQuery(query);
+                if (result > 0)
+                    return mergedDictionary;
+                else
+                    return null;
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions or log errors appropriately
+                Console.WriteLine($"Error updating account: {ex.Message}");
+                return null;
             }
         }
 

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using Datalayer.Queries;
+using Org.BouncyCastle.Asn1.Misc;
 
 namespace WebAPI.Controllers
 {
@@ -100,6 +101,30 @@ namespace WebAPI.Controllers
                     return Ok();
             }
             return StatusCode(500, "An unknown error has occurred");
+        }
+
+        [HttpPost("update_user")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+
+        //oldUser must contain at least one UQ to determine which entry to edit
+        public async Task<ActionResult> TryUpdateUser([FromBody] Dictionary<string, string> user)
+        {
+
+            if (user == null)
+                return BadRequest();
+            if (AccountQuery.ReadAccountById(user) == null)
+                return NotFound();
+            try
+            {
+                user = await AccountQuery.UpdateAccount(user);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error has occurred: {ex.Message}");
+            }
+            return StatusCode(500, $"An unknown error");
         }
     }
 }

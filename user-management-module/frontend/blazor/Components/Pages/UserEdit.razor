@@ -65,9 +65,25 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        newUser = new();
         try
         {
             user = await httpClient.GetFromJsonAsync<Dictionary<string, string>>($"http://localhost:5005/api/Account/GetByID/{UserId}");
+            foreach (var kvp in user)
+            {
+                switch (kvp.Key)
+                {
+                    case "accounts_id":
+                        newUser.Add(kvp.Key, kvp.Value);
+                        break;
+                    case "accounts_perm_group":
+                        newUser.Add(kvp.Key, kvp.Value);
+                        break;
+                    default:
+                        newUser.Add(kvp.Key, "");
+                        break;
+                }
+            }
         }
         catch (Exception ex)
         {
@@ -79,8 +95,30 @@ else
 
     private async void UpdateUser()
     {
+        HttpResponseMessage response;
         newUser["accounts_date_of_birth"] = date.ToString("yyyy-MM-dd");
-        newUser = await httpClient.GetFromJsonAsync<>
+        try
+        {
+            response = await httpClient.PostAsJsonAsync($"http://localhost:5005/api/Account/update_user", newUser);
+            if (response.IsSuccessStatusCode) {
+                errorMessage = null;
+            }
+            else
+            {
+                switch (response.StatusCode)
+                {
+                    //TODO: add more cases to deal with different stauts codes
+                     default:
+                        errorMessage = "Unkown error has occurred";
+                        break;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message; 
+        }
+
     }
 
       
