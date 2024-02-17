@@ -109,7 +109,7 @@ namespace WebAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
 
         //oldUser must contain at least one UQ to determine which entry to edit
-        public async Task<ActionResult> TryUpdateUser([FromBody] Dictionary<string, string> user)
+        public async Task<ActionResult<Dictionary<string,string>>> TryUpdateUser([FromBody] Dictionary<string, string> user)
         {
 
             if (user == null)
@@ -124,7 +124,7 @@ namespace WebAPI.Controllers
             {
                 return StatusCode(500, $"An error has occurred: {ex.Message}");
             }
-            return StatusCode(500, $"An unknown error");
+            return Ok(user);
         }
     }
 }

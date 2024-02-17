@@ -9,15 +9,19 @@
 @inject Dictionary<string, string> userData
 @inject ProtectedSessionStorage MySession
 @inject NavigationManager Navman
+@inject IJSRuntime JSRuntime
 
 <h3>User Edit</h3>
 <p foreground-color="red">@errorMessage</p>
 
- @if (user == null)
+@if (user == null) 
 {
-    <p>Loading user data...</p>
+    @if (errorMessage == "" || errorMessage == null) 
+    {
+		<p>Loading user data...</p>
+    }
 }
-else
+else 
 {
     <div>
     @foreach (var kvp in user) {
@@ -37,7 +41,7 @@ else
 
                 case "accounts_date_of_birth":
                     <label>@kvp.Key:</label>
-                    <input type="date" @bind = "date"/>
+                    <input type="date" @bind="date" />
                     <p></p>
                     break;
 
@@ -49,15 +53,17 @@ else
 
             }
 	}
-    <button @onclick="UpdateUser">Update</button>
+    <button @onclick="UpdateUserAsync">Update</button>
     </div>
 }
 
 @code {
     public Dictionary<string,string> user;
-    string errorMessage;
     public Dictionary<string, string> newUser;
-    public DateTime date;
+    public Dictionary<string, string> loggedUser;
+
+    public string errorMessage;
+    public DateTime? date;
 
 
     [Parameter]
@@ -65,25 +71,32 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        date = null;
         newUser = new();
         try
         {
-            user = await httpClient.GetFromJsonAsync<Dictionary<string, string>>($"http://localhost:5005/api/Account/GetByID/{UserId}");
-            foreach (var kvp in user)
+            loggedUser = (await MySession.GetAsync<Dictionary<string, string>>("user")).Value;
+            if (loggedUser != null && (loggedUser["accounts_id"] == UserId || loggedUser["accounts_perm_group"] == "admin"))
             {
-                switch (kvp.Key)
-                {
-                    case "accounts_id":
-                        newUser.Add(kvp.Key, kvp.Value);
-                        break;
-                    case "accounts_perm_group":
-                        newUser.Add(kvp.Key, kvp.Value);
-                        break;
-                    default:
-                        newUser.Add(kvp.Key, "");
-                        break;
-                }
+				user = await httpClient.GetFromJsonAsync<Dictionary<string, string>>($"http://localhost:5005/api/Account/GetByID/{UserId}");
+				foreach (var kvp in user)
+				{
+					switch (kvp.Key)
+					{
+						case "accounts_id":
+							newUser.Add(kvp.Key, kvp.Value);
+							break;
+						case "accounts_perm_group":
+							newUser.Add(kvp.Key, kvp.Value);
+							break;
+						default:
+							newUser.Add(kvp.Key, "");
+							break;
+					}
+				}
             }
+            else 
+                errorMessage = "No permission";
         }
         catch (Exception ex)
         {
@@ -93,23 +106,29 @@ else
         StateHasChanged();
     }
 
-    private async void UpdateUser()
+    private async void UpdateUserAsync()
     {
         HttpResponseMessage response;
-        newUser["accounts_date_of_birth"] = date.ToString("yyyy-MM-dd");
+        if (date.HasValue)
+            newUser["accounts_date_of_birth"] = date.Value.ToString("yyyy-MM-dd");
         try
         {
             response = await httpClient.PostAsJsonAsync($"http://localhost:5005/api/Account/update_user", newUser);
             if (response.IsSuccessStatusCode) {
                 errorMessage = null;
+                user = JsonSerializer.Deserialize<Dictionary<string,string>>(await (response.Content.ReadAsStringAsync()));
+                await MySession.SetAsync("user", user);
+                ClearFieldsAsync();
+                await JSRuntime.InvokeVoidAsync("alert", "Edit Successful");
+
             }
             else
             {
                 switch (response.StatusCode)
                 {
                     //TODO: add more cases to deal with different stauts codes
-                     default:
-                        errorMessage = "Unkown error has occurred";
+                    default:
+                        errorMessage = "error has occurred " + response.ToString();
                         break;
                 }
             }
@@ -119,6 +138,15 @@ else
             errorMessage = ex.Message; 
         }
 
+    }
+
+    private async void ClearFieldsAsync()
+    {
+        // Clears all the fields using the bound value
+        foreach (var kvp in newUser)
+        {
+            newUser[kvp.Key] = "";
+        }
     }
 
       

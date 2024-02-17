@@ -255,19 +255,28 @@ namespace Datalayer.Queries
         public static async Task<Dictionary<string,string>> UpdateAccount(Dictionary<string,string> newUser)
         {
             Dictionary<string, string> oldUser = await AccountQuery.ReadAccountById(newUser);
-            Dictionary<string, string> mergedDictionary = oldUser
-            .Concat(newUser)
-            .GroupBy(kv => kv.Key)
-            .ToDictionary(g => g.Key, g => g.Last().Value);
+            //Dictionary<string, string> mergedDictionary = oldUser
+            //.Concat(newUser)
+            //.GroupBy(kv => kv.Key)
+            //.ToDictionary(g => g.Key, g => g.Last().Value);
+
+            Dictionary<string, string> mergedDictionary = new(oldUser);
+            foreach (KeyValuePair<string,string> pair in newUser)
+            {
+                if (pair.Value != "")
+                    mergedDictionary[pair.Key] = pair.Value;
+            }
+
+
             try
             {
 
                 string query = $@"UPDATE my_project.accounts
-                                SET accounts_email = {mergedDictionary["accounts_email"]},
-                                    accounts_user_name = {mergedDictionary["accounts_user_name"]},
-                                    accounts_date_of_birth = {mergedDictionary["accounts_date_of_birth"]},
-                                    accounts_password = {mergedDictionary["accounts_password"]}
-                                WHERE accounts_id = {mergedDictionary["accounts_id"]}";
+                                SET accounts_email = '{mergedDictionary["accounts_email"]}',
+                                    accounts_user_name = '{mergedDictionary["accounts_user_name"]}',
+                                    accounts_date_of_birth = '{mergedDictionary["accounts_date_of_birth"]}',
+                                    accounts_password = '{mergedDictionary["accounts_password"]}'
+                                WHERE accounts_id = '{mergedDictionary["accounts_id"]}'";
                 int result = await DBConnection.ExecuteNonQuery(query);
                 if (result > 0)
                     return mergedDictionary;
