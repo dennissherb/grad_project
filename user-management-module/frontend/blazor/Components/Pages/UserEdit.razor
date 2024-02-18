@@ -16,10 +16,7 @@
 
 @if (user == null) 
 {
-    @if (errorMessage == "" || errorMessage == null) 
-    {
-		<p>Loading user data...</p>
-    }
+    <p>Loading user data...</p>
 }
 else 
 {
@@ -73,10 +70,13 @@ else
     {
         date = null;
         newUser = new();
+        var session = await MySession.GetAsync<Dictionary<string, string>>("user");
+        if (session.Value != null)
+            loggedUser = session.Value;
+            StateHasChanged();
         try
         {
-            loggedUser = (await MySession.GetAsync<Dictionary<string, string>>("user")).Value;
-            if (loggedUser != null && (loggedUser["accounts_id"] == UserId || loggedUser["accounts_perm_group"] == "admin"))
+            if ((loggedUser != null && (loggedUser["accounts_id"] == UserId) || loggedUser["accounts_perm_group"] == "admin"))
             {
 				user = await httpClient.GetFromJsonAsync<Dictionary<string, string>>($"http://localhost:5005/api/Account/GetByID/{UserId}");
 				foreach (var kvp in user)
