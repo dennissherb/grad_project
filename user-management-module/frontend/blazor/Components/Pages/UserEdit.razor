@@ -1,6 +1,7 @@
 ﻿@page "/manage/user/edit/{UserId}"
-@rendermode InteractiveServer
-@attribute [StreamRendering(true)]
+@* @rendermode InteractiveServer *@
+@* @attribute [StreamRendering(true)] *@
+@rendermode @(new InteractiveServerRenderMode(prerender: true))
 
 @using System.Text.Json
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
@@ -55,7 +56,7 @@ else
 }
 
 @code {
-    public Dictionary<string,string> user;
+    public Dictionary<string, string> user { get; set; }
     public Dictionary<string, string> newUser;
     public Dictionary<string, string> loggedUser;
 
@@ -65,45 +66,89 @@ else
 
     [Parameter]
     public string UserId { get; set; }
-
-    protected override async Task OnInitializedAsync()
-    {
-        date = null;
-        newUser = new();
-        var session = await MySession.GetAsync<Dictionary<string, string>>("user");
-        if (session.Value != null)
-            loggedUser = session.Value;
-            StateHasChanged();
+    protected async Task<Dictionary<string, string>> SetLoggedUserAsync()
+    { 
+        Dictionary<string, string> LoggedUser = null;
         try
         {
+            var session = await MySession.GetAsync<Dictionary<string, string>>("user");
+            if (session.Value != null)
+                LoggedUser = session.Value;
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "Exception was caught: " + ex.Message;
+        }
+        return LoggedUser;
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        try
+        {
+            loggedUser = await SetLoggedUserAsync();
             if ((loggedUser != null && (loggedUser["accounts_id"] == UserId) || loggedUser["accounts_perm_group"] == "admin"))
             {
-				user = await httpClient.GetFromJsonAsync<Dictionary<string, string>>($"http://localhost:5005/api/Account/GetByID/{UserId}");
-				foreach (var kvp in user)
-				{
-					switch (kvp.Key)
-					{
-						case "accounts_id":
-							newUser.Add(kvp.Key, kvp.Value);
-							break;
-						case "accounts_perm_group":
-							newUser.Add(kvp.Key, kvp.Value);
-							break;
-						default:
-							newUser.Add(kvp.Key, "");
-							break;
-					}
-				}
+                user = await httpClient.GetFromJsonAsync<Dictionary<string, string>>($"http://localhost:5005/api/Account/GetByID/{UserId}");
+                foreach (var kvp in user)
+                {
+                    switch (kvp.Key)
+                    {
+                        case "accounts_id":
+                            newUser.Add(kvp.Key, kvp.Value);
+                            break;
+                        case "accounts_perm_group":
+                            newUser.Add(kvp.Key, kvp.Value);
+                            break;
+                        default:
+                            newUser.Add(kvp.Key, "");
+                            break;
+                    }
+                }
             }
-            else 
+            else
                 errorMessage = "No permission";
         }
         catch (Exception ex)
         {
             errorMessage = "Exception was caught: " + ex.Message;
         }
+    }
 
-        StateHasChanged();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        // date = null;
+        // newUser = new();
+        // StateHasChanged();
+        // try
+        // {
+        //     loggedUser = await SetLoggedUserAsync();
+        //     if ((loggedUser != null && (loggedUser["accounts_id"] == UserId) || loggedUser["accounts_perm_group"] == "admin"))
+        //     {
+        //         user = await httpClient.GetFromJsonAsync<Dictionary<string, string>>($"http://localhost:5005/api/Account/GetByID/{UserId}");
+        //         foreach (var kvp in user)
+        //         {
+        //             switch (kvp.Key)
+        //             {
+        //                 case "accounts_id":
+        //                     newUser.Add(kvp.Key, kvp.Value);
+        //                     break;
+        //                 case "accounts_perm_group":
+        //                     newUser.Add(kvp.Key, kvp.Value);
+        //                     break;
+        //                 default:
+        //                     newUser.Add(kvp.Key, "");
+        //                     break;
+        //             }
+        //         }
+        //     }
+        //     else
+        //         errorMessage = "No permission";
+        // }
+        // catch (Exception ex)
+        // {
+        //     errorMessage = "Exception was caught: " + ex.Message;
+        // }
     }
 
     private async void UpdateUserAsync()
