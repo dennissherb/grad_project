@@ -1,8 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Datalayer.Queries;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
-using Datalayer.Queries;
-using Org.BouncyCastle.Asn1.Misc;
 
 namespace WebAPI.Controllers
 {
@@ -114,7 +111,7 @@ namespace WebAPI.Controllers
 
             if (user == null)
                 return BadRequest();
-            if (AccountQuery.ReadAccountById(user) == null)
+            if (await (AccountQuery.ReadAccountByIdAsync(user)) == null)
                 return NotFound();
             try
             {

@@ -1,7 +1,6 @@
 ﻿@page "/manage/user/edit/{UserId}"
-@* @rendermode InteractiveServer *@
-@* @attribute [StreamRendering(true)] *@
-@rendermode @(new InteractiveServerRenderMode(prerender: true))
+@*@attribute [StreamRendering(true)]*@
+@rendermode InteractiveServer
 
 @using System.Text.Json
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
@@ -13,54 +12,64 @@
 @inject IJSRuntime JSRuntime
 
 <h3>User Edit</h3>
-<p foreground-color="red">@errorMessage</p>
-
-@if (user == null) 
+@if (errorMessages != null && errorMessages.LastOrDefault() != null)
 {
-    <p>Loading user data...</p>
+    <p>@errorMessages.LastOrDefault()</p>
 }
-else 
-{
-    <div>
-    @foreach (var kvp in user) {
-            @switch (kvp.Key.ToString())
-            {
-                case "accounts_perm_group":
-                    break;
 
-                case "accounts_id":
-                    break;
-
-                case "accounts_password":
-                    <label>@kvp.Key:</label>
-                    <input type="password" @bind = "newUser[kvp.Key]">
-                    <p></p>
-                    break;
-
-                case "accounts_date_of_birth":
-                    <label>@kvp.Key:</label>
-                    <input type="date" @bind="date" />
-                    <p></p>
-                    break;
-
-                default:
-					<label>@kvp.Key:</label>
-                    <input type="text" @bind = "newUser[kvp.Key]">
-                    <p></p>
-                    break;
-
-            }
+	@if (confirmSuccess == false)
+	{
+		<Label>Confirm password:</Label>
+            <input type="password" @bind="confirmPass" class="@GetPasswordInputClass()">
+		<button @onclick="InitializeEditorAsync">Confirm</button>
 	}
-    <button @onclick="UpdateUserAsync">Update</button>
-    </div>
-}
+	else if (user == null)
+    {
+        <p>Loading...</p>
+	}
+    else
+	{
+		@foreach (var kvp in user) {
+				@switch (kvp.Key.ToString())
+				{
+					case "accounts_perm_group":
+						break;
+
+					case "accounts_id":
+						break;
+
+					case "accounts_password":
+						<label>@kvp.Key:</label>
+						<input type="password" @bind = "newUser[kvp.Key]">
+						<br />
+						break;
+
+					case "accounts_date_of_birth":
+						<label>@kvp.Key:</label>
+						<input type="date" @bind="date" />
+						<br />
+						break;
+
+					default:
+						<label>@kvp.Key:</label>
+						<input type="text" @bind = "newUser[kvp.Key]">
+						<br />
+						break;
+
+				}
+		<br />
+		}
+		<button @onclick="UpdateUserAsync"> Update</button>
+	}
 
 @code {
     public Dictionary<string, string> user { get; set; }
     public Dictionary<string, string> newUser;
     public Dictionary<string, string> loggedUser;
+    public bool confirmSuccess;
+    public string confirmPass;
 
-    public string errorMessage;
+    public List<string> errorMessages;
     public DateTime? date;
 
 
@@ -77,78 +86,68 @@ else
         }
         catch (Exception ex)
         {
-            errorMessage = "Exception was caught: " + ex.Message;
+            errorMessages.Add("Exception was caught: " + ex.Message);
+            StateHasChanged();
         }
         return LoggedUser;
     }
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override async  Task OnInitializedAsync()
     {
+        errorMessages = new();
+    }
+
+    public async Task InitializeEditorAsync()
+    {
+        date = null;
+        newUser = new();
         try
         {
             loggedUser = await SetLoggedUserAsync();
-            if ((loggedUser != null && (loggedUser["accounts_id"] == UserId) || loggedUser["accounts_perm_group"] == "admin"))
-            {
-                user = await httpClient.GetFromJsonAsync<Dictionary<string, string>>($"http://localhost:5005/api/Account/GetByID/{UserId}");
-                foreach (var kvp in user)
+            if (loggedUser != null && confirmPass == loggedUser["accounts_password"]) {
+                confirmSuccess = true;
+                ClearErrorAsync();
+                if ((loggedUser["accounts_id"] == UserId || loggedUser["accounts_perm_group"] == "admin"))
                 {
-                    switch (kvp.Key)
+                    user = await httpClient.GetFromJsonAsync<Dictionary<string, string>>($"http://localhost:5005/api/Account/GetByID/{UserId}");
+                    foreach (var kvp in user)
                     {
-                        case "accounts_id":
-                            newUser.Add(kvp.Key, kvp.Value);
-                            break;
-                        case "accounts_perm_group":
-                            newUser.Add(kvp.Key, kvp.Value);
-                            break;
-                        default:
-                            newUser.Add(kvp.Key, "");
-                            break;
+                        switch (kvp.Key)
+                        {
+                            case "accounts_id":
+                                newUser.Add(kvp.Key, kvp.Value);
+                                break;
+                            case "accounts_perm_group":
+                                newUser.Add(kvp.Key, kvp.Value);
+                                break;
+                            default:
+                                newUser.Add(kvp.Key, "");
+                                break;
+                        }
                     }
+                }
+                else
+                {
+                    errorMessages.Add("No permission");
                 }
             }
             else
-                errorMessage = "No permission";
+            {
+                bool confirmSuccess = false;
+                errorMessages.Add("Incorrect password");
+            }
+            StateHasChanged();
         }
+
         catch (Exception ex)
         {
-            errorMessage = "Exception was caught: " + ex.Message;
+            errorMessages.Add("Exception was caught: " + ex.Message);
         }
+        StateHasChanged();
     }
 
-
-    protected override async Task OnParametersSetAsync()
+    private string GetPasswordInputClass()
     {
-        // date = null;
-        // newUser = new();
-        // StateHasChanged();
-        // try
-        // {
-        //     loggedUser = await SetLoggedUserAsync();
-        //     if ((loggedUser != null && (loggedUser["accounts_id"] == UserId) || loggedUser["accounts_perm_group"] == "admin"))
-        //     {
-        //         user = await httpClient.GetFromJsonAsync<Dictionary<string, string>>($"http://localhost:5005/api/Account/GetByID/{UserId}");
-        //         foreach (var kvp in user)
-        //         {
-        //             switch (kvp.Key)
-        //             {
-        //                 case "accounts_id":
-        //                     newUser.Add(kvp.Key, kvp.Value);
-        //                     break;
-        //                 case "accounts_perm_group":
-        //                     newUser.Add(kvp.Key, kvp.Value);
-        //                     break;
-        //                 default:
-        //                     newUser.Add(kvp.Key, "");
-        //                     break;
-        //             }
-        //         }
-        //     }
-        //     else
-        //         errorMessage = "No permission";
-        // }
-        // catch (Exception ex)
-        // {
-        //     errorMessage = "Exception was caught: " + ex.Message;
-        // }
+        return confirmSuccess ? string.Empty : "invalid";
     }
 
     private async void UpdateUserAsync()
@@ -160,7 +159,7 @@ else
         {
             response = await httpClient.PostAsJsonAsync($"http://localhost:5005/api/Account/update_user", newUser);
             if (response.IsSuccessStatusCode) {
-                errorMessage = null;
+                ClearErrorAsync();
                 user = JsonSerializer.Deserialize<Dictionary<string,string>>(await (response.Content.ReadAsStringAsync()));
                 await MySession.SetAsync("user", user);
                 ClearFieldsAsync();
@@ -173,14 +172,14 @@ else
                 {
                     //TODO: add more cases to deal with different stauts codes
                     default:
-                        errorMessage = "error has occurred " + response.ToString();
+						errorMessages.Add($" An error has occurred: {response.StatusCode} {response.ReasonPhrase}");
                         break;
                 }
             }
         }
         catch (Exception ex)
         {
-            errorMessage = ex.Message; 
+            errorMessages.Add("Exception was caught" + ex.Message); 
         }
 
     }
@@ -190,7 +189,16 @@ else
         // Clears all the fields using the bound value
         foreach (var kvp in newUser)
         {
-            newUser[kvp.Key] = "";
+            if (kvp.Key != "accounts_id")
+                newUser[kvp.Key] = string.Empty;
+        }
+    }
+
+    private async void ClearErrorAsync()
+    {
+        if (errorMessages != null)
+        {
+			errorMessages.Add("");
         }
     }
 

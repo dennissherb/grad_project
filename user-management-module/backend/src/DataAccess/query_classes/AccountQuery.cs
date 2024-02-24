@@ -126,10 +126,15 @@ namespace Datalayer.Queries
                 return null;
             }
         }
-        public static async Task<Dictionary<string, string>> ReadAccountById(Dictionary<string,string> user)
+        public static async Task<Dictionary<string, string>> ReadAccountByIdAsync(Dictionary<string,string> user)
         {
             try
             {
+                string id = string.Empty;
+                user.TryGetValue("accounts_id", out id);
+
+                if (id == null || id == string.Empty)
+                    return null;
 
                 string query = $@"SELECT * FROM my_project.accounts WHERE accounts_id = '{user["accounts_id"]}'";
 
@@ -254,7 +259,7 @@ namespace Datalayer.Queries
         }
         public static async Task<Dictionary<string,string>> UpdateAccount(Dictionary<string,string> newUser)
         {
-            Dictionary<string, string> oldUser = await AccountQuery.ReadAccountById(newUser);
+            Dictionary<string, string> oldUser = await AccountQuery.ReadAccountByIdAsync(newUser);
             //Dictionary<string, string> mergedDictionary = oldUser
             //.Concat(newUser)
             //.GroupBy(kv => kv.Key)

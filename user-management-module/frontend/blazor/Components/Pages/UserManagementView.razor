@@ -13,7 +13,7 @@
 
 @if (accountsTable != null && accountsTable.Any())
 {
-    <p color="red">@errMessage</p>
+    <p color="red">@errorMessages.LastOrDefault()</p>
     <table class="table">
         <thead>
             <tr>
@@ -49,31 +49,38 @@
 }
 else
 {
-    <p>No data to display</p>
+    <p>Loading...</p>
 }
 
 
 @code {
     List<Dictionary<string, string>> accountsTable;
-    string errMessage;
+    List<string> errorMessages;
+    Dictionary<string,string> loggedUser;
     const string edit_page_addr = "/management/user/edit/";
     protected override async Task OnInitializedAsync()
     {
+        loggedUser = (await MySession.GetAsync<Dictionary<string, string>>("user")).Value;
+        if (loggedUser == null || loggedUser["accounts_perm_group"] != "admin")
+            Navman.NavigateTo("/login");
+
+        errorMessages = new();
         accountsTable = await httpClient.GetFromJsonAsync<List<Dictionary<string, string>>>("http://localhost:5005/api/Account/GetEntireTable");
         StateHasChanged();
     }
 
     private async Task DeleteElementAsync(Dictionary<string,string> user)
     {
+
         var response = await httpClient.PostAsJsonAsync("http://localhost:5005/api/Account/delete_as_admin", user);
         StateHasChanged();
         if (!response.IsSuccessStatusCode)
         {
-            errMessage = $"{response.StatusCode}";
+			errorMessages.Add($" An error has occurred: {response.StatusCode} {response.ReasonPhrase}");
         }
         else 
         {
-            errMessage = "Deletion successful";
+            errorMessages.Add("Deletion successful");
             await OnInitializedAsync();
         };
     }
