@@ -39,19 +39,19 @@
 						break;
 
 					case "accounts_password":
-						<label>@kvp.Key:</label>
+						<label>@kvp.Key.Remove(0,9):</label>
 						<input type="password" @bind = "newUser[kvp.Key]">
 						<br />
 						break;
 
 					case "accounts_date_of_birth":
-						<label>@kvp.Key:</label>
+						<label>@kvp.Key.Remove(0,9):</label>
 						<input type="date" @bind="date" />
 						<br />
 						break;
 
 					default:
-						<label>@kvp.Key:</label>
+						<label>@kvp.Key.Remove(0,9):</label>
 						<input type="text" @bind = "newUser[kvp.Key]">
 						<br />
 						break;
@@ -161,7 +161,8 @@
             if (response.IsSuccessStatusCode) {
                 ClearErrorAsync();
                 user = JsonSerializer.Deserialize<Dictionary<string,string>>(await (response.Content.ReadAsStringAsync()));
-                await MySession.SetAsync("user", user);
+                if ((await MySession.GetAsync<Dictionary<string,string>>("user")).Value["accounts_perm_group"] != "admin")
+					await MySession.SetAsync("user", user);
                 ClearFieldsAsync();
                 await JSRuntime.InvokeVoidAsync("alert", "Edit Successful");
 

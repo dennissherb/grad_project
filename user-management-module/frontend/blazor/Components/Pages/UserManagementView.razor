@@ -21,7 +21,7 @@
                 {
                     if (key != "accounts_id")
                     {
-                        <th>@key</th>
+                        <th>@key.Remove(0,9)</th>
                     }
                 }
                 <th>Actions</th>
@@ -30,19 +30,22 @@
         <tbody>
             @foreach (var data in accountsTable)
             {
-                <tr>
-                    @foreach (var keyValuePair in data)
-                    {
-                        if (keyValuePair.Key != "accounts_id")
+                if (data["accounts_perm_group"] != "admin")
+                {
+                    <tr>
+                        @foreach (var keyValuePair in data)
                         {
-                            <td>@keyValuePair.Value</td>
+                            if (keyValuePair.Key != "accounts_id")
+                            {
+                                <td>@keyValuePair.Value</td>
+                            }
                         }
-                    }
-                    <td>
-                        <button @onclick="() => DeleteElementAsync(data)">Delete</button>
-                        <button @onclick="() => EditElement(data)">Edit</button>
-                    </td>
-                </tr>
+                        <td>
+                            <button @onclick="() => DeleteElementAsync(data)">Delete</button>
+                            <button @onclick="() => EditElement(data)">Edit</button>
+                        </td>
+                    </tr>
+                }
             }
         </tbody>
     </table>

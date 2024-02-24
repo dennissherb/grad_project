@@ -16,7 +16,7 @@
     {
         <div id="ProtectedContent"> 
             <PageTitle>Home</PageTitle>
-            <h1>Hello, world!</h1>
+            <h1>Hello, @loggedUser["accounts_user_name"]</h1>
             Welcome to your new app.
             <button @onclick="SignOut">Sign Out</button>
         </div>
@@ -26,12 +26,14 @@
 @code 
 {
     bool loggedIn = false;
+    Dictionary<string, string> loggedUser;
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         loggedIn = (await MySession.GetAsync<object>("user")).Value == null;
         if ( (await MySession.GetAsync<Dictionary<string,string>>("user")).Value != null &&  (await MySession.GetAsync<Dictionary<string,string>>("user")).Value.ContainsKey("accounts_id")) 
-            {
-                loggedIn = true;
+        {
+            loggedUser = (await MySession.GetAsync<Dictionary<string, string>>("user")).Value;
+            loggedIn = true;
                 if (firstRender)
                     StateHasChanged();
             } 
