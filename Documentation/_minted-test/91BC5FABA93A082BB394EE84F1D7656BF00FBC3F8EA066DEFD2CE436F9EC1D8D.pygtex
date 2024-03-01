@@ -1,0 +1,17 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n}{dictionary}\PYG{o}{\PYGZlt{}}\PYG{k+kt}{string}\PYG{p}{,}\PYG{k+kt}{string}\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{n}{loggedUser}\PYG{p}{;}
+
+\PYG{k+kt}{var}\PYG{+w}{ }\PYG{n}{session}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{k}{await}\PYG{+w}{ }\PYG{n}{MySession}\PYG{p}{.}\PYG{n}{GetAsync}\PYG{o}{\PYGZlt{}}\PYG{n}{Dictionary}\PYG{o}{\PYGZlt{}}\PYG{k+kt}{string}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kt}{string}\PYG{o}{\PYGZgt{}\PYGZgt{}}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}user\PYGZdq{}}\PYG{p}{);}
+\PYG{k}{if}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{session}\PYG{p}{.}\PYG{n}{Value}\PYG{+w}{ }\PYG{o}{!=}\PYG{+w}{ }\PYG{k}{null}\PYG{p}{)}
+\PYG{+w}{	}\PYG{n}{loggedUser}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{session}\PYG{p}{.}\PYG{n}{Value}\PYG{p}{;}
+\PYG{c+c1}{//בן טל ויינרמן חמוד}
+\PYG{k}{if}\PYG{+w}{ }\PYG{p}{((}\PYG{n}{loggedUser}\PYG{+w}{ }\PYG{o}{!=}\PYG{+w}{ }\PYG{k}{null}\PYG{+w}{ }\PYG{o}{\PYGZam{}\PYGZam{}}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{loggedUser}\PYG{p}{[}\PYG{l+s}{\PYGZdq{}accounts\PYGZus{}id\PYGZdq{}}\PYG{p}{]}\PYG{+w}{ }\PYG{o}{==}\PYG{+w}{ }\PYG{n}{UserId}\PYG{p}{)}
+\PYG{+w}{	}\PYG{o}{||}\PYG{+w}{ }\PYG{n}{loggedUser}\PYG{p}{[}\PYG{l+s}{\PYGZdq{}accounts\PYGZus{}perm\PYGZus{}group\PYGZdq{}}\PYG{p}{]}\PYG{+w}{ }\PYG{o}{==}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}admin\PYGZdq{}}\PYG{p}{))}
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{	}\PYG{p}{...}
+\PYG{p}{\PYGZcb{}}
+\PYG{k}{else}
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{	}\PYG{n}{errorMessage}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+s}{\PYGZdq{}No permission\PYGZdq{}}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}

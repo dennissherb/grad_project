@@ -1,0 +1,9 @@
+\select@language {hebrew}
+\select@language {hebrew}
+\contentsline {chapter}{\numberline {\@@number {1}}מבוא}{\@@number {2}}{}%
+\contentsline {section}{\numberline {\@@number {\@@number {1}.\@@number {1}}}הפרוייקט}{\@@number {2}}{}%
+\contentsline {subsection}{\numberline {\@@number {\@@number {\@@number {1}.\@@number {1}}.\@@number {1}}}כיצד עובד האתר?}{\@@number {2}}{}%
+\contentsline {chapter}{\numberline {\@@number {2}}יומן שינויים}{\@@number {3}}{}%
+\contentsline {section}{\numberline {\@@number {\@@number {2}.\@@number {1}}}\displaydate {firstchange}}{\@@number {3}}{}%
+\contentsline {section}{\numberline {\@@number {\@@number {2}.\@@number {2}}}\displaydate {change2}}{\@@number {3}}{}%
+\contentsline {subsection}{\numberline {\@@number {\@@number {\@@number {2}.\@@number {2}}.\@@number {1}}} רינדור דף עריכת המשתמש (\pL {UserEdit})}{\@@number {3}}{}%
