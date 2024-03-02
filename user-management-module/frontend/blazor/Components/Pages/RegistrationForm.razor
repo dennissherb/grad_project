@@ -7,44 +7,70 @@
 @inject NavigationManager Navman
 @inject ProtectedSessionStorage MySession
 
+
 @if (!registered)
 {
-    <div id="RegistrationForm">
-        <h3>Register</h3>
+    @if (errors.Any())
+    {
+        <Alert Color="AlertColor.Danger">
+            <strong>@errors.LastOrDefault().Item1</strong>, @errors.LastOrDefault().Item2
+        </Alert>
+    }
+    <form @onsubmit="HandleRegistration">
+        <!-- Form Name -->
+        <legend>Register</legend>
 
-        @if (!string.IsNullOrEmpty(errorMessage))
-        {
-            <p style="color: red;">@errorMessage</p>
-        }
-        <form @onsubmit="HandleRegistration">
-            <label>
-                Username:
-                <input type="text" @bind="username" style="@((string.IsNullOrEmpty(username) ? "border-color: red;" : ""))" required />
-                <span style="color: red;">@((string.IsNullOrEmpty(username) ? "*" : ""))</span>
-            </label><br />
+        <!-- Text input-->
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="Name">Username</label>  
+            <div class="col-md-5">
+                <input id="Name" name="Name" type="text" placeholder="username" class="form-control input-md" required="" @bind="username">
 
-            <label>
-                Email:
-                <input type="email" @bind="email" style="@((string.IsNullOrEmpty(email) ? "border-color: red;" : ""))" required />
-                <span style="color: red;">@((string.IsNullOrEmpty(email) ? "*" : ""))</span>
-            </label><br />
+            </div>
+        </div>
 
-            <label>
-                Password:
-                <input type="password" @bind="password" style="@((string.IsNullOrEmpty(password) ? "border-color: red;" : ""))" required />
-                <span style="color: red;">@((string.IsNullOrEmpty(password) ? "*" : ""))</span>
-            </label><br />
+        <!-- Password input-->
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="passwordinput">Password</label>
+            <div class="col-md-5">
+                <input id="passwordinput" name="passwordinput" type="password" placeholder="" class="form-control input-md" required="" @bind="password">
+                <span class="help-block">max 16 characters</span>
+            </div>
+        </div>
 
-            <label>
-                Date of Birth:
-                <input type="date" @bind="dateOfBirth_d" style="@((dateOfBirth_d == null ? "border-color: red;" : ""))" required />
-                <span style="color: red;">@((dateOfBirth_d == null ? "*" : ""))</span>
-            </label>
-            <br />
+        <!-- Password input-->
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="confirm_password">Confirm Password</label>
+            <div class="col-md-5">
+                <input id="confirm_password" name="confirm_password" type="password" placeholder="Re-type password" class="form-control input-md" required="">
 
-            <button type="submit">Register</button>
-        </form>
-    </div>
+            </div>
+        </div>
+
+        <!-- Text input-->
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="dateofbirth">Mobile Number</label>  
+            <div class="col-md-5">
+                <input id="dateofbirth" name="dateofbirth" type="date" placeholder="mm/dd/yyyy" class="form-control input-md" required="" @bind="dateOfBirth_d">
+            </div>
+        </div>
+
+        <!-- Text input-->
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="emailId">Email</label>  
+            <div class="col-md-6">
+                <input id="emailId" name="emailId" type="text" placeholder="user@domain.com" class="form-control input-md" required="" @bind="email">
+            </div>
+        </div>
+
+        <!-- Button -->
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="submit"></label>
+            <div class="col-md-4">
+                <button id="submit" name="submit" class="btn btn-success">Submit</button>
+            </div>
+        </div>
+    </form>
 }
 else
 {
@@ -57,12 +83,14 @@ else
     private string username;
     private string email;
     private string password;
+    private string passwordConfirm;
     private DateOnly dateOfBirth_d;
     private string dateOfBirth_s;
     private string errorMessage;
     private bool registered = false;
     protected bool loggedIn = false;
     private string login_page_addr = "/login";
+    List<(string,MarkupString)> errors { get; set; } = new();
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -90,6 +118,7 @@ else
                     //TODO: add more cases to deal with different stauts codes
                      default:
                         errorMessage = "Unkown error has occurred";
+						errors.Add(("Unkown error has occured", new("if this repeats, open a new issue <a href=\"https://github.com/qkweint/grad_project\">Here </a>")));
                         registered = false;
                         break;
                 }
@@ -97,7 +126,7 @@ else
         }
         catch (Exception ex)
         {
-            errorMessage = "An error occurred: " + ex.Message;
+			errors.Add(("Exception was thrown", new($"{ex.Message}")));
         }
     }
 

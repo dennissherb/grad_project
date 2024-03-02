@@ -14,24 +14,29 @@
 {
     <div id="ProtectedContent">
         <h3>Login</h3>
-        @if (errorMessage != null)
+        @if (errors.Any())
         {
-            <p style="color: red;">@errorMessage, @errorMessage_Session</p>
+            <Alert Color="AlertColor.Danger">
+                <strong>@errors.LastOrDefault().Item1</strong>, @errors.LastOrDefault().Item2
+			</Alert>
         }
 
-        <form @onsubmit="HandleLogin">
-            <label>
-                Username:
-                <input type="text" @bind="username" />
-            </label><br />
-
-            <label>
-                Password:
-                <input type="password" @bind="password" />
-            </label><br />
-
-            <button type="submit">Login</button>
-        </form>
+            <form @onsubmit="HandleLogin">
+			  <div class="form-group">
+				<label for="exampleInputEmail1">Email address / User name</label>
+				<input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" @bind="username">
+				<small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+			  </div>
+			  <div class="form-group">
+				<label for="exampleInputPassword1">Password</label>
+				<input type="password" class="form-control" id="exampleInputPassword1" @bind="password">
+			  </div>
+			  <div class="form-group form-check">
+				<input type="checkbox" class="form-check-input" id="exampleCheck1">
+				<label class="form-check-label" for="exampleCheck1">Check me out</label>
+			  </div>
+            <Button Color="ButtonColor.Primary" Type="ButtonType.Submit"><Icon Name="IconName.Check"/>Login</Button>
+			</form>
     </div>
 }
 
@@ -40,8 +45,8 @@
     private string password;
     private string errorMessage;
     private string errorMessage_Session;
-
     protected bool loggedIn = false;
+    List<(string,MarkupString)> errors { get; set; } = new();
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -72,7 +77,7 @@
                     }
                     catch (Exception ex)
                     {
-                        errorMessage_Session = "An error occurred: " + ex.Message;
+						errors.Add(("Unkown error has occured", new("Open a new issue <a href=\"https://github.com/qkweint/grad_project\">Here </a>")));
                     }
                 }
                 //switch case to deal with different status codes
@@ -82,12 +87,12 @@
                     switch (response.StatusCode)
                     {
                         case System.Net.HttpStatusCode.Unauthorized:
-                            errorMessage = "Incorrect username or password";
+                            errors.Add(("Incorrect username or password", new("Please visit the <a href=\"/register\">Register</a> page")));
                             userData = null;
                             break;
 
                         default:
-                            errorMessage = "Unknown error has occurred";
+                            errors.Add(("Unkown error has occured", new("Open a new issue <a href=\"https://github.com/qkweint/grad_project\">Here </a>")));
                             userData = null;
                             break;
                     }
@@ -100,7 +105,7 @@
         }
         catch (Exception ex)
         {
-            errorMessage = "An error occurred: " + ex.Message;
+			errors.Add(("Unkown error has occured", new("Open a new issue <a href=\"https://github.com/qkweint/grad_project\">Here </a>")));
             userData = null;
         }
     }

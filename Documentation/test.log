@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2024.2.14)  24 FEB 2024 23:48
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2024.2.14)  2 MAR 2024 20:48
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -876,29 +876,45 @@ File: lstmisc.sty 2023/02/27 1.9 (Carsten Heinz)
 File: listings.cfg 2023/02/27 1.9 listings configuration
 ))
 Package: listings 2023/02/27 1.9 (Carsten Heinz)
+(C:\Users\qkwei\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphicx.sty
+Package: graphicx 2021/09/16 v1.2d Enhanced LaTeX Graphics (DPC,SPQR)
+
+(C:\Users\qkwei\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphics.sty
+Package: graphics 2022/03/10 v1.4e Standard LaTeX Graphics (DPC,SPQR)
+
+(C:\Users\qkwei\AppData\Local\Programs\MiKTeX\tex/latex/graphics\trig.sty
+Package: trig 2021/08/11 v1.11 sin cos tan (DPC)
+)
+(C:\Users\qkwei\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\graphics.c
+fg
+File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
+)
+Package graphics Info: Driver file: pdftex.def on input line 107.
+)
+\Gin@req@height=\dimen162
+\Gin@req@width=\dimen163
+)
 LaTeX Font Info:    Trying to load font information for NHE8+cmr on input line 
-12.
-(C:\Users\qkwei\AppData\Local\Programs\MiKTeX\tex/fonts/culmus\nhe8cmr.fd
+11.
+ (C:\Users\qkwei\AppData\Local\Programs\MiKTeX\tex/fonts/culmus\nhe8cmr.fd
 File: nhe8cmr.fd 2023/08/17 v1 Hebrew roman font (test version: still liable to
  change)
-)
-(C:\Users\qkwei\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geometry.sty
+) (C:\Users\qkwei\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geometry.sty
 Package: geometry 2020/01/02 v5.9 Page Geometry
-
 (C:\Users\qkwei\AppData\Local\Programs\MiKTeX\tex/generic/iftex\ifvtex.sty
 Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
 )
 \Gm@cnth=\count332
 \Gm@cntv=\count333
 \c@Gm@tempcnt=\count334
-\Gm@bindingoffset=\dimen162
-\Gm@wd@mp=\dimen163
-\Gm@odd@mp=\dimen164
-\Gm@even@mp=\dimen165
-\Gm@layoutwidth=\dimen166
-\Gm@layoutheight=\dimen167
-\Gm@layouthoffset=\dimen168
-\Gm@layoutvoffset=\dimen169
+\Gm@bindingoffset=\dimen164
+\Gm@wd@mp=\dimen165
+\Gm@odd@mp=\dimen166
+\Gm@even@mp=\dimen167
+\Gm@layoutwidth=\dimen168
+\Gm@layoutheight=\dimen169
+\Gm@layouthoffset=\dimen170
+\Gm@layoutvoffset=\dimen171
 \Gm@dimlist=\toks30
 
 (C:\Users\qkwei\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geometry.cfg))
@@ -919,38 +935,48 @@ File: l3backend-pdftex.def 2024-01-04 L3 backend support: PDF output (pdfTeX)
 ) (test.aux)
 \openout1 = `test.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 21.
-LaTeX Font Info:    ... okay on input line 21.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 21.
-LaTeX Font Info:    ... okay on input line 21.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 21.
-LaTeX Font Info:    ... okay on input line 21.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 21.
-LaTeX Font Info:    ... okay on input line 21.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 21.
-LaTeX Font Info:    ... okay on input line 21.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 21.
-LaTeX Font Info:    ... okay on input line 21.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 21.
-LaTeX Font Info:    ... okay on input line 21.
-LaTeX Font Info:    Checking defaults for NHE8/cmr/m/n on input line 21.
-LaTeX Font Info:    ... okay on input line 21.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for NHE8/cmr/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
 
 (C:\Users\qkwei\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.mk
 ii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count336
-\scratchdimen=\dimen170
+\scratchdimen=\dimen172
 \scratchbox=\box63
 \nofMPsegments=\count337
 \nofMParguments=\count338
 \everyMPshowfont=\toks31
 \MPscratchCnt=\count339
-\MPscratchDim=\dimen171
+\MPscratchDim=\dimen173
 \MPnumerator=\count340
 \makeMPintoPDFobject=\count341
 \everyMPtoPDFconversion=\toks32
 )
+(C:\Users\qkwei\AppData\Local\Programs\MiKTeX\tex/latex/epstopdf-pkg\epstopdf-b
+ase.sty
+Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
+Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
+85.
+
+(C:\Users\qkwei\AppData\Local\Programs\MiKTeX\tex/latex/00miktex\epstopdf-sys.c
+fg
+File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
+))
 \c@lstlisting=\count342
 
 *geometry* driver: auto-detecting
@@ -988,11 +1014,11 @@ ii
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <12> on input line 22.
+(Font)              <12> on input line 24.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <8> on input line 22.
+(Font)              <8> on input line 24.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <6> on input line 22.
+(Font)              <6> on input line 24.
 [1
 
 {C:/Users/qkwei/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/qkwe
@@ -1014,16 +1040,31 @@ Chapter 1.
 
 ]
 Chapter 2.
+[3
+
+]
 \openout3 = `test.pyg'.
 
-(_minted-test/default.pygstyle)
-(_minted-test/49E1B9F38ACA50600180E4643BE2DCCEF00FBC3F8EA066DEFD2CE436F9EC1D8D.
+ (_minted-test/default.pygstyle)
+runsystem(pygmentize -l "csharp" -f latex -P commandprefix=PYG -F tokenmerge -P
+ stripnl="False" -o _minted-test/CDD9480B001AF05F8D16D1D46AC70D14F00FBC3F8EA066
+DEFD2CE436F9EC1D8D.pygtex test.pyg)...executed.
+
+
+(_minted-test/CDD9480B001AF05F8D16D1D46AC70D14F00FBC3F8EA066DEFD2CE436F9EC1D8D.
 pygtex
 LaTeX Font Info:    Font shape `OT1/cmtt/bx/n' in size <8> not available
 (Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 2.
-) [3
+)
+<./images/lifecycle1.png, id=17, 476.78125pt x 621.32124pt>
+File: ./images/lifecycle1.png Graphic file (type png)
+<use ./images/lifecycle1.png>
+Package pdftex.def Info: ./images/lifecycle1.png  used on input line 84.
+(pdftex.def)             Requested size: 227.62204pt x 296.62859pt.
+runsystem(del _minted-test\B44D324671B37A3078AF066D1F5796FAF00FBC3F8EA066DEFD2C
+E436F9EC1D8D.pygtex)...executed.
 
-] (test.aux)
+ [4 <./images/lifecycle1.png>] (test.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
@@ -1032,23 +1073,24 @@ runsystem(del test.pyg)...executed.
 
  ) 
 Here is how much of TeX's memory you used:
- 9936 strings out of 474541
- 179899 string characters out of 5744425
- 1930978 words of memory out of 5000000
- 31986 multiletter control sequences out of 15000+600000
- 572151 words of font info for 66 fonts, out of 8000000 for 9000
+ 10312 strings out of 474541
+ 186843 string characters out of 5744425
+ 1929978 words of memory out of 5000000
+ 32342 multiletter control sequences out of 15000+600000
+ 572319 words of font info for 67 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 77i,6n,79p,1037b,801s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 77i,6n,79p,1037b,797s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/qkwei/AppData/Local/Programs/MiKTeX/fonts/type1/public/culmus/David
 CLM-Bold.pfb><C:/Users/qkwei/AppData/Local/Programs/MiKTeX/fonts/type1/public/c
 ulmus/DavidCLM-Medium.pfb><C:/Users/qkwei/AppData/Local/Programs/MiKTeX/fonts/t
 ype1/public/amsfonts/cm/cmbx12.pfb><C:/Users/qkwei/AppData/Local/Programs/MiKTe
-X/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/qkwei/AppData/Local/Progra
-ms/MiKTeX/fonts/type1/public/amsfonts/cm/cmr5.pfb><C:/Users/qkwei/AppData/Local
-/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmtt8.pfb>
-Output written on test.pdf (4 pages, 85730 bytes).
+X/fonts/type1/public/amsfonts/cm/cmitt10.pfb><C:/Users/qkwei/AppData/Local/Prog
+rams/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/qkwei/AppData/Lo
+cal/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr5.pfb><C:/Users/qkwei/App
+Data/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmtt8.pfb>
+Output written on test.pdf (5 pages, 172193 bytes).
 PDF statistics:
- 46 PDF objects out of 1000 (max. 8388607)
+ 55 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 6 words of extra memory for PDF output out of 10000 (max. 10000000)
 
