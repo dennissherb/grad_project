@@ -17,50 +17,55 @@
     <p>@errorMessages.LastOrDefault()</p>
 }
 
-	@if (confirmSuccess == false)
-	{
-		<Label>Confirm password:</Label>
-            <input type="password" @bind="confirmPass" class="@GetPasswordInputClass()">
-		<button @onclick="InitializeEditorAsync">Confirm</button>
-	}
-	else if (user == null)
+@if (loggedUser != null)
+{
+    @if (confirmSuccess == false)
+    {
+        <Label>Confirm password:</Label>
+        <input type="password" @bind="confirmPass" class="@GetPasswordInputClass()">
+        <button @onclick="InitializeEditorAsync">Confirm</button>
+    }
+    @if (user == null)
     {
         <p>Loading...</p>
-	}
+    }
     else
-	{
-		@foreach (var kvp in user) {
-				@switch (kvp.Key.ToString())
-				{
-					case "accounts_perm_group":
-						break;
+    {
+        @foreach (var kvp in user)
+        {
+            @switch (kvp.Key.ToString())
+            {
+                case "accounts_perm_group":
+                    break;
 
-					case "accounts_id":
-						break;
+                case "accounts_id":
+                    break;
 
-					case "accounts_password":
-						<label>@kvp.Key.Remove(0,9):</label>
-						<input type="password" @bind = "newUser[kvp.Key]">
-						<br />
-						break;
+                case "accounts_password":
+                    <label>@kvp.Key.Remove(0,9):</label>
+                    <input type="password" @bind = "newUser[kvp.Key]">
+                    <br />
+                    break;
 
-					case "accounts_date_of_birth":
-						<label>@kvp.Key.Remove(0,9):</label>
-						<input type="date" @bind="date" />
-						<br />
-						break;
+                case "accounts_date_of_birth":
+                    <label>@kvp.Key.Remove(0,9):</label>
+                    <input type="date" @bind="date" />
+                    <br />
+                    break;
 
-					default:
-						<label>@kvp.Key.Remove(0,9):</label>
-						<input type="text" @bind = "newUser[kvp.Key]">
-						<br />
-						break;
+                default:
+                    <label>@kvp.Key.Remove(0,9):</label>
+                    <input type="text" @bind = "newUser[kvp.Key]">
+                    <br />
+                    break;
 
-				}
-		<br />
-		}
-		<button @onclick="UpdateUserAsync"> Update</button>
-	}
+            }
+            <br />
+        }
+        <button @onclick="UpdateUserAsync"> Update</button>
+    }
+
+}
 
 @code {
     public Dictionary<string, string> user { get; set; }
@@ -94,6 +99,11 @@
     protected override async  Task OnInitializedAsync()
     {
         errorMessages = new();
+        Dictionary<string, string> LoggedUser = null;
+        var session = await MySession.GetAsync<Dictionary<string, string>>("user");
+        if (session.Value != null)
+            LoggedUser = session.Value;
+
     }
 
     public async Task InitializeEditorAsync()
