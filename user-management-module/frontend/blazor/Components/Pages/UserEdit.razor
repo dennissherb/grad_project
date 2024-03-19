@@ -17,7 +17,7 @@
     <p>@errorMessages.LastOrDefault()</p>
 }
 
-@if (loggedUser != null)
+@if (loggedIn)
 {
     @if (confirmSuccess == false)
     {
@@ -66,6 +66,10 @@
     }
 
 }
+else
+{
+    <h1>No Permission</h1>
+}
 
 @code {
     public Dictionary<string, string> user { get; set; }
@@ -73,6 +77,7 @@
     public Dictionary<string, string> loggedUser;
     public bool confirmSuccess;
     public string confirmPass;
+    bool loggedIn;
 
     public List<string> errorMessages;
     public DateTime? date;
@@ -99,11 +104,16 @@
     protected override async  Task OnInitializedAsync()
     {
         errorMessages = new();
-        Dictionary<string, string> LoggedUser = null;
-        var session = await MySession.GetAsync<Dictionary<string, string>>("user");
-        if (session.Value != null)
-            LoggedUser = session.Value;
-
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        loggedUser = (await MySession.GetAsync<Dictionary<string, string>>("user")).Value;
+        if (loggedUser == null)
+            Navman.NavigateTo("/");
+        else
+            loggedIn = (loggedUser != null);
+        if(firstRender)
+            StateHasChanged();
     }
 
     public async Task InitializeEditorAsync()
@@ -212,7 +222,4 @@
 			errorMessages.Add("");
         }
     }
-
-      
-
 }
