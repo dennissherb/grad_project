@@ -45,6 +45,22 @@
                         </td>
                     </tr>
                 }
+                else if (loggedUser["accounts_perm_group"] == "sysadmin") 
+                {
+                    <tr>
+                        @foreach (var keyValuePair in data)
+                        {
+                            if (keyValuePair.Key != "accounts_id")
+                            {
+                                <td>@keyValuePair.Value</td>
+                            }
+                        }
+                        <td>
+                            <button @onclick="() => DeleteElementAsync(data)">Delete</button>
+                            <button @onclick="() => EditElement(data)">Edit</button>
+                        </td>
+                    </tr>
+                }
             }
         </tbody>
     </table>
