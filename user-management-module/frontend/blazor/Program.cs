@@ -7,7 +7,6 @@ builder.Services.AddBlazorBootstrap();
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
-builder.Services.AddScoped<Dictionary<string,string>>();
 builder.Services.AddHttpClient();
 
 var app = builder.Build();

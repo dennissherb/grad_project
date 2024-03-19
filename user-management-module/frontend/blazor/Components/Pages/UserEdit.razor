@@ -6,7 +6,6 @@
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 
 @inject HttpClient httpClient
-@inject Dictionary<string, string> userData
 @inject ProtectedSessionStorage MySession
 @inject NavigationManager Navman
 @inject IJSRuntime JSRuntime
@@ -36,6 +35,11 @@
             @switch (kvp.Key.ToString())
             {
                 case "accounts_perm_group":
+                    if (loggedUser["accounts_perm_group"] == "sysadmin") {
+						<label>@kvp.Key.Remove(0,9):</label>
+						<input type="password" @bind = "newUser[kvp.Key]">
+						<br />
+                    }
                     break;
 
                 case "accounts_id":

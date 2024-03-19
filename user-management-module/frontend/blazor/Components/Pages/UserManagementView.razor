@@ -7,7 +7,6 @@
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 
 @inject HttpClient httpClient
-@inject Dictionary<string,string> userData
 @inject ProtectedSessionStorage MySession
 @inject NavigationManager Navman
 
@@ -30,7 +29,7 @@
         <tbody>
             @foreach (var data in accountsTable)
             {
-                if (data["accounts_perm_group"] != "admin")
+                if (!data["accounts_perm_group"].Contains("admin"))
                 {
                     <tr>
                         @foreach (var keyValuePair in data)
@@ -64,7 +63,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         loggedUser = (await MySession.GetAsync<Dictionary<string, string>>("user")).Value;
-        if (loggedUser == null || loggedUser["accounts_perm_group"] != "admin")
+        if (loggedUser == null || !loggedUser["accounts_perm_group"].Contains("admin"))
             Navman.NavigateTo("/login");
 
         errorMessages = new();
