@@ -8,6 +8,7 @@ builder.Services.AddBlazorBootstrap();
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 builder.Services.AddHttpClient();
+builder.Services.AddScoped<Stack<string>>();
 
 var app = builder.Build();
 
