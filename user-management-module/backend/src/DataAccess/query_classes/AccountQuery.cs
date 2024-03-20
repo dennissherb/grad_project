@@ -5,15 +5,8 @@ using Datalayer;
 
 namespace Datalayer.Queries
 {
-    public class AccountQuery
+    public class AccountQuery : BaseQuery
     {
-        private static string SanitizeInput(string input)
-        {
-            // Perform necessary input sanitization to prevent SQL injection
-            // For simplicity, this example uses basic string replace to escape single quotes
-            return input.Replace("'", "''");
-        }
-
         public static async Task<bool> TryLogin(string field1, string field2)
         {
             try
@@ -260,19 +253,12 @@ namespace Datalayer.Queries
         public static async Task<Dictionary<string,string>> UpdateAccount(Dictionary<string,string> newUser)
         {
             Dictionary<string, string> oldUser = await AccountQuery.ReadAccountByIdAsync(newUser);
-            //Dictionary<string, string> mergedDictionary = oldUser
-            //.Concat(newUser)
-            //.GroupBy(kv => kv.Key)
-            //.ToDictionary(g => g.Key, g => g.Last().Value);
-
             Dictionary<string, string> mergedDictionary = new(oldUser);
             foreach (KeyValuePair<string,string> pair in newUser)
             {
                 if (pair.Value != "")
                     mergedDictionary[pair.Key] = pair.Value;
             }
-
-
             try
             {
 
@@ -299,23 +285,15 @@ namespace Datalayer.Queries
         //delete an account entry by referring to it with UQ without password
         public static async Task<bool> DeleteAccountAsAdminByUQ(Dictionary<string,string> user)
         {
-            try
+            Dictionary<string,object> objDict = new Dictionary<string,object>();
+            foreach (var kvp in user)
             {
-                string query = $@"DELETE FROM my_project.accounts WHERE accounts_email = '{user["accounts_email"]}'";
-
-                int result = await DBConnection.ExecuteNonQuery(query);
-
-                return result > 0;
+                objDict.Add(kvp.Key, (object)kvp.Value);
             }
-            catch (Exception ex)
-            {
-                // Handle exceptions or log errors appropriately
-                Console.WriteLine($"Error deleting account: {ex.Message}");
-                return false;
-            }
+            return await DeleteRow("accounts", "email", objDict);
         }
 
-        //delete an account entry by referring to tit with UQ and password
+        //delete an account entry by referring to it with UQ and password
         public static async Task<bool> DeleteAccount(Dictionary<string,string> user)
         {
             try
@@ -325,9 +303,7 @@ namespace Datalayer.Queries
                 string query = $@"DELETE FROM my_project.accounts WHERE
                     accounts_email =    '{user["accounts_email"]}' AND
                     accounts_password = '{user["accounts_password"]}'";
-
                 int result = await DBConnection.ExecuteNonQuery(query);
-
                 return result > 0;
             }
             catch (Exception ex)
