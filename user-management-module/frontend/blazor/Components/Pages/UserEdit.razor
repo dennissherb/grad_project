@@ -11,9 +11,9 @@
 @inject IJSRuntime JSRuntime
 
 <h3>User Edit</h3>
-@if (errorMessages != null && errorMessages.LastOrDefault() != null)
+@if (errors != null && errors.LastOrDefault() != null)
 {
-    <p>@errorMessages.LastOrDefault()</p>
+    <p>@errors.LastOrDefault()</p>
 }
 
 @if (loggedIn)
@@ -76,14 +76,14 @@ else
 }
 
 @code {
-    public Dictionary<string, string> user { get; set; }
-    public Dictionary<string, string> newUser;
-    public Dictionary<string, string> loggedUser;
+    public Dictionary<string, string>? user { get; set; }
+    public Dictionary<string, string>? newUser;
+    public Dictionary<string, string>? loggedUser;
     public bool confirmSuccess;
-    public string confirmPass;
+    public string? confirmPass;
     bool loggedIn;
 
-    public List<string> errorMessages;
+    List<(string, MarkupString?)?> errors = new();
     public DateTime? date;
 
 
@@ -100,14 +100,10 @@ else
         }
         catch (Exception ex)
         {
-            errorMessages.Add("Exception was caught: " + ex.Message);
+            errors.Add(("Exception was caught: " + ex.Message, null));
             StateHasChanged();
         }
         return LoggedUser;
-    }
-    protected override async  Task OnInitializedAsync()
-    {
-        errorMessages = new();
     }
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -151,20 +147,20 @@ else
                 }
                 else
                 {
-                    errorMessages.Add("No permission");
+                    errors.Add(("No permission", null));
                 }
             }
             else
             {
                 bool confirmSuccess = false;
-                errorMessages.Add("Incorrect password");
+                errors.Add(("Incorrect password", null));
             }
             StateHasChanged();
         }
 
         catch (Exception ex)
         {
-            errorMessages.Add("Exception was caught: " + ex.Message);
+            errors.Add(("Exception was caught: " + ex.Message, null));
         }
         StateHasChanged();
     }
@@ -197,14 +193,14 @@ else
                 {
                     //TODO: add more cases to deal with different stauts codes
                     default:
-						errorMessages.Add($" An error has occurred: {response.StatusCode} {response.ReasonPhrase}");
+						errors.Add(($" An error has occurred: {response.StatusCode} {response.ReasonPhrase}", null));
                         break;
                 }
             }
         }
         catch (Exception ex)
         {
-            errorMessages.Add("Exception was caught" + ex.Message); 
+            errors.Add(("Exception was caught" + ex.Message, null)); 
         }
 
     }
@@ -221,9 +217,9 @@ else
 
     private async void ClearErrorAsync()
     {
-        if (errorMessages != null)
+        if (errors != null)
         {
-			errorMessages.Add("");
+			errors.Add(null);
         }
     }
 }

@@ -8,15 +8,16 @@
 @inject HttpClient httpClient
 @inject ProtectedSessionStorage MySession
 @inject NavigationManager Navman
+@inject Stack<string> redirStack;
 
-@if (@loggedIn) 
+@if (loggedUser == null) 
 {
     <div id="ProtectedContent">
         <h3>Login</h3>
         @if (errors.Any())
         {
             <Alert Color="AlertColor.Danger">
-                <strong>@errors.LastOrDefault().Item1</strong>, @errors.LastOrDefault().Item2
+                <strong>@errors.LastOrDefault().Value.Item1</strong>, @errors.LastOrDefault().Value.Item2
 			</Alert>
         }
 
@@ -35,26 +36,30 @@
 				<label class="form-check-label" for="exampleCheck1">Check me out</label>
 			  </div>
             <Button Color="ButtonColor.Primary" Type="ButtonType.Submit"><Icon Name="IconName.Check"/>Login</Button>
+            <Button Color="ButtonColor.Primary" @onclick='() => { redirStack.Push(Navman.Uri); Navman.NavigateTo("register");}'><Icon Name="IconName.Envelope"/>Register</Button>
 			</form>
     </div>
 }
 
 @code {
-    private string username;
-    private string password;
-    private string errorMessage;
-    private string errorMessage_Session;
-    protected bool loggedIn = false;
-    private Dictionary<string, string> loggedUser;
-    List<(string,MarkupString)> errors { get; set; } = new();
+    private string? username;
+    private string? password;
+    private string? errorMessage;
+    private string? errorMessage_Session;
+    Dictionary<string, string>? loggedUser;
+    List<(string,MarkupString?)?> errors { get; set; } = new();
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if ((await MySession.GetAsync<Dictionary<string,string>>("user")).Value != null && ((await MySession.GetAsync<Dictionary<string,string>>("user")).Value.ContainsKey("accounts_id"))) 
-            Navman.NavigateTo("/");
-        loggedIn = (await MySession.GetAsync<object>("user")).Value == null;
-        if(firstRender)
+        loggedUser = (await MySession.GetAsync<Dictionary<string, string>>("user")).Value;
+        if (loggedUser != null && firstRender) 
+        {
             StateHasChanged();
+        }
+        if (loggedUser != null && loggedUser.ContainsKey("accounts_id"))
+        {
+			Navman.NavigateTo("/");
+        }
     }
 
     private async Task HandleLogin()
@@ -62,18 +67,16 @@
         try
         {
             var loginData = new { accounts_email = username, accounts_password = password };
-            string test = JsonSerializer.Serialize(loginData);
             var response = await httpClient.PostAsJsonAsync("http://localhost:5005/api/Account/login", loginData);
             if (response != null)
             {
                 if (response.IsSuccessStatusCode)
                 {
-                    errorMessage = null;
                     loggedUser = JsonSerializer.Deserialize<Dictionary<string, string>>(await response.Content.ReadAsStringAsync());
                     try
                     {
-                        ValueTask success = MySession.SetAsync("user", loggedUser);
-                        Navman.NavigateTo("/");
+                        await (MySession.SetAsync("user", loggedUser));
+                        Navman.NavigateTo(redirStack.Peek());
                     }
                     catch (Exception ex)
                     {
@@ -105,7 +108,7 @@
         }
         catch (Exception ex)
         {
-			errors.Add(("Unkown error has occured", new("Open a new issue <a href=\"https://github.com/qkweint/grad_project\">Here </a>")));
+			errors.Add(("Unkown error has occured", new($"Open a new issue <a href=\"https://github.com/qkweint/grad_project\">Here </a>\n{ex.Message}")));
             loggedUser = null;
         }
     }

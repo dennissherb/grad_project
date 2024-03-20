@@ -10,8 +10,9 @@
 @inject HttpClient HttpClient
 @inject ProtectedSessionStorage MySession
 @inject IJSRuntime JSRuntime
+@inject Stack<string> redirStack;
 
-@if (@loggedIn == true)
+@if (loggedUser != null)
     {
         <div id="ProtectedContent"> 
             <PageTitle>Home</PageTitle>
@@ -24,25 +25,23 @@
 
 @code 
 {
-    bool loggedIn = false;
-    Dictionary<string, string> loggedUser;
+    Dictionary<string, string>? loggedUser = null;
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        loggedIn = (await MySession.GetAsync<object>("user")).Value == null;
-        if ( (await MySession.GetAsync<Dictionary<string,string>>("user")).Value != null &&  (await MySession.GetAsync<Dictionary<string,string>>("user")).Value.ContainsKey("accounts_id")) 
+        loggedUser = (await MySession.GetAsync<Dictionary<string,string>>("user")).Value;
+        if (firstRender) 
         {
-            loggedUser = (await MySession.GetAsync<Dictionary<string, string>>("user")).Value;
-            loggedIn = true;
-                if (firstRender)
-                    StateHasChanged();
-            } 
-        else
+            StateHasChanged();
+        }
+        if (loggedUser == null || !loggedUser.ContainsKey("accounts_id") || int.Parse(loggedUser["accounts_id"]) <= 0 ) 
+        {
+            redirStack.Push(Navman.Uri);
             Navman.NavigateTo("/login");
+		} 
     }
 
     protected async Task SignOut() {
-        MySession.DeleteAsync("user");
-        loggedIn = false;
+        await MySession.DeleteAsync("user");
         Navman.NavigateTo("/login");
     }
 }

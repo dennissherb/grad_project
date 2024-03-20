@@ -6,6 +6,7 @@
 @inject HttpClient httpClient
 @inject NavigationManager Navman
 @inject ProtectedSessionStorage MySession
+@inject Stack<string> redirStack;
 
 
 @if (!registered)
@@ -74,9 +75,8 @@
 }
 else
 {
-    <p>You have successfully registered!</p>
-    <p><button @onclick="NavigateToLogin">Login</button></p>
-    <p><button @onclick="()=>Navman.NavigateTo(login_page_addr)">Login</button></p>
+
+    
 }
 
 @code {
@@ -88,7 +88,6 @@ else
     private string errorMessage;
     private bool registered = false;
     protected bool loggedIn = false;
-    private string login_page_addr = "/login";
     List<(string,MarkupString)> errors { get; set; } = new();
     private string confPass { get; set; }
 
@@ -114,8 +113,8 @@ else
             var response = await httpClient.PostAsJsonAsync("http://localhost:5005/api/Account/register", registrationData);
             if (response.IsSuccessStatusCode)
             {
-                errorMessage = null;
                 registered = true;
+				Navman.NavigateTo(redirStack.Pop()); 
             }
             else
             {
@@ -123,7 +122,6 @@ else
                 {
                     //TODO: add more cases to deal with different stauts codes
                      default:
-                        errorMessage = "Unkown error has occurred";
 						errors.Add(("Unkown error has occured", new("if this repeats, open a new issue <a href=\"https://github.com/qkweint/grad_project\">Here </a>")));
                         registered = false;
                         break;
