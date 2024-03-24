@@ -9,7 +9,9 @@
   <ItemGroup>
     <PackageReference Include="Blazor.Bootstrap" Version="2.0.0" />
     <PackageReference Include="font-awesome" Version="4.7.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.3" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.2" />
   </ItemGroup>
 
 </Project>
