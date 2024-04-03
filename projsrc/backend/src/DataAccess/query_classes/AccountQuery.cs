@@ -1,21 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Security.Cryptography;
 using Datalayer;
+using System.Text;
 
 namespace Datalayer.Queries
 {
     public class AccountQuery : BaseQuery
     {
         string tableName = "accounts";
+    static string ComputeSHA256Hash(string input, string salt = null)
+    {
+        // Combine input string and salt (if provided)
+        string combinedString = input + (salt ?? "");
+
+        using (SHA256 sha256 = SHA256.Create())
+        {
+            byte[] hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(combinedString));
+            return BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
+        }
+    }
         public static async Task<bool> TryLogin(Dictionary<string,string> user)
         {
             try
             {
-                string sanitizedField1 = SanitizeInput(user["accounts_email"]);
-                string sanitizedField2 = SanitizeInput(user["accounts_password"]);
 
+                string sanitizedField1 = SanitizeInput(user["accounts_email"]);
                 string query = $@"SELECT accounts_id FROM my_project.accounts WHERE (accounts_email = '{sanitizedField1}' OR accounts_user_name = '{sanitizedField1}') AND accounts_password = '{sanitizedField2}'";
+                string salt_query = $@"SELECT accounts_id FROM my_project.accounts WHERE (accounts_email = '{sanitizedField1}' OR accounts_user_name = '{sanitizedField1}')'";
+                List<Dictionary<string, string>> dbuser = await DBConnection.ExecuteQuery(salt_query);
+                //string sanitizedField2 = ComputeSHA256Hash(user["accounts_password"], ReadAccountById(int.Parse(id_for_salt)));
+
 
                 List<Dictionary<string, string>> result = await DBConnection.ExecuteQuery(query);
 
