@@ -1,0 +1,18 @@
+﻿@page "/basic"
+
+@rendermode InteractiveServer
+
+@using System.Text.Json
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+
+@inject HttpClient httpClient
+@inject ProtectedSessionStorage MySession
+@inject NavigationManager Navman
+@inject Stack<string> redirStack;
+
+@Content
+
+@code {
+   public MarkupString Content;
+
+}

@@ -33,6 +33,23 @@ namespace Datalayer.Queries
                 return false;
             }
         }
+        public static async Task<bool> DeleteRowById(string tableName, int id) 
+        {
+            try
+            {
+                string query = $@"DELETE FROM my_project.{tableName} WHERE {tableName}_id = '{id}'";
+
+                int result = await DBConnection.ExecuteNonQuery(query);
+
+                return result > 0;
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions or log errors appropriately
+                Console.WriteLine($"Error deleting: {ex.Message}");
+                return false;
+            }
+        }
 
         protected static async Task<bool> CreateEntry(string tableName, Dictionary<string, string> data)
         {
