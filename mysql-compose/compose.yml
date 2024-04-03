@@ -2,6 +2,7 @@ version: '3.8'
 
 services:
   mysql-workbench:
+    container_name: mysql_wb
     image: lscr.io/linuxserver/mysql-workbench:latest
     ports:
       - "3000-3001:3000-3001"
