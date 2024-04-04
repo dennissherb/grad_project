@@ -23,9 +23,29 @@ namespace Datalayer.Queries
             return await ReadEntries("pages");
         }
 
-        public static async Task<bool> UpdatePageAsync(Product updatedProduct)
+        public static async Task<bool> UpdatePageAsync(BasePage Page)
         {
+            Dictionary<string, object> d = new();
+            d.Add("pages_id", Page.id);
+            d.Add("pages_type", Page.pageType);
 
+            string query = $@"UPDATE 'pages' 
+                                SET pages_type = '{d["pages_type"]}'
+                                WHERE pages_id = '{d["pages_id"]}';";
+
+            return (await DBConnection.ExecuteNonQuery(query) > 0);
+        }
+        public static async Task<bool> UpdateContent(BasePage Page)
+        {
+            Dictionary<string, object> d = new();
+            d.Add("pages_id", Page.id);
+            d.Add("pages_type", Page.pageType);
+
+            string query = $@"UPDATE 'pages' 
+                                SET pages_type = '{d["pages_type"]}'
+                                WHERE pages_id = '{d["pages_id"]}';";
+
+            return (await DBConnection.ExecuteNonQuery(query) > 0);
         }
         public static async Task<bool> DeletePage(int id)
         {

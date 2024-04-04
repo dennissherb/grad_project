@@ -8,25 +8,21 @@ public enum PageType {
 
 public class BasePage
 {
-
     public int id;
-    public string Title;
-    public string Author;
-    public string Content;
+    public int AuthorId;
+    public int contentId;
     public PageType pageType;
 
-    public BasePage(int id ,string title, string content, string author = "Anonymous", PageType pageType = PageType.Basic) {
-        this.id = id
-        Title = title;
-        Author = author;
-        Content = content;
+    public BasePage(int id, int contentId, int authorid = 0, PageType pageType = PageType.Basic) {
+        this.id = id;
+        AuthorId = authorid;
+        this.contentId = contentId;
         this.pageType = pageType;
     }
-    public BasePage(int id, string title, string content, PageType pageType = PageType.Basic) {
+    public BasePage(int id, int contentId, PageType pageType = PageType.Basic) {
         this.id = id;
-        Title = title;
-        Author = "Anonymous";
-        Content = content;
+        AuthorId = 0;
+        this.contentId = contentId;
         this.pageType = pageType;
     }
 }
