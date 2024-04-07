@@ -14,8 +14,10 @@ namespace WebAPI
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-            builder.Services.AddTransient<PageContext>();
             builder.Services.AddTransient<IPageRepository, PageRepository>();
+            builder.Services.AddTransient<IProductRepository, ProductRepository>();
+            builder.Services.AddTransient<MyProjectContext>();
+            builder.Services.AddTransient<IAccountRepository, AccountRepository>();
 
             var app = builder.Build();
 

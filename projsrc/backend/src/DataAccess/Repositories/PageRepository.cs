@@ -12,8 +12,8 @@ namespace Datalayer.Repositories
 {
     public class PageRepository : IPageRepository
     {
-        private readonly PageContext _ctx;
-        public PageRepository(PageContext ctx)
+        private readonly MyProjectContext _ctx;
+        public PageRepository(MyProjectContext ctx)
         {
             _ctx = ctx;
         }
@@ -23,32 +23,23 @@ namespace Datalayer.Repositories
             var pages = await _ctx.Pages.ToListAsync();
             return (IEnumerable<Page>)pages;
         }
-        public async Task<Page> GetPagesByIdAsync(int id)
+        public async Task<Page> GetPageByIdAsync(int id)
         {
             return await _ctx.Pages.FindAsync(id);
         }
 
         public async Task CreatePageAsync(Page p)
         {
-            var createPage = _ctx.Pages.Add(p);
+            _ctx.Pages.Add(p);
             await _ctx.SaveChangesAsync();
         }
         public async Task UpdatePageAsync(Page p)
         {
-            var updatePage = _ctx.Pages.Update(p);
+            _ctx.Pages.Update(p);
             await _ctx.SaveChangesAsync();
         }
 
-        public async Task DeletePageAsync(Page p)
-        {
-            var page = await _ctx.Pages.FindAsync(p.Id);
-            if (page != null)
-            {
-                _ctx.Pages.Remove(page);
-                await _ctx.SaveChangesAsync();
-            }
-        }
-        public async Task DeletePageByIdAsync(int id)
+        public async Task DeletePageAsync(int id)
         {
             var page = await _ctx.Pages.FindAsync(id);
             if (page != null)

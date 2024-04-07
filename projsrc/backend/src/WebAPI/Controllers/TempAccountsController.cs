@@ -5,10 +5,10 @@ namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AccountController : ControllerBase
+    public class TempAccountsController : ControllerBase
     {
-        private readonly ILogger<AccountController> _logger;
-        public AccountController(ILogger<AccountController> logger)
+        private readonly ILogger<TempAccountsController> _logger;
+        public TempAccountsController(ILogger<TempAccountsController> logger)
         {
             this._logger = logger;
         }
