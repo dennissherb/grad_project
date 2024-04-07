@@ -1,4 +1,5 @@
 using Datalayer.Models;
+using Datalayer.Repositories;
 namespace WebAPI
 {
     public class Program
@@ -14,6 +15,7 @@ namespace WebAPI
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddTransient<PageContext>();
+            builder.Services.AddTransient<IPageRepository, PageRepository>();
 
             var app = builder.Build();
 

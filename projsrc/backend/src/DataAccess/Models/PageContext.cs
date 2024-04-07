@@ -20,7 +20,7 @@ namespace Datalayer.Models
         public DbSet<Page> Pages { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseMySQL("connectionstring");
+            optionsBuilder.UseMySQL(_connectionString);
         }
     }
 }

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Datalayer.Repositories
 {
-    public class PageRepository
+    public class PageRepository : IPageRepository
     {
         private readonly PageContext _ctx;
         public PageRepository(PageContext ctx)
@@ -39,5 +39,23 @@ namespace Datalayer.Repositories
             await _ctx.SaveChangesAsync();
         }
 
+        public async Task DeletePageAsync(Page p)
+        {
+            var page = await _ctx.Pages.FindAsync(p.Id);
+            if (page != null)
+            {
+                _ctx.Pages.Remove(page);
+                await _ctx.SaveChangesAsync();
+            }
+        }
+        public async Task DeletePageByIdAsync(int id)
+        {
+            var page = await _ctx.Pages.FindAsync(id);
+            if (page != null)
+            {
+                _ctx.Pages.Remove(page);
+                await _ctx.SaveChangesAsync();
+            }
+        }
     }
 }

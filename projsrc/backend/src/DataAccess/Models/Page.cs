@@ -7,7 +7,7 @@ namespace Datalayer.Models
     [Table("Pages")]
     public class Page
     {
-        [Required]
+        [Key]
         public int Id { get; set; }
 
         [Required]
@@ -18,7 +18,6 @@ namespace Datalayer.Models
 
         [ForeignKey("Accounts")]
         public int AuthorId { get; set; }
-
         public string? Tags { get; set; }
         public string? Content { get; set; }
     }
