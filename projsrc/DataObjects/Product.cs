@@ -1,8 +1,10 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text;
+using System.Text.Json.Serialization;
 
-namespace Datalayer.Models
+namespace DataObjects
 {
     public class Product
     {
@@ -21,9 +23,8 @@ namespace Datalayer.Models
         [Column("products_company")]
         public string Company { get; set; }
 
-        [Required]
         [Column("products_category")]
-        public string Category { get; set; }
+        public string Category { get; set; } = "Other";
 
         [Column("products_image")]
         public byte[]? Image { get; set; } = null;

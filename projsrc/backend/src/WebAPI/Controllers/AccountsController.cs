@@ -5,6 +5,7 @@ using Datalayer.Models;
 using Datalayer.Repositories;
 using System.Security.Cryptography;
 using System.Text;
+using DataObjects;
 
 namespace WebAPI.Controllers
 {

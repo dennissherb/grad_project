@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Datalayer.Models;
 using Datalayer.Repositories;
+using DataObjects;
 
 namespace YourNamespace.Controllers
 {
@@ -43,13 +44,12 @@ namespace YourNamespace.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdatePage(int id, Page page)
+        public async Task<IActionResult> UpdatePage(int id,Page page)
         {
-            if (id != page.Id)
+            if (page.Id == 0)
             {
-                return BadRequest();
+                page.Id = id;
             }
-
             await _repository.UpdatePageAsync(page);
 
             return NoContent();

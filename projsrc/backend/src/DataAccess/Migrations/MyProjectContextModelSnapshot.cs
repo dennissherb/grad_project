@@ -19,7 +19,7 @@ namespace Datalayer.Migrations
                 .HasAnnotation("ProductVersion", "8.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("Datalayer.Models.Account", b =>
+            modelBuilder.Entity("DataObjects.Account", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -45,6 +45,11 @@ namespace Datalayer.Migrations
                         .HasColumnType("longtext")
                         .HasColumnName("accounts_perm_group");
 
+                    b.Property<string>("Salt")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("accounts_salt_column");
+
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasColumnType("longtext")
@@ -55,7 +60,7 @@ namespace Datalayer.Migrations
                     b.ToTable("accounts");
                 });
 
-            modelBuilder.Entity("Datalayer.Models.Page", b =>
+            modelBuilder.Entity("DataObjects.Page", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -85,12 +90,14 @@ namespace Datalayer.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AuthorId");
+
                     b.HasIndex("ProductId");
 
                     b.ToTable("Pages");
                 });
 
-            modelBuilder.Entity("Datalayer.Models.Product", b =>
+            modelBuilder.Entity("DataObjects.Product", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -125,13 +132,31 @@ namespace Datalayer.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("Datalayer.Models.Page", b =>
+            modelBuilder.Entity("DataObjects.Page", b =>
                 {
-                    b.HasOne("Datalayer.Models.Product", "Product")
-                        .WithMany()
+                    b.HasOne("DataObjects.Account", "Account")
+                        .WithMany("Pages")
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DataObjects.Product", "Product")
+                        .WithMany("Pages")
                         .HasForeignKey("ProductId");
 
+                    b.Navigation("Account");
+
                     b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("DataObjects.Account", b =>
+                {
+                    b.Navigation("Pages");
+                });
+
+            modelBuilder.Entity("DataObjects.Product", b =>
+                {
+                    b.Navigation("Pages");
                 });
 #pragma warning restore 612, 618
         }

@@ -43,7 +43,8 @@ namespace Datalayer.Migrations
                     accounts_user_name = table.Column<string>(type: "longtext", nullable: false),
                     accounts_date_of_birth = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     accounts_password = table.Column<string>(type: "longtext", nullable: false),
-                    accounts_perm_group = table.Column<string>(type: "longtext", nullable: false)
+                    accounts_perm_group = table.Column<string>(type: "longtext", nullable: false),
+                    accounts_salt_column = table.Column<string>(type: "longtext", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -71,6 +72,12 @@ namespace Datalayer.Migrations
                         column: x => x.fkproducts_id,
                         principalTable: "Products",
                         principalColumn: "products_id");
+                    table.ForeignKey(
+                        name: "FK_Pages_accounts_pages_author_id",
+                        column: x => x.pages_author_id,
+                        principalTable: "accounts",
+                        principalColumn: "accounts_id",
+                        onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
 
@@ -78,6 +85,11 @@ namespace Datalayer.Migrations
                 name: "IX_Pages_fkproducts_id",
                 table: "Pages",
                 column: "fkproducts_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Pages_pages_author_id",
+                table: "Pages",
+                column: "pages_author_id");
         }
 
         /// <inheritdoc />
@@ -87,10 +99,10 @@ namespace Datalayer.Migrations
                 name: "Pages");
 
             migrationBuilder.DropTable(
-                name: "accounts");
+                name: "Products");
 
             migrationBuilder.DropTable(
-                name: "Products");
+                name: "accounts");
         }
     }
 }

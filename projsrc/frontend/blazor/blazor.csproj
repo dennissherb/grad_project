@@ -12,4 +12,9 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\backend\src\DataAccess\Datalayer.csproj" />
+    <ProjectReference Include="..\..\DataObjects\DataObjects.csproj" />
+  </ItemGroup>
+
 </Project>
