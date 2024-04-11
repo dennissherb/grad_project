@@ -28,5 +28,8 @@ namespace DataObjects
 
         [Column("products_image")]
         public byte[]? Image { get; set; } = null;
+
+        [JsonIgnore]
+        public ICollection<Page>? Pages { get; set; }
     }
 }

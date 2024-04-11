@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
@@ -6,7 +7,7 @@ using System.Text.Json.Serialization;
 namespace DataObjects
 {
     [Table("accounts")]
-    public class Account
+    public class Account : IdentityUser
     {
         [Key]
         [Column("accounts_id")]
@@ -33,6 +34,7 @@ namespace DataObjects
         [Column("accounts_salt_column")]
         public string Salt { get; set; } = "0";
 
-        public ICollection<Page> Pages { get; set; }
+        [JsonIgnore]
+        public ICollection<Page>? Pages { get; set; }
     }
 }

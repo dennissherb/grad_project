@@ -28,8 +28,11 @@ namespace DataObjects
         [Column("pages_content")]
         public string? Content { get; set; } = "<h1>This page is empty</h1>";
 
-
         // Navigation propety
-        public Account Author { get; set; }
+        [JsonIgnore]
+        public Account? Author { get; set; }
+
+        [JsonIgnore]
+        public Product? Product { get; set; }
     }
 }

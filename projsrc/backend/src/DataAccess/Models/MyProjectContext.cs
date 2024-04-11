@@ -1,10 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using DataObjects;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Datalayer.Models
 {
-    public class MyProjectContext : DbContext
+    public class MyProjectContext : IdentityDbContext<Account>
     {
         private readonly IConfiguration _configuration;
         private readonly string _connectionString;
@@ -21,11 +23,11 @@ namespace Datalayer.Models
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
-            //modelBuilder.Entity<Product>()
-            //    .HasMany(p => p.Pages)
-            //    .WithOne(p => p.Product)
-            //    .HasForeignKey(p => p.ProductId)
-            //    .IsRequired(false);
+            modelBuilder.Entity<Product>()
+                .HasMany(p => p.Pages)
+                .WithOne(p => p.Product)
+                .HasForeignKey(p => p.ProductId)
+                .IsRequired(false);
 
             modelBuilder.Entity<Page>()
                 .HasOne(p => p.Author)

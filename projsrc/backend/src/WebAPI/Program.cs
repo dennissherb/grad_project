@@ -1,5 +1,6 @@
 using Datalayer.Models;
 using Datalayer.Repositories;
+using DataObjects;
 namespace WebAPI
 {
     public class Program
@@ -14,9 +15,12 @@ namespace WebAPI
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddTransient<MyProjectContext>();
+            builder.Services.AddIdentity<Account, IdentityRole()
+                .AddIdentityFramworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders()> 
             builder.Services.AddTransient<IPageRepository, PageRepository>();
             builder.Services.AddTransient<IProductRepository, ProductRepository>();
-            builder.Services.AddTransient<MyProjectContext>();
             builder.Services.AddTransient<IAccountRepository, AccountRepository>();
 
             var app = builder.Build();

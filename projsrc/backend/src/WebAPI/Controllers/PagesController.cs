@@ -12,6 +12,7 @@ namespace YourNamespace.Controllers
     public class PagesController : ControllerBase
     {
         private readonly IPageRepository _repository;
+        private readonly IAccountRepository _accrepository;
 
         public PagesController(IPageRepository repository)
         {
@@ -40,6 +41,10 @@ namespace YourNamespace.Controllers
         public async Task<ActionResult<Page>> CreatePage(Page page)
         {
             await _repository.CreatePageAsync(page);
+            if (_accrepository.GetAccountByIdAsync(page.AuthorId) == null)
+            { 
+                return NotFound("Author doesn't exist");
+            }
             return CreatedAtAction(nameof(GetPage), new { id = page.Id }, page);
         }
 
