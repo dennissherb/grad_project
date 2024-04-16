@@ -51,5 +51,9 @@ namespace Datalayer.Repositories
         {
             return await _ctx.Accounts.FirstOrDefaultAsync(a => a.Email == email);
         }
+        public async Task<Account> GetAccountByUserNameAsync(string username)
+        {
+            return await _ctx.Accounts.FirstOrDefaultAsync(a => a.UserName == username);
+        }
     }
 }

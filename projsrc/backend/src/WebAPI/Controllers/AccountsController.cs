@@ -78,6 +78,10 @@ namespace WebAPI.Controllers
         public async Task<ActionResult<Account>> Login([FromBody] Account account)
         {
             var existingAccount = await _repository.GetAccountByEmailAsync(account.Email);
+            if (existingAccount == null)
+            {
+                existingAccount = await _repository.GetAccountByUserNameAsync(account.UserName);
+            }
 
             if (existingAccount == null)
             {

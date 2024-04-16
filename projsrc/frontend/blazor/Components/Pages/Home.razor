@@ -5,6 +5,7 @@
 @using System.Text.Json
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @using blazor
+@using DataObjects
 
 @inject NavigationManager Navman
 @inject HttpClient HttpClient
@@ -16,7 +17,7 @@
     {
         <div id="ProtectedContent"> 
             <PageTitle>Home</PageTitle>
-            <h1>Hello, @loggedUser["accounts_user_name"]</h1>
+            <h1>Hello, @loggedUser.UserName</h1>
             Welcome to your new app.
             <button @onclick="SignOut">Sign Out</button>
         </div>
@@ -25,15 +26,15 @@
 
 @code 
 {
-    Dictionary<string, string>? loggedUser = null;
+    Account? loggedUser; 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        loggedUser = (await MySession.GetAsync<Dictionary<string,string>>("user")).Value;
+        loggedUser = (await MySession.GetAsync<Account>("user")).Value;
         if (firstRender) 
         {
             StateHasChanged();
         }
-        if (loggedUser == null || !loggedUser.ContainsKey("accounts_id") || int.Parse(loggedUser["accounts_id"]) <= 0 ) 
+        if (loggedUser == null)
         {
             redirStack.Push(Navman.Uri);
             Navman.NavigateTo("/login");

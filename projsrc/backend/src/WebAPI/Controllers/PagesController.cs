@@ -39,9 +39,9 @@ namespace YourNamespace.Controllers
 
         [HttpPost]
         public async Task<ActionResult<Page>> CreatePage(Page page)
-        {
+        { 
             await _repository.CreatePageAsync(page);
-            if (_accrepository.GetAccountByIdAsync(page.AuthorId) == null)
+            if (_accrepository.GetAccountByIdAsync(page.AuthorId.Value) == null)
             { 
                 return NotFound("Author doesn't exist");
             }

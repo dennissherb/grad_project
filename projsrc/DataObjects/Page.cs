@@ -8,25 +8,25 @@ namespace DataObjects
     {
         [Key]
         [Column("pages_id")]
-        public int Id { get; set; } = 0;
+        public int? Id { get; set; }
 
         [Required]
         [Column("pages_type")]
-        public string Type { get; set; } = "Article";
+        public string? Type { get; set; }
 
         [ForeignKey("Account")]
         [Column("pages_author_id")]
-        public int AuthorId { get; set; } = 0;
+        public int? AuthorId { get; set; }
 
         [ForeignKey("Product")]
         [Column("fkproducts_id")]
-        public int? ProductId { get; set; } = null;
+        public int? ProductId { get; set; }
 
         [Column("pages_tags")]
-        public string? Tags { get; set; } = null;
+        public string? Tags { get; set; }
 
         [Column("pages_content")]
-        public string? Content { get; set; } = "<h1>This page is empty</h1>";
+        public string? Content { get; set; }
 
         // Navigation propety
         [JsonIgnore]

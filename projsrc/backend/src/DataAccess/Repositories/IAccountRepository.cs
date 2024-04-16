@@ -11,5 +11,6 @@ namespace Datalayer.Repositories
         Task<IEnumerable<Account>> GetAccountsAsync();
         Task UpdateAccountAsync(Account account);
         Task<Account> GetAccountByEmailAsync(string email);
+        Task<Account> GetAccountByUserNameAsync(string email);
     }
 }

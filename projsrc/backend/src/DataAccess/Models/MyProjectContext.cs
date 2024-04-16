@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Datalayer.Models
 {
-    public class MyProjectContext : IdentityDbContext<Account>
+    public class MyProjectContext : DbContext
     {
         private readonly IConfiguration _configuration;
         private readonly string _connectionString;

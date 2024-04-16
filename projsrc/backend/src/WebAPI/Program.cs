@@ -16,9 +16,6 @@ namespace WebAPI
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddTransient<MyProjectContext>();
-            builder.Services.AddIdentity<Account, IdentityRole()
-                .AddIdentityFramworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders()> 
             builder.Services.AddTransient<IPageRepository, PageRepository>();
             builder.Services.AddTransient<IProductRepository, ProductRepository>();
             builder.Services.AddTransient<IAccountRepository, AccountRepository>();
