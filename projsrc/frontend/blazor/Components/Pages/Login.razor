@@ -60,7 +60,7 @@
         }
         if (loggedUser != null)
         {
-			Navman.NavigateTo("/");
+            Navman.NavigateTo("/");
         }
     }
 
@@ -73,13 +73,13 @@
     {
         try
         {
-			loginData.UserName = loginData.Email;
+            loginData.UserName = loginData.Email;
             var response = await httpClient.PostAsJsonAsync("http://localhost:5005/api/Accounts/login", loginData);
             if (response != null)
             {
                 if (response.IsSuccessStatusCode)
                 {
-                    loggedUser = JsonSerializer.Deserialize<Account>(await response.Content.ReadAsStringAsync());
+                    loggedUser = (await response.Content.ReadFromJsonAsync<Account>());
                     try
                     {
                         await (MySession.SetAsync("user", loggedUser));
