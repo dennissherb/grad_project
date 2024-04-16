@@ -1,0 +1,21 @@
+﻿@page "/Content/{PageId}"
+
+@rendermode InteractiveServer
+
+@using System.Text.Json
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@using blazor
+@using DataObjects
+
+@inject NavigationManager Navman
+@inject HttpClient HttpClient
+@inject ProtectedSessionStorage MySession
+@inject IJSRuntime JSRuntime
+@inject Stack<string> redirStack;
+
+<h3>Content</h3>
+
+@code {
+    [Parameter]
+    public int PageId { get; set; }
+}

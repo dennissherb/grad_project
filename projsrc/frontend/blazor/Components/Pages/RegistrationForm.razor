@@ -2,6 +2,7 @@
 
 @rendermode InteractiveServer
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@using DataObjects
 
 @inject HttpClient httpClient
 @inject NavigationManager Navman
@@ -25,7 +26,7 @@
         <div class="form-group">
             <label class="col-md-4 control-label" for="Name">Username</label>  
             <div class="col-md-5">
-                <input id="Name" name="Name" type="text" placeholder="username" class="form-control input-md" required="" @bind="username">
+                <input id="Name" name="Name" type="text" placeholder="username" class="form-control input-md" required="" @bind="registerData.UserName">
 
             </div>
         </div>
@@ -34,7 +35,7 @@
         <div class="form-group">
             <label class="col-md-4 control-label" for="passwordinput">Password</label>
             <div class="col-md-5">
-                <input id="passwordinput" name="passwordinput" type="password" placeholder="" class="form-control input-md" required="" @bind="password">
+                <input id="passwordinput" name="passwordinput" type="password" placeholder="" class="form-control input-md" required="" @bind="registerData.Password">
                 <span class="help-block">max 16 characters</span>
             </div>
         </div>
@@ -52,7 +53,7 @@
         <div class="form-group">
             <label class="col-md-4 control-label" for="dateofbirth">Mobile Number</label>  
             <div class="col-md-5">
-                <input id="dateofbirth" name="dateofbirth" type="date" placeholder="mm/dd/yyyy" class="form-control input-md" required="" @bind="dateOfBirth_d">
+                <input id="dateofbirth" name="dateofbirth" type="date" placeholder="mm/dd/yyyy" class="form-control input-md" required="" @bind="registerData.DateOfBirth">
             </div>
         </div>
 
@@ -60,7 +61,7 @@
         <div class="form-group">
             <label class="col-md-4 control-label" for="emailId">Email</label>  
             <div class="col-md-6">
-                <input id="emailId" name="emailId" type="text" placeholder="user@domain.com" class="form-control input-md" required="" @bind="email">
+                <input id="emailId" name="emailId" type="text" placeholder="user@domain.com" class="form-control input-md" required="" @bind="registerData.Email">
             </div>
         </div>
 
@@ -88,9 +89,14 @@ else
     private string errorMessage;
     private bool registered = false;
     protected bool loggedIn = false;
+    Account registerData;
     List<(string,MarkupString)> errors { get; set; } = new();
     private string confPass { get; set; }
 
+    protected override void OnInitialized()
+    {
+        registerData = new Account();
+    }
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         //is logged in
@@ -102,7 +108,7 @@ else
     {
         try
         {
-            if (password != confPass) 
+            if (registerData.Password != confPass) 
             {
                 errors.Add(("Password do not match", new("Please re-enter the passwords")));
                 confPass = String.Empty;
@@ -110,7 +116,7 @@ else
             }
             dateOfBirth_s = dateOfBirth_d.ToString("yyyy-MM-dd");
             var registrationData = new { accounts_user_name = username, accounts_email = email, accounts_password = password, accounts_date_of_birth = dateOfBirth_s };
-            var response = await httpClient.PostAsJsonAsync("http://localhost:5005/api/Account/register", registrationData);
+            var response = await httpClient.PostAsJsonAsync<Account>("http://localhost:5005/api/Accounts/", registerData);
             if (response.IsSuccessStatusCode)
             {
                 registered = true;
