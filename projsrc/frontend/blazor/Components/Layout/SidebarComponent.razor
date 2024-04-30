@@ -1,0 +1,99 @@
+﻿@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@using DataObjects
+
+@rendermode InteractiveServer
+
+@inject ProtectedSessionStorage MySession
+@inject NavigationManager Navman
+@inject IJSRuntime JSRuntime
+
+
+<Sidebar @ref="sidebar">
+    <SidebarContent>
+        <SidebarBrand>
+            <a href="#">Blazorise Sidebar</a>
+        </SidebarBrand>
+        <SidebarNavigation>
+            <SidebarLabel>Main</SidebarLabel>
+
+            <SidebarItem>
+                <SidebarLink To="#" Title="Home">
+                    <Icon Name="IconName.Home" Margin="Margin.Is3.FromEnd" />Home
+                </SidebarLink>
+            </SidebarItem>
+
+            <SidebarItem>
+                <SidebarLink Toggled="(isOpen)=> mailSidebarSubItems.Toggle(isOpen)" IsShow>
+                    <Icon Name="IconName.Mail" Margin="Margin.Is3.FromEnd" />Email
+                </SidebarLink>
+                <SidebarSubItem @ref="mailSidebarSubItems" IsShow>
+                    <SidebarItem>
+                        <SidebarLink To="#email/inbox">Inbox</SidebarLink>
+                    </SidebarItem>
+                    <SidebarItem>
+                        <SidebarLink To="#email/compose">Compose Email</SidebarLink>
+                    </SidebarItem>
+                    @* other subitems *@
+                </SidebarSubItem>
+            </SidebarItem>
+
+            <SidebarItem>
+                <SidebarLink Toggled="(isOpen)=> appsSidebarSubItems.Toggle(isOpen)" To=text-editor  IsShow>
+                    <Icon Name="IconName.Pen" Margin="Margin.Is3.FromEnd" />Create post
+                </SidebarLink >
+            </SidebarItem>
+
+            @if (account != null) 
+            {
+				<SidebarItem>
+					<SidebarLink Toggled="(isOpen)=> appsSidebarSubItems.Toggle(isOpen)" IsShow To="/"> @account.UserName
+						<Icon Name="IconName.User" Margin="Margin.Is3.FromEnd" />
+					</SidebarLink>
+				</SidebarItem>
+				<SidebarItem>
+					<SidebarLink Toggled="(isOpen)=> appsSidebarSubItems.Toggle(isOpen)" IsShow @onclick="SignOut"> Sign Out
+						<Icon Name="IconName.LockOpen" Margin="Margin.Is3.FromEnd" />
+					</SidebarLink>
+                </SidebarItem>
+            }
+            else
+            {
+				<SidebarItem>
+					<SidebarLink Toggled="(isOpen)=> appsSidebarSubItems.Toggle(isOpen)" IsShow To="/login"> Log in
+						<Icon Name="IconName.Lock" Margin="Margin.Is3.FromEnd" />
+					</SidebarLink>
+                </SidebarItem>
+            }
+
+        </SidebarNavigation>
+    </SidebarContent>
+</Sidebar>
+
+@code{
+    Sidebar sidebar;
+    SidebarSubItem mailSidebarSubItems;
+    SidebarSubItem appsSidebarSubItems;
+    Account? account { get; set; }
+
+    void ToggleSidebar()
+    {
+        sidebar.Toggle();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender) 
+    {
+        account = (await MySession.GetAsync<Account>("user")).Value;
+        if (account != null)
+            StateHasChanged();
+    }
+
+    protected async Task SignOut() {
+        await MySession.DeleteAsync("user");
+        StateHasChanged();
+        Navman.NavigateTo("/login");
+		await JSRuntime.InvokeVoidAsync("location.reload");
+    }
+}
+
+
+

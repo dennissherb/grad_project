@@ -1,13 +1,13 @@
 ﻿@inherits LayoutComponentBase
 
+@using DataObjects
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@using blazor
+
+
 <div class="bb-page">
-
-    <Sidebar @ref="sidebar"
-             IconName="IconName.Cake"
-             Title="Green Site"
-             DataProvider="SidebarDataProvider" />
-
-    <main>
+	<SidebarComponent />
+	<main>
         <div class="bb-top-row px-4 d-flex justify-content-end">
             <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
         </div>
@@ -16,36 +16,24 @@
             <div class="py-2">@Body</div>
         </article>
     </main>
-
 </div>
-
-@code {
-    Sidebar sidebar;
-    IEnumerable<NavItem> navItems;
-
-    private async Task<SidebarDataProviderResult> SidebarDataProvider(SidebarDataProviderRequest request)
-    {
-        if (navItems is null)
-            navItems = GetNavItems();
-
-        return await Task.FromResult(request.ApplyTo(navItems));
-    }
-
-    private IEnumerable<NavItem> GetNavItems()
-    {
-        navItems = new List<NavItem>
-                   {
-                       new NavItem { Id = "1", Href = "/", IconName = IconName.HouseDoorFill, Text = "Home", Match=NavLinkMatch.All},
-                       new NavItem { Id = "2", Href = "/Manage/user/", IconName = IconName.PlusSquareFill, Text = "Admin Dashboard"},
-                   };
-
-        return navItems;
-    }
-}
-
 
 <div id="blazor-error-ui">
     An unhandled error has occurred.
     <a href="" class="reload">Reload</a>
     <a class="dismiss">🗙</a>
 </div>
+
+@code {
+    Sidebar sidebar;
+    SidebarSubItem mailSidebarSubItems;
+    SidebarSubItem appsSidebarSubItems;
+
+    public Account? account { get; set; } 
+
+
+    void ToggleSidebar()
+    {
+        sidebar.Toggle();
+    }
+}

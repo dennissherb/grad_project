@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Datalayer;
 
-namespace Datalayer.Queries
+namespace Datalayer.query_classes
 {
     public class BaseQuery
     {
@@ -16,7 +15,7 @@ namespace Datalayer.Queries
             return input.Replace("'", "''");
         }
 
-        public static async Task<bool> DeleteRow(string tableName, string key, Dictionary<string,object> row) 
+        public static async Task<bool> DeleteRow(string tableName, string key, Dictionary<string, object> row)
         {
             try
             {
@@ -33,7 +32,7 @@ namespace Datalayer.Queries
                 return false;
             }
         }
-        public static async Task<bool> DeleteRowById(string tableName, int id) 
+        public static async Task<bool> DeleteRowById(string tableName, int id)
         {
             try
             {
@@ -71,7 +70,7 @@ namespace Datalayer.Queries
                 return false;
             }
         }
-        
+
         protected static async Task<Dictionary<string, string>> ReadEntryByColumn(string tableName, string columnName, string columnValue)
         {
             try

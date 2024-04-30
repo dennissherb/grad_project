@@ -24,6 +24,11 @@ namespace Datalayer.Repositories
             var pages = await _ctx.Pages.ToListAsync();
             return (IEnumerable<Page>)pages;
         }
+        public async Task<List<Page>> GetPagesByAuthorAsync(int id)
+        {
+            var pages = _ctx.Pages.Where(a => a.AuthorId == id).ToListAsync();
+            return await pages as List<Page>;
+        }
         public async Task<Page> GetPageByIdAsync(int id)
         {
             return await _ctx.Pages.FindAsync(id);

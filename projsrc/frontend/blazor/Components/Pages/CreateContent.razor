@@ -1,0 +1,90 @@
+﻿@page "/text-editor"
+
+@using DataObjects
+
+@inject HttpClient httpClient
+@inject ProtectedSessionStorage MySession
+@inject NavigationManager Navman
+@inject Stack<string> redirStack;
+
+<RichTextEdit @ref="richTextEditRef"
+              Theme="RichTextEditTheme.Snow"
+              ContentChanged="@OnContentChanged"
+              PlaceHolder="Type your post here..."
+              ReadOnly="@readOnly"
+              SubmitOnEnter="true"
+              EnterPressed="@OnSave"
+              ToolbarPosition="Blazorise.Placement.Bottom">
+    <Editor>My example content</Editor>
+    <Toolbar>
+        <RichTextEditToolbarGroup>
+            <RichTextEditToolbarButton Action="RichTextEditAction.Bold" />
+            <RichTextEditToolbarButton Action="RichTextEditAction.Italic" />
+            <RichTextEditToolbarSelect Action="RichTextEditAction.Size">
+                <RichTextEditToolbarSelectItem Value="small" />
+                <RichTextEditToolbarSelectItem Selected />
+                <RichTextEditToolbarSelectItem Value="large" />
+                <RichTextEditToolbarSelectItem Value="huge">Very Big</RichTextEditToolbarSelectItem>
+            </RichTextEditToolbarSelect>
+            <RichTextEditToolbarButton Action="RichTextEditAction.List" Value="ordered" />
+            <RichTextEditToolbarButton Action="RichTextEditAction.List" Value="bullet" />
+        </RichTextEditToolbarGroup>
+        <!-- Custom toolbar content -->
+        <RichTextEditToolbarGroup Float="Blazorise.Float.End">
+            <Button onClick="window.open('https://www.quilljs.com/','quilljs')"><Blazorise.Icon Name="Blazorise.IconName.InfoCircle"/></Button>
+            <Button Clicked="@OnSave"><Icon Name="IconName.Save" /></Button>
+        </RichTextEditToolbarGroup>
+    </Toolbar>
+</RichTextEdit>
+
+<InputText @bind-Value="tags">Article tags - seperate with comma</InputText>
+
+ @if (savedContent != null) { 
+     @((MarkupString)(savedContent))
+     <div>
+		 @savedContent
+     </div>
+ }
+
+
+@code{
+    protected RichTextEdit richTextEditRef;
+    protected bool readOnly;
+    protected string contentAsHtml;
+    protected string contentAsDeltaJson;
+    protected string contentAsText;
+    protected string savedContent;
+    protected Page page;
+    protected Account author;
+    protected string tags;
+
+    public async Task OnContentChanged()
+    {
+        contentAsHtml = await richTextEditRef.GetHtmlAsync();
+        contentAsDeltaJson = await richTextEditRef.GetDeltaAsync();
+        contentAsText = await richTextEditRef.GetTextAsync();
+    }
+
+    public async Task OnSave()
+    {
+        page = new();
+        savedContent = await richTextEditRef.GetHtmlAsync();
+        await richTextEditRef.ClearAsync();
+
+        author = (await MySession.GetAsync<Account>("user")).Value;
+        if (author != null)
+            page.Author = author;
+        else
+            page.Author = await (await httpClient.GetAsync("http://localhost:5005/api/Accounts/0")).Content.ReadFromJsonAsync<Account>();
+
+        page.Content = savedContent;
+        page.Type = "Article";
+        page.Tags = tags;
+        page.AuthorId = page.Author.Id;
+        var response = await httpClient.PostAsJsonAsync("http://localhost:5005/api/Pages", page);
+        page = response.Content.ReadFromJsonAsync<Page>().Result;
+        Navman.NavigateTo($"content/{page.Id}");
+    }
+}
+
+

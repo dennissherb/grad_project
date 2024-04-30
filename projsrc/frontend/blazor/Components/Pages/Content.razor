@@ -1,10 +1,9 @@
-﻿@page "/Content/{PageId}"
+﻿@page "/content/{PageId}"
 
 @rendermode InteractiveServer
 
 @using System.Text.Json
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
-@using blazor
 @using DataObjects
 
 @inject NavigationManager Navman
@@ -13,9 +12,26 @@
 @inject IJSRuntime JSRuntime
 @inject Stack<string> redirStack;
 
-<h3>Content</h3>
+
+@if (page != null)
+{
+	@((MarkupString)(page.Content))
+}
 
 @code {
     [Parameter]
-    public int PageId { get; set; }
+    public string PageId { get; set; }
+    Page? page;
+    Account? account;
+
+    protected override async Task OnInitializedAsync()
+    {
+        //load the page from api
+        page = await HttpClient.GetFromJsonAsync<Page>($"http://localhost:5005/api/Pages/{PageId}");
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        account = (await MySession.GetAsync<Account>("user")).Value;
+    }
 }

@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Datalayer;
 
-namespace Datalayer.Queries
+namespace Datalayer.query_classes
 {
     public class AccountQuery : BaseQuery
     {
         string tableName = "accounts";
-        public static async Task<bool> TryLogin(Dictionary<string,string> user)
+        public static async Task<bool> TryLogin(Dictionary<string, string> user)
         {
             try
             {
@@ -19,7 +18,7 @@ namespace Datalayer.Queries
 
                 List<Dictionary<string, string>> result = await DBConnection.ExecuteQuery(query);
 
-                return (result.Count != 0);
+                return result.Count != 0;
             }
             catch (Exception ex)
             {
@@ -29,7 +28,7 @@ namespace Datalayer.Queries
             }
         }
 
-        public static async Task<bool> CreateAccount(Dictionary<string,string> user)
+        public static async Task<bool> CreateAccount(Dictionary<string, string> user)
         {
             return await CreateEntry("accounts", user);
         }
@@ -38,7 +37,7 @@ namespace Datalayer.Queries
         {
             return await ReadEntryByColumn("accounts", "accounts_email", email);
         }
-        public static async Task<Dictionary<string, string>> ReadAccountByIdAsync(Dictionary<string,string> user)
+        public static async Task<Dictionary<string, string>> ReadAccountByIdAsync(Dictionary<string, string> user)
         {
             if (user.TryGetValue("accounts_id", out string id) && !string.IsNullOrEmpty(id))
             {
@@ -54,7 +53,7 @@ namespace Datalayer.Queries
             return await ReadEntryById("accounts", id.ToString());
         }
 
-        public static async Task<Dictionary<string, string>> ReadAccountByUQ(Dictionary<string,string> user)
+        public static async Task<Dictionary<string, string>> ReadAccountByUQ(Dictionary<string, string> user)
         {
             return await ReadEntryByUniqueQuery("accounts", new Dictionary<string, string> {
                 { "accounts_email", user.ContainsKey("accounts_email") ? user["accounts_email"] : "" },
@@ -66,17 +65,17 @@ namespace Datalayer.Queries
             return await ReadEntries("accounts");
         }
 
-        public static async Task<Dictionary<string,string>> UpdateAccount( Dictionary<string,string> newUser)
+        public static async Task<Dictionary<string, string>> UpdateAccount(Dictionary<string, string> newUser)
         {
             return await UpdateEntry(newUser, "accounts");
         }
 
-        public static async Task<bool> DeleteAccount(Dictionary<string,string> user)
+        public static async Task<bool> DeleteAccount(Dictionary<string, string> user)
         {
-            Dictionary<string,object> objDict = new Dictionary<string,object>();
+            Dictionary<string, object> objDict = new Dictionary<string, object>();
             foreach (var kvp in user)
             {
-                objDict.Add(kvp.Key, (object)kvp.Value);
+                objDict.Add(kvp.Key, kvp.Value);
             }
             return await DeleteRow("accounts", "email", objDict);
         }

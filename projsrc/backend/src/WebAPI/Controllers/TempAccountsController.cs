@@ -1,4 +1,4 @@
-﻿using Datalayer.Queries;
+﻿using Datalayer.query_classes;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers

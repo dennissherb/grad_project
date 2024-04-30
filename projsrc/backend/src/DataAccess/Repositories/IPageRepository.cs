@@ -9,6 +9,7 @@ namespace Datalayer.Repositories
     {
         Task<IEnumerable<Page>> GetPagesAsync();
         Task<Page> GetPageByIdAsync(int id);
+        Task<List<Page>> GetPagesByAuthorAsync(int id);
         Task CreatePageAsync(Page p);
         Task UpdatePageAsync(Page p);
         Task DeletePageAsync(int id);

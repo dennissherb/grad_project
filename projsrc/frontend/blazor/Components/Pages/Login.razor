@@ -5,22 +5,29 @@
 @using System.Text.Json
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @using DataObjects;
+@using blazor.Components.Layout
 
 @inject HttpClient httpClient
 @inject ProtectedSessionStorage MySession
 @inject NavigationManager Navman
 @inject Stack<string> redirStack;
+@inject IJSRuntime JSRuntime;
 
 @if (loggedUser == null) 
 {
     <div id="ProtectedContent">
         <h3>Login</h3>
-        @if (errors.Any())
-        {
-            <Alert Color="AlertColor.Danger">
-                <strong>@errors.LastOrDefault().Value.Item1</strong>, @errors.LastOrDefault().Value.Item2
-			</Alert>
-        }
+    @if (errors.Any()) {
+		<Alert Color="Color.Danger" Visible="true">
+			<AlertDescription>
+                @errors.LastOrDefault().Value.Item1
+			</AlertDescription>
+			<AlertMessage>
+                @errors.LastOrDefault().Value.Item2
+			</AlertMessage>
+			<CloseButton />
+		</Alert>
+    }
 
             <form @onsubmit="HandleLogin">
 			  <div class="form-group">
@@ -36,8 +43,8 @@
 				<input type="checkbox" class="form-check-input" id="exampleCheck1">
 				<label class="form-check-label" for="exampleCheck1">Check me out</label>
 			  </div>
-            <Button Color="ButtonColor.Primary" Type="ButtonType.Submit"><Icon Name="IconName.Check"/>Login</Button>
-            <Button Color="ButtonColor.Primary" @onclick='() => { redirStack.Push(Navman.Uri); Navman.NavigateTo("register");}'><Icon Name="IconName.Envelope"/>Register</Button>
+            <Button Color="Color.Primary" Type="Blazorise.ButtonType.Submit"><Blazorise.Icon Name="Blazorise.IconName.Check"/>Login</Button>
+            <Button Color="Color.Primary" @onclick='() => { redirStack.Push(Navman.Uri); Navman.NavigateTo("register");}'><BlazorBootstrap.Icon Name="BlazorBootstrap.IconName.Envelope"/>Register</Button>
 			</form>
     </div>
 }
@@ -50,6 +57,9 @@
     Account? loggedUser;
     Account loginData;
     List<(string,MarkupString?)?> errors { get; set; } = new();
+
+    [CascadingParameter]
+    public MainLayout Layout { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -83,11 +93,12 @@
                     try
                     {
                         await (MySession.SetAsync("user", loggedUser));
+						await JSRuntime.InvokeVoidAsync("location.reload");
                         Navman.NavigateTo(redirStack.Peek());
                     }
                     catch (Exception ex)
                     {
-						errors.Add(("Unkown error has occured", new("Open a new issue <a href=\"https://github.com/qkweint/grad_project\">Here </a>")));
+                        errors.Add(("Unkown error has occured", new("Open a new issue <a href=\"https://github.com/qkweint/grad_project\">Here </a>")));
                     }
                 }
                 //switch case to deal with different status codes
@@ -115,7 +126,7 @@
         }
         catch (Exception ex)
         {
-			errors.Add(("Unkown error has occured", new($"Open a new issue <a href=\"https://github.com/qkweint/grad_project\">Here </a>\n{ex.Message}")));
+            errors.Add(("Unkown error has occured", new($"Open a new issue <a href=\"https://github.com/qkweint/grad_project\">Here </a>\n{ex.Message}")));
             loggedUser = null;
         }
     }

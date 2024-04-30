@@ -14,9 +14,9 @@
 {
     @if (errors.Any())
     {
-        <Alert Color="AlertColor.Danger">
+        <Blazorise.Alert Color="Color.Danger">
             <strong>@errors.LastOrDefault().Item1</strong>, @errors.LastOrDefault().Item2
-        </Alert>
+        </Blazorise.Alert>
     }
     <form @onsubmit="HandleRegistration">
         <!-- Form Name -->

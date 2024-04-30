@@ -1,4 +1,11 @@
 using blazor.Components;
+using Blazorise.RichTextEdit;
+using Syncfusion.Blazor;
+using Blazorise;
+using Blazorise.Bootstrap;
+using Blazorise.Icons.FontAwesome;
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +16,16 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 builder.Services.AddHttpClient();
 builder.Services.AddScoped<Stack<string>>();
+builder.Services.AddScoped<ProtectedSessionStorage>();
+builder.Services
+    .AddBlazoriseRichTextEdit();
+builder.Services
+    .AddBlazorise( options =>
+    {
+        options.Immediate = true;
+    } )
+    .AddBootstrapProviders()
+    .AddFontAwesomeIcons();
 
 var app = builder.Build();
 

@@ -5,7 +5,7 @@ using Datalayer.Models;
 using Datalayer.Repositories;
 using DataObjects;
 
-namespace YourNamespace.Controllers
+namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -37,19 +37,22 @@ namespace YourNamespace.Controllers
             return Ok(page);
         }
 
+        [HttpGet("ByAuthor/{id}")]
+        public async Task<ActionResult<List<Page>>> GetPagesByAuthor(int id)
+        {
+            var pages = await _repository.GetPagesByAuthorAsync(id);
+            return Ok(pages);
+        }
+
         [HttpPost]
         public async Task<ActionResult<Page>> CreatePage(Page page)
-        { 
+        {
             await _repository.CreatePageAsync(page);
-            if (_accrepository.GetAccountByIdAsync(page.AuthorId.Value) == null)
-            { 
-                return NotFound("Author doesn't exist");
-            }
             return CreatedAtAction(nameof(GetPage), new { id = page.Id }, page);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdatePage(int id,Page page)
+        public async Task<IActionResult> UpdatePage(int id, Page page)
         {
             if (page.Id == 0)
             {

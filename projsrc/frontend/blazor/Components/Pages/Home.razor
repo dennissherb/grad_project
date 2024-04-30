@@ -20,13 +20,36 @@
             <h1>Hello, @loggedUser.UserName</h1>
             Welcome to your new app.
             <button @onclick="SignOut">Sign Out</button>
+            <button @onclick='()=>Navman.NavigateTo("text-editor")'>Create Article</button>
+
+            @if (AuthoredPages != null) {
+				<ListGroup Overflow="Overflow.Hidden">
+					@foreach (Page page in AuthoredPages) 
+					{
+						if (page.Content != null) 
+						{
+							<ListGroupItem Style="max-height: 90px; overflow:hidden">
+								<a href='content/@(page.Id)'>@((MarkupString)(page.Content))</a>
+                                @if (page.Tags != null) {
+									<Badge Color="Color.Primary" Pill>@(page.Tags)</Badge>
+                                }
+							</ListGroupItem>
+						}
+					}
+				</ListGroup>
+            }
+            else 
+            {
+                <p>You haven't written anything yet</p>
+            }
         </div>
     }
 
 
 @code 
 {
-    Account? loggedUser; 
+    Account? loggedUser;
+    List<Page>? AuthoredPages;
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         loggedUser = (await MySession.GetAsync<Account>("user")).Value;
@@ -38,11 +61,22 @@
         {
             redirStack.Push(Navman.Uri);
             Navman.NavigateTo("/login");
-		} 
+        } 
+
+        if (loggedUser != null)
+        {
+            //AuthoredPages = (await HttpClient.GetAsync<List<Page>>($"https://localhost:5005/api/Page/ByAuthor/{loggedUser.Id}"));
+            AuthoredPages = await HttpClient.GetFromJsonAsync<List<Page>>($"http://localhost:5005/api/Pages/ByAuthor/{loggedUser.Id}");
+            if (firstRender)
+            {
+                StateHasChanged();
+            }
+        }
     }
 
     protected async Task SignOut() {
         await MySession.DeleteAsync("user");
         Navman.NavigateTo("/login");
+		await JSRuntime.InvokeVoidAsync("location.reload");
     }
 }
