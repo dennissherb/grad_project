@@ -17,24 +17,9 @@
             <SidebarLabel>Main</SidebarLabel>
 
             <SidebarItem>
-                <SidebarLink To="#" Title="Home">
+                <SidebarLink To="/" Title="Home">
                     <Icon Name="IconName.Home" Margin="Margin.Is3.FromEnd" />Home
                 </SidebarLink>
-            </SidebarItem>
-
-            <SidebarItem>
-                <SidebarLink Toggled="(isOpen)=> mailSidebarSubItems.Toggle(isOpen)" IsShow>
-                    <Icon Name="IconName.Mail" Margin="Margin.Is3.FromEnd" />Email
-                </SidebarLink>
-                <SidebarSubItem @ref="mailSidebarSubItems" IsShow>
-                    <SidebarItem>
-                        <SidebarLink To="#email/inbox">Inbox</SidebarLink>
-                    </SidebarItem>
-                    <SidebarItem>
-                        <SidebarLink To="#email/compose">Compose Email</SidebarLink>
-                    </SidebarItem>
-                    @* other subitems *@
-                </SidebarSubItem>
             </SidebarItem>
 
             <SidebarItem>
