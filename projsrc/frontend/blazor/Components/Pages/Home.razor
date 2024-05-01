@@ -25,11 +25,11 @@
 					{
 						if (page.Content != null) 
 						{
-							<ListGroupItem Style="max-height: 250px; overflow:hidden; text-overflow:ellipsis;">
+							<ListGroupItem Style="max-height: 290px; overflow:hidden; text-overflow:ellipsis;">
                                 <Card>
-                                    <CardBody>
-										<CardTitle Style="font-size: 16pt">
-											@((MarkupString)(StringHtmlExtensions.TruncateHtml(page.Content, 30)))
+                                    <CardBody Style="max-height: 80%">
+										<CardTitle Style="font-size: 16pt; max-height: 30px; overflow:hidden">
+											<strong>@((MarkupString)(StringHtmlExtensions.TruncateHtml(page.Content, 30)))</strong>
 										</CardTitle>
 										<CardText Style="max-height: 30px; overflow: hidden; text-overflow:ellipsis; font-size: 10pt">
 											@((MarkupString)(page.Content)) @if (page.Tags != null) { <Badge Color="Color.Primary" Pill>@(page.Tags)</Badge> }
