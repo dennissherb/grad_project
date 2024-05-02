@@ -25,15 +25,17 @@
 					{
 						if (page.Content != null) 
 						{
-							<ListGroupItem Style="max-height: 290px; overflow:hidden; text-overflow:ellipsis;">
+							<ListGroupItem Style="overflow:hidden; text-overflow:ellipsis;">
                                 <Card>
-                                    <CardBody Style="max-height: 80%">
-										<CardTitle Style="font-size: 16pt; max-height: 30px; overflow:hidden">
+                                    <CardBody>
+										<CardTitle Style="font-size: 16pt; overflow:hidden; line-clamp: 2">
 											<strong>@((MarkupString)(StringHtmlExtensions.Truncate((StringHtmlExtensions.StripHtml(page.Content)), 50)))</strong>
 										</CardTitle>
-										<CardText Style="max-height: 30px; overflow: hidden; text-overflow:ellipsis; font-size: 10pt">
-											@((MarkupString)(page.Content)) @if (page.Tags != null) { <Badge Color="Color.Primary" Pill>@(page.Tags)</Badge> }
+										<CardText Style="overflow: hidden; text-overflow:ellipsis; font-size: 10pt; -webkit-line-clamp: 2">
+                                            @((MarkupString)(page.Content)) 
 										</CardText>
+                                        @if (page.Tags != null) { <Badge Color="Color.Primary" Pill>@(page.Tags)</Badge> }
+                                        <br/>
 										<Button Color="Color.Primary" Margin="Margin.Is2.FromTop" @onclick='() => {Navman.NavigateTo($"/content/{page.Id}");}'>
 											Read more <Icon Name="IconName.ArrowRight" />
 										</Button>
