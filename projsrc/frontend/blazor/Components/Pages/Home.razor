@@ -20,7 +20,7 @@
             <PageTitle>Home</PageTitle>
             <h1>Hello, @loggedUser.UserName</h1>
             @if (AuthoredPages != null) {
-				<ListGroup Overflow="Overflow.Hidden" Style="margin-right: 50%;">
+				<ListGroup Overflow="Overflow.Hidden" Style="margin-right: 60%;">
 					@foreach (Page page in AuthoredPages) 
 					{
 						if (page.Content != null) 
@@ -28,11 +28,13 @@
 							<ListGroupItem Style="overflow:hidden; text-overflow:ellipsis;">
                                 <Card>
                                     <CardBody>
-										<CardTitle Style="font-size: 16pt; overflow:hidden; line-clamp: 2">
-											<strong>@((MarkupString)(StringHtmlExtensions.Truncate((StringHtmlExtensions.StripHtml(page.Content)), 50)))</strong>
+										<CardTitle Style="font-size: 16pt; overflow:hidden; max-height 20px; line-clamp:2">
+											<strong>@((MarkupString)(StringHtmlExtensions.Truncate((StringHtmlExtensions.StripHtml(page.Content)), 60)))</strong>
 										</CardTitle>
-										<CardText Style="overflow: hidden; text-overflow:ellipsis; font-size: 10pt; -webkit-line-clamp: 2">
-                                            @((MarkupString)(page.Content)) 
+										<CardText Style="overflow: hidden; text-overflow:ellipsis; font-size: 10pt;">
+                                            <p style="-webkit-line-clamp: 3; -webkit-box-orient: vertical; display: -webkit-box; overflow: hidden;">
+                                                @(StringHtmlExtensions.StripHtml(page.Content)) 
+                                            </p>
 										</CardText>
                                         @if (page.Tags != null) { <Badge Color="Color.Primary" Pill>@(page.Tags)</Badge> }
                                         <br/>

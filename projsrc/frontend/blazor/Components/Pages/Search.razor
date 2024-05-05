@@ -1,0 +1,70 @@
+﻿@page "/search"
+
+@using Blazorise
+@using Blazorise.Icons.FontAwesome
+
+<Page Title="Search">
+    <Content>
+        <Panel>
+            <PanelHeader>
+                <h5>Search</h5>
+            </PanelHeader>
+            <PanelBody>
+                <Field>
+                    <Label for="searchInput">Search Term</Label>
+                    <InputText @bind-Value="@searchTerm" Id="searchInput" />
+                </Field>
+                <Button Color="Color.Primary" Clicked="@SearchFunc">
+                    <Blazorise.Icon> @FontAwesomeIcons.Search</Blazorise.Icon>
+                    
+                    Search
+                </Button>
+            </PanelBody>
+        </Panel>
+
+        @if (searchResults != null && searchResults.Any())
+        {
+            <Panel>
+                <PanelHeader>
+                    <h5>Search Results</h5>
+                </PanelHeader>
+                <PanelBody>
+                    @foreach (var result in searchResults)
+                    {
+                        <div>@result</div>
+                    }
+                </PanelBody>
+            </Panel>
+        }
+        else if (searchPerformed)
+        {
+            <Panel>
+                <PanelBody>
+                    No results found.
+                </PanelBody>
+            </Panel>
+        }
+    </Content>
+</Page>
+
+@code {
+    private string searchTerm;
+    private List<string> searchResults;
+    private bool searchPerformed;
+
+    private void SearchFunc()
+    {
+        // Simulated search logic - Replace this with your actual search logic
+        if (!string.IsNullOrWhiteSpace(searchTerm))
+        {
+            searchResults = new List<string> { "Result 1", "Result 2", "Result 3" };
+        }
+        else
+        {
+            searchResults = null;
+        }
+
+        searchPerformed = true;
+    }
+}
+

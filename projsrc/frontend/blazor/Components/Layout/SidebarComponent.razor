@@ -23,6 +23,12 @@
             </SidebarItem>
 
             <SidebarItem>
+                <SidebarLink Toggled="(isOpen)=> appsSidebarSubItems.Toggle(isOpen)" To=search  IsShow>
+                    <Icon Name="IconName.Search" Margin="Margin.Is3.FromEnd" /> Search posts
+                </SidebarLink >
+            </SidebarItem>
+
+            <SidebarItem>
                 <SidebarLink Toggled="(isOpen)=> appsSidebarSubItems.Toggle(isOpen)" To=text-editor  IsShow>
                     <Icon Name="IconName.Pen" Margin="Margin.Is3.FromEnd" />Create post
                 </SidebarLink >

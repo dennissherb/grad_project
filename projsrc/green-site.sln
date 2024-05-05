@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "blazor", "frontend\blazor\b
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataObjects", "DataObjects\DataObjects.csproj", "{412C12D7-0F39-4F4C-963B-4B2A38AC64C2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Helpers", "Helpers\Helpers.csproj", "{A7E4E6AF-442A-44A4-922F-0B2FB305B438}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Helpers", "Helpers\Helpers.csproj", "{A7E4E6AF-442A-44A4-922F-0B2FB305B438}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

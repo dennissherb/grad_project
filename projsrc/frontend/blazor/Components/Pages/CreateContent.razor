@@ -7,44 +7,50 @@
 @inject NavigationManager Navman
 @inject Stack<string> redirStack;
 
-<RichTextEdit @ref="richTextEditRef"
-              Theme="RichTextEditTheme.Snow"
-              ContentChanged="@OnContentChanged"
-              PlaceHolder="Type your post here..."
-              ReadOnly="@readOnly"
-              SubmitOnEnter="true"
-              EnterPressed="@OnSave"
-              ToolbarPosition="Blazorise.Placement.Bottom">
-    <Editor>My example content</Editor>
-    <Toolbar>
-        <RichTextEditToolbarGroup>
-            <RichTextEditToolbarButton Action="RichTextEditAction.Bold" />
-            <RichTextEditToolbarButton Action="RichTextEditAction.Italic" />
-            <RichTextEditToolbarSelect Action="RichTextEditAction.Size">
-                <RichTextEditToolbarSelectItem Value="small" />
-                <RichTextEditToolbarSelectItem Selected />
-                <RichTextEditToolbarSelectItem Value="large" />
-                <RichTextEditToolbarSelectItem Value="huge">Very Big</RichTextEditToolbarSelectItem>
-            </RichTextEditToolbarSelect>
-            <RichTextEditToolbarButton Action="RichTextEditAction.List" Value="ordered" />
-            <RichTextEditToolbarButton Action="RichTextEditAction.List" Value="bullet" />
-        </RichTextEditToolbarGroup>
-        <!-- Custom toolbar content -->
-        <RichTextEditToolbarGroup Float="Blazorise.Float.End">
-            <Button onClick="window.open('https://www.quilljs.com/','quilljs')"><Blazorise.Icon Name="Blazorise.IconName.InfoCircle"/></Button>
-            <Button Clicked="@OnSave"><Icon Name="IconName.Save" /></Button>
-        </RichTextEditToolbarGroup>
-    </Toolbar>
-</RichTextEdit>
+<Form>
+    <FieldLabel id="emailHelp" class="form-text text-muted">Add A title to your article:</FieldLabel>
+    <InputText>Title</InputText>
 
-<InputText @bind-Value="tags">Article tags - seperate with comma</InputText>
+    <RichTextEdit @ref="richTextEditRef"
+                  Theme="RichTextEditTheme.Snow"
+                  ContentChanged="@OnContentChanged"
+                  PlaceHolder="Type your post here..."
+                  ReadOnly="@readOnly"
+                  SubmitOnEnter="true"
+                  EnterPressed="@OnSave"
+                  ToolbarPosition="Blazorise.Placement.Bottom">
+        <Editor>My example content</Editor>
+        <Toolbar>
+            <RichTextEditToolbarGroup>
+                <RichTextEditToolbarButton Action="RichTextEditAction.Bold" />
+                <RichTextEditToolbarButton Action="RichTextEditAction.Italic" />
+                <RichTextEditToolbarSelect Action="RichTextEditAction.Size">
+                    <RichTextEditToolbarSelectItem Value="small" />
+                    <RichTextEditToolbarSelectItem Selected />
+                    <RichTextEditToolbarSelectItem Value="large" />
+                    <RichTextEditToolbarSelectItem Value="huge">Very Big</RichTextEditToolbarSelectItem>
+                </RichTextEditToolbarSelect>
+                <RichTextEditToolbarButton Action="RichTextEditAction.List" Value="ordered" />
+                <RichTextEditToolbarButton Action="RichTextEditAction.List" Value="bullet" />
+            </RichTextEditToolbarGroup>
+            <!-- Custom toolbar content -->
+            <RichTextEditToolbarGroup Float="Blazorise.Float.End">
+                <Button onClick="window.open('https://www.quilljs.com/','quilljs')"><Blazorise.Icon Name="Blazorise.IconName.InfoCircle"/></Button>
+                <Button Clicked="@OnSave"><Icon Name="IconName.Save" /></Button>
+            </RichTextEditToolbarGroup>
+        </Toolbar>
+    </RichTextEdit>
 
- @if (savedContent != null) { 
-     @((MarkupString)(savedContent))
-     <div>
-		 @savedContent
-     </div>
- }
+    <small id="emailHelp" class="form-text text-muted">add tags, seperate with comma.</small>
+    <InputText @bind-Value="tags">Article tags - seperate with comma</InputText>
+
+     @if (savedContent != null) { 
+         @((MarkupString)(savedContent))
+         <div>
+             @savedContent
+         </div>
+     }
+</Form>
 
 
 @code{
