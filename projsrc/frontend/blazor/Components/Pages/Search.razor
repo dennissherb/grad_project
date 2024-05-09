@@ -2,69 +2,72 @@
 
 @using Blazorise
 @using Blazorise.Icons.FontAwesome
+@using DataObjects
 
-<Page Title="Search">
-    <Content>
-        <Panel>
-            <PanelHeader>
-                <h5>Search</h5>
-            </PanelHeader>
-            <PanelBody>
-                <Field>
-                    <Label for="searchInput">Search Term</Label>
-                    <InputText @bind-Value="@searchTerm" Id="searchInput" />
-                </Field>
-                <Button Color="Color.Primary" Clicked="@SearchFunc">
-                    <Blazorise.Icon> @FontAwesomeIcons.Search</Blazorise.Icon>
-                    
-                    Search
-                </Button>
-            </PanelBody>
-        </Panel>
+@inject NavigationManager Navman
+@inject HttpClient HttpClient
+@inject ProtectedSessionStorage MySession
+@inject IJSRuntime JSRuntime
+@inject Stack<string> redirStack;
 
-        @if (searchResults != null && searchResults.Any())
-        {
-            <Panel>
-                <PanelHeader>
-                    <h5>Search Results</h5>
-                </PanelHeader>
-                <PanelBody>
-                    @foreach (var result in searchResults)
-                    {
-                        <div>@result</div>
-                    }
-                </PanelBody>
-            </Panel>
-        }
-        else if (searchPerformed)
-        {
-            <Panel>
-                <PanelBody>
-                    No results found.
-                </PanelBody>
-            </Panel>
-        }
-    </Content>
-</Page>
+    <h5>Search</h5>
+    <Field>
+        <Label for="searchInput">Search Term</Label>
+        <InputText @bind-Value="@searchTerm" Id="searchInput" />
+    </Field>
+    <Button Color="Color.Primary" Clicked="@SearchFunc">
+        <Blazorise.Icon> @FontAwesomeIcons.Search</Blazorise.Icon>
+        
+        Search
+    </Button>
+
+    @if (searchResults != null && searchResults.Any())
+    {
+        <ListGroup Overflow="Overflow.Hidden" Style="margin-right: 60%;">
+            @foreach (Page page in searchResults) 
+            {
+                if (page.Content != null) 
+                {
+                    <ListGroupItem Style="overflow:hidden; text-overflow:ellipsis;">
+                        <Card>
+                            <CardBody>
+                                <CardTitle Style="font-size: 16pt; overflow:hidden; max-height 20px; line-clamp:2">
+                                    <strong>@((MarkupString)(StringHtmlExtensions.Truncate((StringHtmlExtensions.StripHtml(page.Content)), 60)))</strong>
+                                </CardTitle>
+                                <CardText Style="overflow: hidden; text-overflow:ellipsis; font-size: 10pt;">
+                                    <p style="-webkit-line-clamp: 3; -webkit-box-orient: vertical; display: -webkit-box; overflow: hidden;">
+                                        @(StringHtmlExtensions.StripHtml(page.Content)) 
+                                    </p>
+                                </CardText>
+                                @if (page.Tags != null) { <Badge Color="Color.Primary" Pill>@(page.Tags)</Badge> }
+                                <br/>
+                                <Button Color="Color.Primary" Margin="Margin.Is2.FromTop" @onclick='() => {Navman.NavigateTo($"/content/{page.Id}");}'>
+                                    Read more <Blazorise.Icon Name="IconName.ArrowRight" />
+                                </Button>
+                            </CardBody>
+                        </Card>
+                    </ListGroupItem>
+                }
+            }
+        </ListGroup>
+    }
+    else if (searchPerformed)
+    {
+        <p>
+                No results found.
+        </p>
+    }
 
 @code {
     private string searchTerm;
-    private List<string> searchResults;
+    private List<Page> searchResults;
     private bool searchPerformed;
 
-    private void SearchFunc()
+    private async Task SearchFunc()
     {
-        // Simulated search logic - Replace this with your actual search logic
-        if (!string.IsNullOrWhiteSpace(searchTerm))
-        {
-            searchResults = new List<string> { "Result 1", "Result 2", "Result 3" };
-        }
-        else
-        {
-            searchResults = null;
-        }
-
-        searchPerformed = true;
+        string s = $"http://localhost:5005/api/Pages/ByTags/{searchTerm}";
+        searchResults = await HttpClient.GetFromJsonAsync<List<Page>>(s);
+        StateHasChanged();
     }
 }
 

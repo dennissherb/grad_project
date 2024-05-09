@@ -44,6 +44,13 @@ namespace WebAPI.Controllers
             return Ok(pages);
         }
 
+        [HttpGet("ByTags/{tags}")]
+        public async Task<ActionResult<List<Page>>> GetPagesByTags(string tags)
+        {
+            var pages = await _repository.GetPagesByTagsAsync(tags);
+            return Ok(pages);
+        }
+
         [HttpPost]
         public async Task<ActionResult<Page>> CreatePage(Page page)
         {

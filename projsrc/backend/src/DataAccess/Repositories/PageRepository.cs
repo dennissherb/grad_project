@@ -29,6 +29,25 @@ namespace Datalayer.Repositories
             var pages = _ctx.Pages.Where(a => a.AuthorId == id).ToListAsync();
             return await pages as List<Page>;
         }
+        public async Task<List<Page>> GetPagesByTagsAsync(string tags)
+        {
+
+            // Split the input string of tags into an array
+            string[] tagArray = tags.Split(',');
+
+            // Query pages where any tag matches any of the specified tags
+            var pages = await GetPagesAsync();
+
+            List<Page> listPages = new List<Page>();
+
+            foreach (Page page in pages) {
+                if (page.Tags != null && tagArray.All(page.Tags.Contains)) 
+                {
+                    listPages.Add(page);
+                }
+            }
+            return listPages;
+        }
         public async Task<Page> GetPageByIdAsync(int id)
         {
             return await _ctx.Pages.FindAsync(id);
