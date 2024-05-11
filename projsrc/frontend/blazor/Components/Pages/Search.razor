@@ -63,8 +63,19 @@
     private List<Page> searchResults;
     private bool searchPerformed;
 
+    protected override async Task OnInitializedAsync()
+    {
+        searchResults = await HttpClient.GetFromJsonAsync<List<Page>>("http://localhost:5005/api/Pages/");
+    }
+
     private async Task SearchFunc()
     {
+        if (searchTerm == "")
+        {
+            searchResults = await HttpClient.GetFromJsonAsync<List<Page>>("http://localhost:5005/api/Pages/");
+            return;
+        }
+
         string s = $"http://localhost:5005/api/Pages/ByTags/{searchTerm}";
         searchResults = await HttpClient.GetFromJsonAsync<List<Page>>(s);
         StateHasChanged();
