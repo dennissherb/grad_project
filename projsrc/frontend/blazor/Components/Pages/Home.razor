@@ -36,7 +36,11 @@
                                                 @(StringHtmlExtensions.StripHtml(page.Content)) 
                                             </p>
 										</CardText>
-                                        @if (page.Tags != null) { <Badge Color="Color.Primary" Pill>@(page.Tags)</Badge> }
+										@if (page.Tags != null) {
+											foreach (string tag in page.Tags.Split(',')) {
+												<Badge Color="Color.Primary" Pill>@tag</Badge> <span> </span>
+											}
+										}
                                         <br/>
 										<Button Color="Color.Primary" Margin="Margin.Is2.FromTop" @onclick='() => {Navman.NavigateTo($"/content/{page.Id}");}'>
 											Read more <Icon Name="IconName.ArrowRight" />
