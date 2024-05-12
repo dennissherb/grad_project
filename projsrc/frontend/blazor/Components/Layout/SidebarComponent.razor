@@ -18,7 +18,7 @@
 
             <SidebarItem>
                 <SidebarLink To="/" Title="Home">
-                    <Icon Name="IconName.Home" Margin="Margin.Is3.FromEnd" />Home
+                    <Icon Name="IconName.Home" Margin="Margin.Is3.FromEnd" /> Home
                 </SidebarLink>
             </SidebarItem>
 
@@ -30,28 +30,28 @@
 
             <SidebarItem>
                 <SidebarLink Toggled="(isOpen)=> appsSidebarSubItems.Toggle(isOpen)" To=text-editor  IsShow>
-                    <Icon Name="IconName.Pen" Margin="Margin.Is3.FromEnd" />Create post
+                    <Icon Name="IconName.Pen" Margin="Margin.Is3.FromEnd" /> Create post
                 </SidebarLink >
             </SidebarItem>
 
             @if (account != null) 
             {
 				<SidebarItem>
-					<SidebarLink Toggled="(isOpen)=> appsSidebarSubItems.Toggle(isOpen)" IsShow To="/"> @account.UserName
-						<Icon Name="IconName.User" Margin="Margin.Is3.FromEnd" />
+					<SidebarLink Toggled="(isOpen)=> appsSidebarSubItems.Toggle(isOpen)" IsShow To="/"> 
+						<Icon Name="IconName.User" Margin="Margin.Is3.FromEnd" /> @account.UserName
 					</SidebarLink>
 				</SidebarItem>
 				<SidebarItem>
-					<SidebarLink Toggled="(isOpen)=> appsSidebarSubItems.Toggle(isOpen)" IsShow @onclick="SignOut"> Sign Out
-						<Icon Name="IconName.Lock" Margin="Margin.Is3.FromEnd" />
+					<SidebarLink Toggled="(isOpen)=> appsSidebarSubItems.Toggle(isOpen)" IsShow @onclick="SignOut"> 
+						<Icon Name="IconName.Lock" Margin="Margin.Is3.FromEnd" /> Sign Out
 					</SidebarLink>
                 </SidebarItem>
             }
             else
             {
 				<SidebarItem>
-					<SidebarLink Toggled="(isOpen)=> appsSidebarSubItems.Toggle(isOpen)" IsShow To="/login"> Log in
-						<Icon Name="IconName.LockOpen" Margin="Margin.Is3.FromEnd" />
+					<SidebarLink Toggled="(isOpen)=> appsSidebarSubItems.Toggle(isOpen)" IsShow To="/login">
+						<Icon Name="IconName.LockOpen" Margin="Margin.Is3.FromEnd" /> Log In
 					</SidebarLink>
                 </SidebarItem>
             }

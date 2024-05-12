@@ -7,7 +7,20 @@
 @inject NavigationManager Navman
 @inject Stack<string> redirStack;
 
+<Alert Color="Color.Info" @bind-Visible="@visible">
+    <Heading Size="HeadingSize.Is4" TextColor="TextColor.Success">
+        You aren't  signed in
+        <CloseButton />
+    </Heading>
+    <Paragraph>
+        When posting a new blog post without being logged in, the post would be submitted anonymously and wouldn't appear on your account's page
+    </Paragraph>
+</Alert>
+
 <Form>
+
+    <small id="emailHelp" class="form-text text-muted">Title your post</small>
+    <InputText @bind-Value="title"></InputText>
 
     <RichTextEdit @ref="richTextEditRef"
                   Theme="RichTextEditTheme.Snow"
@@ -59,8 +72,10 @@
     protected string contentAsText;
     protected string savedContent;
     protected Page page;
-    protected Account author;
+    public Account author;
     protected string tags;
+    protected bool visible = false;
+    protected string title;
 
     public async Task OnContentChanged()
     {
@@ -75,7 +90,6 @@
         savedContent = await richTextEditRef.GetHtmlAsync();
         await richTextEditRef.ClearAsync();
 
-        author = (await MySession.GetAsync<Account>("user")).Value;
         if (author != null)
             page.Author = author;
         else
@@ -84,10 +98,24 @@
         page.Content = savedContent;
         page.Type = "Article";
         page.Tags = tags;
+        page.Title = title;
         page.AuthorId = page.Author.Id;
         var response = await httpClient.PostAsJsonAsync("http://localhost:5005/api/Pages", page);
         page = response.Content.ReadFromJsonAsync<Page>().Result;
         Navman.NavigateTo($"content/{page.Id}");
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        author = (await MySession.GetAsync<Account>("user")).Value;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender) 
+    {
+        if (author == null || author.Id == 0)
+        {
+            visible = true;     
+        }
     }
 }
 

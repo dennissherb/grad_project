@@ -28,6 +28,12 @@ namespace DataObjects
         [Column("pages_content")]
         public string? Content { get; set; }
 
+        [Column("pages_title")]
+        public string? Title { get; set; }
+
+        [Column("pages_date")]
+        public DateTime Date { get; set; } = DateTime.Now;
+
         // Navigation propety
         [JsonIgnore]
         public Account? Author { get; set; }

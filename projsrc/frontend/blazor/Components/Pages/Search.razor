@@ -32,7 +32,7 @@
                         <Card>
                             <CardBody>
                                 <CardTitle Style="font-size: 16pt; overflow:hidden; max-height 20px; line-clamp:2">
-                                    <strong>@((MarkupString)(StringHtmlExtensions.Truncate((StringHtmlExtensions.StripHtml(page.Content)), 60)))</strong>
+                                    <strong>@(page.Title)</strong>
                                 </CardTitle>
                                 <CardText Style="overflow: hidden; text-overflow:ellipsis; font-size: 10pt;">
                                     <p style="-webkit-line-clamp: 3; -webkit-box-orient: vertical; display: -webkit-box; overflow: hidden;">
