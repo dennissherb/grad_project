@@ -13,6 +13,10 @@
 @inject Stack<string> redirStack;
 
 
+@if (Author != null)
+{
+    <Icon Name="IconName.User"/> <div style="font-size: 16pt">@Author.UserName</div>
+}
 @if (page != null)
 {
 	@((MarkupString)(page.Content))
@@ -23,11 +27,15 @@
     public string PageId { get; set; }
     Page? page;
     Account? account;
+    Account Author;
 
     protected override async Task OnInitializedAsync()
     {
         //load the page from api
         page = await HttpClient.GetFromJsonAsync<Page>($"http://localhost:5005/api/Pages/{PageId}");
+        if (page != null) {
+			Author = await HttpClient.GetFromJsonAsync<Account>($"http://localhost:5005/api/Accounts/{page.AuthorId}");  
+        }
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
