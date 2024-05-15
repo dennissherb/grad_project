@@ -14,5 +14,6 @@ namespace Datalayer.Repositories
         Task CreatePageAsync(Page p);
         Task UpdatePageAsync(Page p);
         Task DeletePageAsync(int id);
+        Task<List<Page>> SearchPagesAsync(string? authorname, string tags);
     }
 }

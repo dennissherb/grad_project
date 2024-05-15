@@ -47,6 +47,25 @@ namespace Datalayer.Repositories
                 }
             }
             return listPages;
+
+        }
+        public async Task<List<Page>> SearchPagesAsync(string? authorname, string? tags)
+        {
+            IQueryable<Page> query = _ctx.Pages.Include(p => p.Author);
+            var pages = await query.ToListAsync();
+
+            if (tags != null && tags != string.Empty)
+            {
+                string[] tagArray = tags.Split(',');
+                pages = pages.Where(page => tagArray.Any(tag => page.Tags != null && page.Tags != string.Empty && page.Tags.Contains(tag))).ToList();
+            }
+
+            if (authorname != null && authorname != string.Empty)
+            {
+                pages = pages.Where(page => page.Author != null && page.Author.UserName == authorname).ToList();
+            }
+
+            return pages;
         }
         public async Task<Page> GetPageByIdAsync(int id)
         {

@@ -11,15 +11,20 @@
 @inject Stack<string> redirStack;
 
     <h5>Search</h5>
+    <Form>
     <Field>
-        <Label for="searchInput">Search Term</Label>
-        <InputText @bind-Value="@searchTerm" Id="searchInput" />
+        <Label for="searchInput">Tags</Label>
+        <InputText @bind-Value="@tags" Id="searchInput" />
+    </Field>
+    <Field>
+        <Label for="searchInput">User name</Label>
+        <InputText @bind-Value="@username" Id="searchInput" />
     </Field>
     <Button Color="Color.Primary" Clicked="@SearchFunc">
-        <Blazorise.Icon> @FontAwesomeIcons.Search</Blazorise.Icon>
-        
+        <Blazorise.Icon> @FontAwesomeIcons.Search</Blazorise.Icon> 
         Search
     </Button>
+    </Form>
 
     @if (searchResults != null && searchResults.Any())
     {
@@ -63,7 +68,8 @@
     }
 
 @code {
-    private string searchTerm;
+    private string username;
+    private string tags;
     private List<Page> searchResults;
     private bool searchPerformed;
 
@@ -74,13 +80,9 @@
 
     private async Task SearchFunc()
     {
-        if (searchTerm == "" || searchTerm == null)
-        {
-            searchResults = await HttpClient.GetFromJsonAsync<List<Page>>("http://localhost:5005/api/Pages/");
-            return;
-        }
-
-        string s = $"http://localhost:5005/api/Pages/ByTags/{searchTerm}";
+        if (username == "") { username = "%20"; }
+        if (tags == "") { tags = "%20"; }
+        string s = $"http://localhost:5005/api/Pages/Search/{username}:{tags}";
         searchResults = await HttpClient.GetFromJsonAsync<List<Page>>(s);
         StateHasChanged();
     }
