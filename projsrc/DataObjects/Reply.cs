@@ -30,6 +30,7 @@ namespace DataObjects
         public DateTime Date { get; set; } = DateTime.Now;
 
         // Navigation propety
+        [JsonIgnore]
         public Account? Author { get; set; }
 
         [JsonIgnore]

@@ -36,6 +36,13 @@ namespace Datalayer.Models
                 .WithMany(p => p.Pages)
                 .HasForeignKey(p => p.AuthorId)
                 .IsRequired(true);
+
+            modelBuilder.Entity<Reply>()
+                .HasOne(p => p.Author)
+                .WithMany()
+                .HasForeignKey(p => p.AuthorId)
+                .HasForeignKey(p => p.PageId)
+                .IsRequired(true);
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

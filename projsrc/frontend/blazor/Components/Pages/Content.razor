@@ -32,17 +32,23 @@
     <ListGroup>
         @foreach (Reply reply in replies)
         {
-        <ListGroupItem>
-            @reply.Content
+            <ListGroupItem>
+                @reply.Content
 
-        </ListGroupItem>
-            @if (reply.Author != null) 
-            { 
-                <ListGroupItem>
-                @reply.Author.UserName
-                </ListGroupItem>
-            }
+            </ListGroupItem>
+                @if (reply.Author != null) 
+                { 
+                    <ListGroupItem>
+                    <Icon Name="Blazorise.IconName.User"></Icon>@reply.Author.UserName
+                    </ListGroupItem>
+                }
         }
+        <ListGroupItem>
+            Add reply...
+            <InputText @bind-Value="replycontent">
+            </InputText>
+            <Button @onclick="sendReply">Send reply</Button>
+        </ListGroupItem>
     </ListGroup>
 }
 
@@ -53,6 +59,8 @@
     Account? account;
     Account author;
     List<Reply> replies;
+    string error;
+    string replycontent;
 
     protected override async Task OnInitializedAsync()
     {
@@ -66,5 +74,25 @@
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         account = (await MySession.GetAsync<Account>("user")).Value;
+    }
+
+    public async Task sendReply()
+    {
+        Reply r = new Reply();
+        r.Content = replycontent;
+        if (account != null)
+        {
+            r.AuthorId = account.Id;
+        }
+        else
+        {
+            r.AuthorId = 0;
+        }
+        r.PageId = page.Id;
+        var response = await HttpClient.PostAsJsonAsync($"http://localhost:5005/api/Replies/", r);
+        error = response.Content.ToString();
+        replycontent = "";
+        replies = await HttpClient.GetFromJsonAsync<List<Reply>>($"http://localhost:5005/api/Replies/ByPage/{PageId}");
+        StateHasChanged();
     }
 }
