@@ -80,10 +80,8 @@
 
     private async Task SearchFunc()
     {
-        if (username == "") { username = "%20"; }
-        if (tags == "") { tags = "%20"; }
-        string s = $"http://localhost:5005/api/Pages/Search/{username}:{tags}";
-        searchResults = await HttpClient.GetFromJsonAsync<List<Page>>(s);
+
+        searchResults = await HttpClient.GetFromJsonAsync<List<Page>>($"http://localhost:5005/api/Pages/Search/" + ( username == null || username == "" ? "%20" : username) + ":" + ( tags == null  || tags == "" ? "%20" : tags));
         StateHasChanged();
     }
 }

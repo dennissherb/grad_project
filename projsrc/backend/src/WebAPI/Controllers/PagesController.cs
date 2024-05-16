@@ -52,10 +52,8 @@ namespace WebAPI.Controllers
         }
         
         [HttpGet("Search/{name}:{tags}")]
-        public async Task<ActionResult<List<Page>>> GetPagesByTags(string? name, string? tags)
+        public async Task<ActionResult<List<Page>>> GetPagesByTags(string? name = "", string? tags = "")
         {
-            if (name == null) { name = ""; }
-            if (tags == null) { tags = ""; }
             var pages = await _repository.SearchPagesAsync(name, tags);
             return Ok(pages);
         }
