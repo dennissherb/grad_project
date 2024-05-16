@@ -19,6 +19,7 @@ namespace WebAPI
             builder.Services.AddTransient<IPageRepository, PageRepository>();
             builder.Services.AddTransient<IProductRepository, ProductRepository>();
             builder.Services.AddTransient<IAccountRepository, AccountRepository>();
+            builder.Services.AddTransient<IReplyRepository, ReplyRepository>();
 
             var app = builder.Build();
 

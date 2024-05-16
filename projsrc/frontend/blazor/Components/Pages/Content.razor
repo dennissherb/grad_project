@@ -29,6 +29,21 @@
             }
         </Paragraph>
     </Jumbotron>
+    <ListGroup>
+        @foreach (Reply reply in replies)
+        {
+        <ListGroupItem>
+            @reply.Content
+
+        </ListGroupItem>
+            @if (reply.Author != null) 
+            { 
+                <ListGroupItem>
+                @reply.Author.UserName
+                </ListGroupItem>
+            }
+        }
+    </ListGroup>
 }
 
 @code {
@@ -37,12 +52,15 @@
     Page? page;
     Account? account;
     Account author;
+    List<Reply> replies;
 
     protected override async Task OnInitializedAsync()
     {
         //load the page from api
         page = await HttpClient.GetFromJsonAsync<Page>($"http://localhost:5005/api/Pages/{PageId}");
         author = await HttpClient.GetFromJsonAsync<Account>($"http://localhost:5005/api/Accounts/{page.AuthorId}");
+        replies = await HttpClient.GetFromJsonAsync<List<Reply>>($"http://localhost:5005/api/Replies/ByPage/{PageId}");
+
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using DataObjects;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using DataObjects;
 
 namespace Datalayer.Models
 {
@@ -19,6 +20,7 @@ namespace Datalayer.Models
         public DbSet<Account> Accounts { get; set; }
         public DbSet<Page> Pages { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<Reply> Replies { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
