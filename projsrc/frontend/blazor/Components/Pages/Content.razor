@@ -29,28 +29,40 @@
             }
         </Paragraph>
     </Jumbotron>
-    <ListGroup>
-        @foreach (Reply reply in replies)
-        {
-            <ListGroupItem>
-                @reply.Content
+	<Card>
+			<CardHeader>
+				<h4 class="card-title">Replies</h4>
+			</CardHeader>
+		<CardBody>
+			<ul class="list-unstyled">
+				@if (replies != null) {
+					@foreach (var reply in replies)
+					{
+						<li>
+							<Card style="margin-bottom: 15px; border: 1px solid #ddd; border-radius: 5px;">
+								<CardBody>
+									<Text TextColor="TextColor.Secondary"><Icon Name=IconName.User/> <em> @reply.Author.UserName</em> | <span/> <Icon Name=IconName.Calendar/> <em> @reply.Date.Date</em></Text>
+                                    <Divider/>
+									<Text TextColor="TextColor.Primary">@reply.Content</Text>
+								</CardBody>
+							</Card>
+						</li>
+					}
+				}
+				<li>
+					<Card style="margin-bottom: 15px; border: 1px solid #ddd; border-radius: 5px;">
+						<CardBody>
+							<InputText @bind-Value="replycontent" style="width: 100%; margin-bottom: 10px;"></InputText>
+							<Button @onclick="sendReply" style="width: 100%;">Send reply</Button>
+						</CardBody>
+					</Card>
+				</li>
+			</ul>
+		</CardBody>
+	</Card>
 
-            </ListGroupItem>
-                @if (reply.Author != null) 
-                { 
-                    <ListGroupItem>
-                    <Icon Name="Blazorise.IconName.User"></Icon>@reply.Author.UserName
-                    </ListGroupItem>
-                }
-        }
-        <ListGroupItem>
-            Add reply...
-            <InputText @bind-Value="replycontent">
-            </InputText>
-            <Button @onclick="sendReply">Send reply</Button>
-        </ListGroupItem>
-    </ListGroup>
 }
+
 
 @code {
     [Parameter]
@@ -74,6 +86,7 @@
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         account = (await MySession.GetAsync<Account>("user")).Value;
+        replies = await HttpClient.GetFromJsonAsync<List<Reply>>($"http://localhost:5005/api/Replies/ByPage/{PageId}");
     }
 
     public async Task sendReply()

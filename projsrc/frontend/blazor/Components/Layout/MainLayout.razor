@@ -4,36 +4,50 @@
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @using blazor
 
+<ThemeProvider Theme="@theme">
 
-<div class="bb-page">
-	<SidebarComponent />
-	<main>
-        <div class="bb-top-row px-4 d-flex justify-content-end">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
-        </div>
+	<div class="bb-page">
+		<SidebarComponent />
+		<main>
+			<div class="bb-top-row px-4 d-flex justify-content-end">
+				<a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+			</div>
 
-        <article class="content px-4">
-            <div class="py-2">@Body</div>
-        </article>
-    </main>
-</div>
+			<article class="content px-4">
+				<div class="py-2">@Body</div>
+			</article>
+		</main>
+	</div>
 
-<div id="blazor-error-ui">
-    An unhandled error has occurred.
-    <a href="" class="reload">Reload</a>
-    <a class="dismiss">🗙</a>
-</div>
+	<div id="blazor-error-ui">
+		An unhandled error has occurred.
+		<a href="" class="reload">Reload</a>
+		<a class="dismiss">🗙</a>
+	</div>
+
+</ThemeProvider>
 
 @code {
-    Sidebar sidebar;
-    SidebarSubItem mailSidebarSubItems;
-    SidebarSubItem appsSidebarSubItems;
+	Sidebar sidebar;
 
-    public Account? account { get; set; } 
+	public Account? account { get; set; } 
 
 
-    void ToggleSidebar()
-    {
-        sidebar.Toggle();
-    }
+	void ToggleSidebar()
+	{
+		sidebar.Toggle();
+	}
+
+	private Theme theme = new Theme
+	{
+		ColorOptions = new ThemeColorOptions {
+			Primary = "#aa3beb",
+			Secondary = "#c1bcc4"
+		},
+
+		TextColorOptions = new ThemeTextColorOptions {
+			Primary = "#aa3beb",
+			Secondary = "#c1bcc4"
+		}
+	};
 }

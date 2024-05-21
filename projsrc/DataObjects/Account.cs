@@ -35,5 +35,8 @@ namespace DataObjects
 
         [JsonIgnore]
         public ICollection<Page>? Pages { get; set; }
+
+        [JsonIgnore]
+        public ICollection<Reply>? Replies { get; set; }
     }
 }

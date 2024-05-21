@@ -39,6 +39,9 @@ namespace DataObjects
         public Account? Author { get; set; }
 
         [JsonIgnore]
+        public ICollection<Reply>? Replies { get; set; }
+
+        [JsonIgnore]
         public Product? Product { get; set; }
     }
 }

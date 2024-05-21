@@ -39,8 +39,13 @@ namespace Datalayer.Models
 
             modelBuilder.Entity<Reply>()
                 .HasOne(p => p.Author)
-                .WithMany()
+                .WithMany(p => p.Replies)
                 .HasForeignKey(p => p.AuthorId)
+                .IsRequired(true);
+
+            modelBuilder.Entity<Reply>()
+                .HasOne(p => p.Page)
+                .WithMany(p => p.Replies)
                 .HasForeignKey(p => p.PageId)
                 .IsRequired(true);
         }
