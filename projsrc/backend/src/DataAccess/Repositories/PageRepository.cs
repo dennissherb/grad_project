@@ -26,7 +26,7 @@ namespace Datalayer.Repositories
         }
         public async Task<List<Page>> GetPagesByAuthorAsync(int id)
         {
-            var pages = _ctx.Pages.Where(a => a.AuthorId == id).ToListAsync();
+            var pages = _ctx.Pages.Where(a => a.AuthorId == id).Include(p => p.Author).ToListAsync();
             return await pages as List<Page>;
         }
         public async Task<List<Page>> GetPagesByTagsAsync(string tags)
@@ -69,7 +69,9 @@ namespace Datalayer.Repositories
         }
         public async Task<Page> GetPageByIdAsync(int id)
         {
-            return await _ctx.Pages.FindAsync(id);
+            return await _ctx.Pages
+                             .Include(p => p.Author) // Eagerly load the Author property
+                             .FirstOrDefaultAsync(p => p.Id == id); // Use FirstOrDefaultAsync to match by id
         }
 
         public async Task CreatePageAsync(Page p)

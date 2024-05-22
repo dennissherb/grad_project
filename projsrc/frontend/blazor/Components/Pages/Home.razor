@@ -82,7 +82,6 @@
 
         if (loggedUser != null)
         {
-            //AuthoredPages = (await HttpClient.GetAsync<List<Page>>($"https://localhost:5005/api/Page/ByAuthor/{loggedUser.Id}"));
             AuthoredPages = await HttpClient.GetFromJsonAsync<List<Page>>($"http://localhost:5005/api/Pages/ByAuthor/{loggedUser.Id}");
             if (firstRender)
             {

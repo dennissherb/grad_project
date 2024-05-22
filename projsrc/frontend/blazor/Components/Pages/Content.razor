@@ -41,9 +41,16 @@
 						<li>
 							<Card style="margin-bottom: 15px; border: 1px solid #ddd; border-radius: 5px;">
 								<CardBody>
-									<Text TextColor="TextColor.Secondary"><Icon Name=IconName.User/> <em> @reply.Author.UserName</em> | <span/> <Icon Name=IconName.Calendar/> <em> @reply.Date.Date</em></Text>
-                                    <Divider/>
-									<Text TextColor="TextColor.Primary">@reply.Content</Text>
+                                    <div style="display:inline">
+                                        <Text TextColor="TextColor.Secondary" Style="display:inline"><Icon Name=IconName.User/> <em> @reply.Author.UserName</em> | <span/> <Icon Name=IconName.Calendar/> <em> @reply.Date.Date</em></Text>
+                                        @if (account.Id == page.AuthorId || account.PermGroup == "admin")  {
+                                            <div class="d-flex justify-content-end">
+                                                <Button Color="Color.Danger" Class="d-inline-flex"><Icon Name="IconName.Plane"></Icon><span> &nbsp; </span><Icon Name="IconName.Pause"></Icon></Button>
+                                            </div>
+                                        }
+                                        <Divider/>
+                                    </div>
+                                    <Text TextColor="TextColor.Primary">@reply.Content</Text>
 								</CardBody>
 							</Card>
 						</li>
@@ -80,6 +87,12 @@
         page = await HttpClient.GetFromJsonAsync<Page>($"http://localhost:5005/api/Pages/{PageId}");
         author = await HttpClient.GetFromJsonAsync<Account>($"http://localhost:5005/api/Accounts/{page.AuthorId}");
         replies = await HttpClient.GetFromJsonAsync<List<Reply>>($"http://localhost:5005/api/Replies/ByPage/{PageId}");
+        account = (await MySession.GetAsync<Account>("user")).Value;
+        if (account == null)
+        { 
+            account = new(); 
+            account.Id = 0;
+        }
 
     }
 
