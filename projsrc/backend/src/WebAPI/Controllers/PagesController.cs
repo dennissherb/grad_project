@@ -1,9 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Datalayer.Models;
-using Datalayer.Repositories;
+﻿using Datalayer.Repositories;
 using DataObjects;
+using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers
 {
@@ -50,7 +47,7 @@ namespace WebAPI.Controllers
             var pages = await _repository.GetPagesByTagsAsync(tags);
             return Ok(pages);
         }
-        
+
         [HttpGet("Search/{name}:{tags}")]
         public async Task<ActionResult<List<Page>>> GetPagesByTags(string? name = "", string? tags = "")
         {

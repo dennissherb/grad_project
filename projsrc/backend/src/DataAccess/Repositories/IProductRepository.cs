@@ -1,5 +1,4 @@
-﻿using Datalayer.Models;
-using DataObjects;
+﻿using DataObjects;
 
 namespace Datalayer.Repositories
 {

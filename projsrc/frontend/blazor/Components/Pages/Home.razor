@@ -17,11 +17,11 @@
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4315688409988285"
         crossorigin="anonymous"></script>
 
-@if (loggedUser != null)
+@if (account != null)
     {
         <div id="ProtectedContent"> 
             <PageTitle>Home</PageTitle>
-            <h1>Hello, @loggedUser.UserName</h1>
+            <h1>Hello, @account.UserName</h1>
             @if (AuthoredPages != null) {
 				<ListGroup Overflow="Overflow.Hidden" Style="margin-right: 60%;">
 					@foreach (Page page in AuthoredPages) 
@@ -48,6 +48,10 @@
 										<Button Color="Color.Primary" Margin="Margin.Is2.FromTop" @onclick='() => {Navman.NavigateTo($"/content/{page.Id}");}'>
 											Read more <Icon Name="IconName.ArrowRight" />
 										</Button>
+										@if (account.Id == page.AuthorId || account.PermGroup == "admin")
+										{
+											<Button Color="Color.Danger" Class="inline-flex" @onclick='() => {DeletePage(page.Id); }'><Icon Name="IconName.Plane"></Icon><span> &nbsp; </span><Icon Name="IconName.Pause"></Icon></Button>
+										}
 									</CardBody>
                                 </Card>
 							</ListGroupItem>
@@ -65,24 +69,24 @@
 
 @code 
 {
-    Account? loggedUser;
+    Account? account;
     List<Page>? AuthoredPages;
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        loggedUser = (await MySession.GetAsync<Account>("user")).Value;
+        account = (await MySession.GetAsync<Account>("user")).Value;
         if (firstRender) 
         {
             StateHasChanged();
         }
-        if (loggedUser == null)
+        if (account == null)
         {
             redirStack.Push(Navman.Uri);
             Navman.NavigateTo("/login");
         } 
 
-        if (loggedUser != null)
+        if (account != null)
         {
-            AuthoredPages = await HttpClient.GetFromJsonAsync<List<Page>>($"http://localhost:5005/api/Pages/ByAuthor/{loggedUser.Id}");
+            AuthoredPages = await HttpClient.GetFromJsonAsync<List<Page>>($"http://localhost:5005/api/Pages/ByAuthor/{account.Id}");
             if (firstRender)
             {
                 StateHasChanged();
@@ -94,5 +98,12 @@
         await MySession.DeleteAsync("user");
         Navman.NavigateTo("/login");
 		await JSRuntime.InvokeVoidAsync("location.reload");
+    }
+
+    public async void DeletePage(int? id) 
+    {
+        var response = await HttpClient.DeleteAsync($"http://localhost:5005/api/Pages/" + id);
+		AuthoredPages = await HttpClient.GetFromJsonAsync<List<Page>>($"http://localhost:5005/api/Pages/ByAuthor/{account.Id}");
+        StateHasChanged();
     }
 }

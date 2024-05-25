@@ -1,9 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using DataObjects;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using DataObjects;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using DataObjects;
 
 namespace Datalayer.Models
 {
@@ -35,7 +32,8 @@ namespace Datalayer.Models
                 .HasOne(p => p.Author)
                 .WithMany(p => p.Pages)
                 .HasForeignKey(p => p.AuthorId)
-                .IsRequired(true);
+                .IsRequired(true)
+                .OnDelete(DeleteBehavior.Cascade); 
 
             modelBuilder.Entity<Reply>()
                 .HasOne(p => p.Author)

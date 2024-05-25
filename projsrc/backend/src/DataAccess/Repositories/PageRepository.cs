@@ -1,13 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore.Query.Internal;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Datalayer.Models;
-using Datalayer.Repositories;
-using Microsoft.EntityFrameworkCore;
+﻿using Datalayer.Models;
 using DataObjects;
+using Microsoft.EntityFrameworkCore;
 
 namespace Datalayer.Repositories
 {
@@ -40,8 +33,9 @@ namespace Datalayer.Repositories
 
             List<Page> listPages = new List<Page>();
 
-            foreach (Page page in pages) {
-                if (page.Tags != null && tagArray.All(page.Tags.Contains)) 
+            foreach (Page page in pages)
+            {
+                if (page.Tags != null && tagArray.All(page.Tags.Contains))
                 {
                     listPages.Add(page);
                 }
@@ -87,12 +81,19 @@ namespace Datalayer.Repositories
 
         public async Task DeletePageAsync(int id)
         {
-            var page = await _ctx.Pages.FindAsync(id);
-            if (page != null)
+            var page = await _ctx.Pages
+            .Include(p => p.Replies)
+            .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (page == null)
             {
-                _ctx.Pages.Remove(page);
-                await _ctx.SaveChangesAsync();
+                throw new KeyNotFoundException("Page not found.");
             }
+
+            _ctx.Replies.RemoveRange(page.Replies); // Explicitly delete replies if not using cascade delete
+            _ctx.Pages.Remove(page);
+            
+            await _ctx.SaveChangesAsync();
         }
     }
 }

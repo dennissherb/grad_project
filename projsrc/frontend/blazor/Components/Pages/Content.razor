@@ -16,6 +16,12 @@
     <Jumbotron>
         <JumbotronTitle>
             @(page.Title)
+            <div class="justify-content-end">
+				@if (account.Id == page.AuthorId || account.PermGroup == "admin")
+				{
+					<Button Color="Color.Danger" Class="inline-flex" @onclick='() => {DeletePage(page.Id); }'><Icon Name="IconName.Plane"></Icon><span> &nbsp; </span><Icon Name="IconName.Pause"></Icon></Button>
+				}
+            </div>
         </JumbotronTitle>
         <JumbotronSubtitle>
             <div>@(page.Date)</div>
@@ -30,31 +36,40 @@
         </Paragraph>
     </Jumbotron>
 	<Card>
-			<CardHeader>
-				<h4 class="card-title">Replies</h4>
-			</CardHeader>
+		<CardHeader>
+			<h4 class="card-title">Replies</h4>
+		</CardHeader>
 		<CardBody>
 			<ul class="list-unstyled">
-				@if (replies != null) {
+				@if (replies != null)
+				{
 					@foreach (var reply in replies)
 					{
 						<li>
 							<Card style="margin-bottom: 15px; border: 1px solid #ddd; border-radius: 5px;">
 								<CardBody>
-                                    <div style="display:inline">
-                                        <Text TextColor="TextColor.Secondary" Style="display:inline"><Icon Name=IconName.User/> <em> @reply.Author.UserName</em> | <span/> <Icon Name=IconName.Calendar/> <em> @reply.Date.Date</em></Text>
-                                        @if (account.Id == page.AuthorId || account.PermGroup == "admin")  {
-                                            <div class="d-flex justify-content-end">
-                                                <Button Color="Color.Danger" Class="d-inline-flex"><Icon Name="IconName.Plane"></Icon><span> &nbsp; </span><Icon Name="IconName.Pause"></Icon></Button>
-                                            </div>
-                                        }
-                                        <Divider/>
-                                    </div>
-                                    <Text TextColor="TextColor.Primary">@reply.Content</Text>
+									<div style="display:inline">
+										<Text TextColor="TextColor.Secondary" Style="display:inline">
+											<Icon Name=IconName.User/> <em> @reply.Author.UserName</em> | <span/> <Icon Name=IconName.Calendar/> <em> @reply.Date.Date</em>
+											<div class="d-flex justify-content-end">
+												@if (account.Id == reply.AuthorId || account.PermGroup == "admin")
+												{
+													<Button Color="Color.Danger" Class="inline-flex" @onclick='() => {DeleteReply(reply.Id); }'><Icon Name="IconName.Plane"></Icon><span> &nbsp; </span><Icon Name="IconName.Pause"></Icon></Button>
+												}
+												@if (account.Id == reply.AuthorId)
+												{
+													<Button Color="Color.Primary" Class="inline-flex"><Icon Name="IconName.Pen"></Icon></Button>
+												}
+											</div>
+										</Text>
+										<Divider/>
+									</div>
+									<Text TextColor="TextColor.Primary">@reply.Content</Text>
 								</CardBody>
 							</Card>
 						</li>
 					}
+
 				}
 				<li>
 					<Card style="margin-bottom: 15px; border: 1px solid #ddd; border-radius: 5px;">
@@ -68,10 +83,22 @@
 		</CardBody>
 	</Card>
 
+	<Toaster>
+		<Toast @bind-Visible="@toastVisible">
+			<ToastHeader>
+				<Strong Margin="Margin.IsAuto.FromEnd">@(page.Title)</Strong>
+				<Small></Small>
+				<CloseButton />
+			</ToastHeader>
+			<ToastBody>
+				@message
+			</ToastBody>
+		</Toast>
+	</Toaster>
 }
 
-
 @code {
+
     [Parameter]
     public string PageId { get; set; }
     Page? page;
@@ -80,6 +107,8 @@
     List<Reply> replies;
     string error;
     string replycontent;
+    bool toastVisible = false;
+    string message;
 
     protected override async Task OnInitializedAsync()
     {
@@ -93,13 +122,17 @@
             account = new(); 
             account.Id = 0;
         }
-
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        account = (await MySession.GetAsync<Account>("user")).Value;
         replies = await HttpClient.GetFromJsonAsync<List<Reply>>($"http://localhost:5005/api/Replies/ByPage/{PageId}");
+        account = (await MySession.GetAsync<Account>("user")).Value;
+        if (account == null)
+        { 
+            account = new(); 
+            account.Id = 0;
+        }
     }
 
     public async Task sendReply()
@@ -120,5 +153,35 @@
         replycontent = "";
         replies = await HttpClient.GetFromJsonAsync<List<Reply>>($"http://localhost:5005/api/Replies/ByPage/{PageId}");
         StateHasChanged();
+    }
+
+    public async void DeleteReply(int? id) 
+    {
+        if (id != null)
+        {
+            var response = await HttpClient.DeleteAsync($"http://localhost:5005/api/Replies/" + id );
+            replies = await HttpClient.GetFromJsonAsync<List<Reply>>($"http://localhost:5005/api/Replies/ByPage/{PageId}");
+            if (response.IsSuccessStatusCode) 
+            {
+                message = "Reply successfully deleted";
+                if (toastVisible == true)
+                    toastVisible = false;
+                toastVisible = true;
+            }
+            StateHasChanged();
+        }
+    }
+
+    public async void DeletePage(int? id) 
+    {
+        var response = await HttpClient.DeleteAsync($"http://localhost:5005/api/Pages/" + id);
+        if (response.IsSuccessStatusCode) 
+        {
+            message = "Page successfully deleted";
+            if (toastVisible == true)
+                toastVisible = false;
+            toastVisible = true;
+        }
+        Navman.NavigateTo("/");
     }
 }

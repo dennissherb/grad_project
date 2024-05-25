@@ -1,7 +1,4 @@
-﻿using Datalayer.Models;
-using DataObjects;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using DataObjects;
 
 namespace Datalayer.Repositories
 {

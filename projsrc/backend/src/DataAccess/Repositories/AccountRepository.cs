@@ -1,9 +1,6 @@
 ﻿using Datalayer.Models;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
 using DataObjects;
+using Microsoft.EntityFrameworkCore;
 
 namespace Datalayer.Repositories
 {

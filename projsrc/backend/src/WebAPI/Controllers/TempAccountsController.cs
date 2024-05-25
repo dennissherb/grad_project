@@ -43,7 +43,7 @@ namespace WebAPI.Controllers
         public async Task<ActionResult<Dictionary<string, string>>> GetEntireTable()
         {
             List<Dictionary<string, string>> table = await AccountQuery.ReadAccounts();
-            if(table.Count < 0) return NotFound();
+            if (table.Count < 0) return NotFound();
             return Ok(table);
         }
 
@@ -52,9 +52,11 @@ namespace WebAPI.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
 
-        public async Task<ActionResult<Dictionary<string,string>>> TryLogin([FromBody] Dictionary<string,string> user ) {
+        public async Task<ActionResult<Dictionary<string, string>>> TryLogin([FromBody] Dictionary<string, string> user)
+        {
             if (user["accounts_email"] == null && user["accounts_user_name"] == null || user["accounts_password"] == null) return BadRequest();
-            if (await AccountQuery.TryLogin(user)) {
+            if (await AccountQuery.TryLogin(user))
+            {
                 user = await AccountQuery.ReadAccountByUQ(user);
                 return Ok(user);
             }
@@ -66,25 +68,26 @@ namespace WebAPI.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
 
-        public async Task<ActionResult<Dictionary<string,string>>> TryRegister([FromBody] Dictionary<string,string> user) {
+        public async Task<ActionResult<Dictionary<string, string>>> TryRegister([FromBody] Dictionary<string, string> user)
+        {
             if (user["accounts_email"] == null || user["accounts_password"] == null) return BadRequest();
             Dictionary<string, string> userCheck = await AccountQuery.ReadAccountByUQ(user);
             if (userCheck != null && userCheck.Count != 0)
             {
-                 return BadRequest();
+                return BadRequest();
             }
             if (await AccountQuery.CreateAccount(user))
                 return Ok(user);
             else
                 return StatusCode(500, $"Error with account insert");
         }
-        
+
         [HttpPost("delete_as_admin")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
 
-        public async Task<ActionResult> TryDeleteByAdmin([FromBody] Dictionary<string,string> user)
+        public async Task<ActionResult> TryDeleteByAdmin([FromBody] Dictionary<string, string> user)
         {
             if (user["accounts_email"] == null) return BadRequest();
             Dictionary<string, string> userCheck = await AccountQuery.ReadAccountByUQ(user);
@@ -94,7 +97,7 @@ namespace WebAPI.Controllers
             }
             else
             {
-                if(await AccountQuery.DeleteAccount(user))
+                if (await AccountQuery.DeleteAccount(user))
                     return Ok();
             }
             return StatusCode(500, "An unknown error has occurred");
@@ -106,7 +109,7 @@ namespace WebAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
 
         //oldUser must contain at least one UQ to determine which entry to edit
-        public async Task<ActionResult<Dictionary<string,string>>> TryUpdateUser([FromBody] Dictionary<string, string> user)
+        public async Task<ActionResult<Dictionary<string, string>>> TryUpdateUser([FromBody] Dictionary<string, string> user)
         {
 
             if (user == null)

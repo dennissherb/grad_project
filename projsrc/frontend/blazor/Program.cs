@@ -1,9 +1,8 @@
 using blazor.Components;
-using Blazorise.RichTextEdit;
-using Syncfusion.Blazor;
 using Blazorise;
 using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
+using Blazorise.RichTextEdit;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 
 
@@ -20,10 +19,10 @@ builder.Services.AddScoped<ProtectedSessionStorage>();
 builder.Services
     .AddBlazoriseRichTextEdit();
 builder.Services
-    .AddBlazorise( options =>
+    .AddBlazorise(options =>
     {
         options.Immediate = true;
-    } )
+    })
     .AddBootstrapProviders()
     .AddFontAwesomeIcons();
 

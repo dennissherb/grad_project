@@ -1,11 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Datalayer.Models;
-using Datalayer.Repositories;
+﻿using Datalayer.Repositories;
+using DataObjects;
+using Microsoft.AspNetCore.Mvc;
 using System.Security.Cryptography;
 using System.Text;
-using DataObjects;
 
 namespace WebAPI.Controllers
 {

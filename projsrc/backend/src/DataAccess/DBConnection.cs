@@ -10,14 +10,14 @@ namespace Datalayer
         public DBConnection()
         {
             string filepath = Path.GetFullPath(Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory())?.Parent?.FullName, "config", "mysql-config.json"));
-            if (File.Exists("filepath")) 
+            if (File.Exists("filepath"))
             {
                 IConfigurationRoot configuration = new ConfigurationBuilder()
                     .AddJsonFile(filepath)
                     .Build();
                 _configuration = configuration.GetSection("DBConnection");
             }
-            else 
+            else
             {
                 _configuration = null;
             }
@@ -30,14 +30,14 @@ namespace Datalayer
             string user;
             string password;
 
-            if (_configuration != null) 
+            if (_configuration != null)
             {
                 server = _configuration["Server"];
                 databaseName = _configuration["DatabaseName"];
                 user = _configuration["User"];
                 password = _configuration["Password"];
             }
-            else 
+            else
             {
                 server = "localhost";
                 databaseName = "my_project";
@@ -47,18 +47,18 @@ namespace Datalayer
 
             return $"Server={server};Database={databaseName};Uid={user};Pwd={password};";
         }
-        public static async Task<List<Dictionary<string,string>>> ExecuteQuery(string query)
+        public static async Task<List<Dictionary<string, string>>> ExecuteQuery(string query)
         {
             DBConnection connectionObj = new DBConnection();
             using var connection = new MySqlConnection(connectionObj.GetConnectionString());
             await connection.OpenAsync();
             using var command = new MySqlCommand(query, connection);
             using var reader = await command.ExecuteReaderAsync();
-            List<Dictionary<string,string>> queryResult = new List<Dictionary<string,string>>();
+            List<Dictionary<string, string>> queryResult = new List<Dictionary<string, string>>();
             while (await reader.ReadAsync())
             {
-                Dictionary<string,string> row = new Dictionary<string, string>(); 
-                for (int i = 0; i < reader.FieldCount; i++) 
+                Dictionary<string, string> row = new Dictionary<string, string>();
+                for (int i = 0; i < reader.FieldCount; i++)
                 {
                     row.Add(reader.GetName(i).ToString(), reader.GetValue(i).ToString());
                 }
