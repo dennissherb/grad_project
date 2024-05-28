@@ -20,9 +20,16 @@
 @if (account != null)
     {
         <div id="ProtectedContent"> 
-            <PageTitle>Home</PageTitle>
-            <h1>Hello, @account.UserName</h1>
-            @if (AuthoredPages != null) {
+            <Jumbotron>
+                <JumbotronTitle>
+                    @account.UserName
+                </JumbotronTitle>
+                <JumbotronSubtitle>
+                    <Icon Name="IconName.BirthdayCake"/> &nbsp; @account.DateOfBirth.Date
+                </JumbotronSubtitle>
+            </Jumbotron>
+            @if (AuthoredPages != null && AuthoredPages.Any()) {
+                <Heading>Authored pages:</Heading>
 				<ListGroup Overflow="Overflow.Hidden" Style="margin-right: 60%;">
 					@foreach (Page page in AuthoredPages) 
 					{
@@ -50,7 +57,8 @@
 										</Button>
 										@if (account.Id == page.AuthorId || account.PermGroup == "admin")
 										{
-											<Button Color="Color.Danger" Class="inline-flex" @onclick='() => {DeletePage(page.Id); }'><Icon Name="IconName.Plane"></Icon><span> &nbsp; </span><Icon Name="IconName.Pause"></Icon></Button>
+											<Button Color="Color.Danger" Margin="Margin.Is2.FromTop" Class="inline-flex justify-content-end" @onclick='() => {DeletePage(page.Id); }'> Delete</Button>
+											<Button Color="Color.Primary" Margin="Margin.Is2.FromTop" Class="inline-flex justify-content-end" @onclick='() => {DeletePage(page.Id); }'> Edit</Button>
 										}
 									</CardBody>
                                 </Card>
@@ -61,7 +69,8 @@
             }
             else 
             {
-                <p>You haven't written anything yet</p>
+                <Heading>You haven't written anything yet</Heading>
+                <Button Color="Color.Primary" Margin="Margin.Is2.FromTop" @onclick='() => {Navman.NavigateTo($"/text-editor");}'> <Icon Name="IconName.Pen"/> Write post</Button>
             }
         </div>
     }

@@ -24,6 +24,10 @@ namespace DataObjects
         [Column("replies_date")]
         public DateTime Date { get; set; } = DateTime.Now;
 
+        [JsonIgnore]
+        [NotMapped]
+        public bool? isEditing { get; set; } = false;
+
         // Navigation propety
         public Account? Author { get; set; }
 

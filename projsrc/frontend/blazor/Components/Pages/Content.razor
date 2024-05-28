@@ -11,21 +11,26 @@
 @inject ProtectedSessionStorage MySession
 @inject IJSRuntime JSRuntime
 @inject Stack<string> redirStack;
+
 @if (author != null && page != null)
 {
     <Jumbotron>
         <JumbotronTitle>
             @(page.Title)
             <div class="justify-content-end">
-				@if (account.Id == page.AuthorId || account.PermGroup == "admin")
-				{
-					<Button Color="Color.Danger" Class="inline-flex" @onclick='() => {DeletePage(page.Id); }'><Icon Name="IconName.Plane"></Icon><span> &nbsp; </span><Icon Name="IconName.Pause"></Icon></Button>
-				}
+                @if (account.Id == page.AuthorId || account.PermGroup == "admin")
+                {
+                    <Button Color="Color.Danger" Class="inline-flex" @onclick='() => { DeletePage(page.Id); }'>Delete</Button>
+                }
+                @if (account.Id == page.AuthorId) 
+                {
+                    <Button Color="Color.Primary" Class="inline-flex" @onclick='() => { return; }'>Edit</Button>
+                }
             </div>
         </JumbotronTitle>
         <JumbotronSubtitle>
             <div>@(page.Date)</div>
-            By <strong>@author.UserName</strong>
+            By <strong> <a @onclick='() => { Navman.NavigateTo($"/user/{author.Id}"); }'>@author.UserName</a> </strong>
         </JumbotronSubtitle>
         <Divider></Divider>
         <Paragraph>
@@ -35,66 +40,78 @@
             }
         </Paragraph>
     </Jumbotron>
-	<Card>
-		<CardHeader>
-			<h4 class="card-title">Replies</h4>
-		</CardHeader>
-		<CardBody>
-			<ul class="list-unstyled">
-				@if (replies != null)
-				{
-					@foreach (var reply in replies)
-					{
-						<li>
-							<Card style="margin-bottom: 15px; border: 1px solid #ddd; border-radius: 5px;">
-								<CardBody>
-									<div style="display:inline">
-										<Text TextColor="TextColor.Secondary" Style="display:inline">
-											<Icon Name=IconName.User/> <em> @reply.Author.UserName</em> | <span/> <Icon Name=IconName.Calendar/> <em> @reply.Date.Date</em>
-											<div class="d-flex justify-content-end">
-												@if (account.Id == reply.AuthorId || account.PermGroup == "admin")
-												{
-													<Button Color="Color.Danger" Class="inline-flex" @onclick='() => {DeleteReply(reply.Id); }'><Icon Name="IconName.Plane"></Icon><span> &nbsp; </span><Icon Name="IconName.Pause"></Icon></Button>
-												}
-												@if (account.Id == reply.AuthorId)
-												{
-													<Button Color="Color.Primary" Class="inline-flex"><Icon Name="IconName.Pen"></Icon></Button>
-												}
-											</div>
-										</Text>
-										<Divider/>
-									</div>
-									<Text TextColor="TextColor.Primary">@reply.Content</Text>
-								</CardBody>
-							</Card>
-						</li>
-					}
+    <Card>
+        <CardHeader>
+            <h4 class="card-title">Replies</h4>
+        </CardHeader>
+        <CardBody>
+            <ul class="list-unstyled">
+                @if (replies != null)
+                {
+                    @foreach (var reply in replies)
+                    {
+                        <li>
+                            <Card style="margin-bottom: 15px; border: 1px solid #ddd; border-radius: 5px;">
+                                <CardBody>
+                                    <div style="display:inline">
+                                        <Text TextColor="TextColor.Secondary" Style="display:inline">
+                                            <Icon Name=IconName.User/> <em> @reply.Author.UserName</em> | <span/> <Icon Name=IconName.Calendar/> <em> @reply.Date.Date</em>
+                                            <div class="d-flex justify-content-end">
+                                                @if (account.Id == reply.AuthorId || account.PermGroup == "admin")
+                                                {
+                                                    <Button Color="Color.Danger" Class="inline-flex" @onclick='() => { DeleteReply(reply.Id); }'>Delete</Button>
+                                                }
+                                                @if (account.Id == reply.AuthorId)
+                                                {
+                                                    <Button Color="Color.Primary" Class="inline-flex" @onclick='() => { ToggleEditReply(reply.Id.Value); }'>@(reply.isEditing.Value ? "Save" : "Edit")</Button>
+                                                }
+                                            </div>
+                                        </Text>
+                                        <Divider/>
+                                    </div>
+                                    @if (reply.isEditing.Value)
+                                    {
+                                        <InputText @bind-Value="reply.Content" style="width: 100%; margin-bottom: 10px;"></InputText>
+                                    }
+                                    else
+                                    {
+                                        <Blazorise.Text TextColor="TextColor.Primary">
+                                            @reply.Content
+										</Blazorise.Text>
+                                    }
+                                </CardBody>
+                            </Card>
+                        </li>
+                    }
+                }
+                <li>
+                    <Card style="margin-bottom: 15px; border: 1px solid #ddd; border-radius: 5px;">
+                        <CardBody>
+                            <InputText @bind-Value="replycontent" style="width: 100%; margin-bottom: 10px;"></InputText>
+                            <Button @onclick="sendReply" style="width: 100%;">Send reply</Button>
+                        </CardBody>
+                    </Card>
+                </li>
+            </ul>
+        </CardBody>
+    </Card>
 
-				}
-				<li>
-					<Card style="margin-bottom: 15px; border: 1px solid #ddd; border-radius: 5px;">
-						<CardBody>
-							<InputText @bind-Value="replycontent" style="width: 100%; margin-bottom: 10px;"></InputText>
-							<Button @onclick="sendReply" style="width: 100%;">Send reply</Button>
-						</CardBody>
-					</Card>
-				</li>
-			</ul>
-		</CardBody>
-	</Card>
-
-	<Toaster>
-		<Toast @bind-Visible="@toastVisible">
-			<ToastHeader>
-				<Strong Margin="Margin.IsAuto.FromEnd">@(page.Title)</Strong>
-				<Small></Small>
-				<CloseButton />
-			</ToastHeader>
-			<ToastBody>
-				@message
-			</ToastBody>
-		</Toast>
-	</Toaster>
+    <Toaster>
+        <Toast @bind-Visible="@toastVisible">
+            <ToastHeader>
+                <Strong Margin="Margin.IsAuto.FromEnd">@(page.Title)</Strong>
+                <Small></Small>
+                <CloseButton />
+            </ToastHeader>
+            <ToastBody>
+                @message
+            </ToastBody>
+        </Toast>
+    </Toaster>
+}
+else
+{
+    <Heading>This page doesn't exist</Heading>
 }
 
 @code {
@@ -112,21 +129,39 @@
 
     protected override async Task OnInitializedAsync()
     {
-        //load the page from api
-        page = await HttpClient.GetFromJsonAsync<Page>($"http://localhost:5005/api/Pages/{PageId}");
-        author = await HttpClient.GetFromJsonAsync<Account>($"http://localhost:5005/api/Accounts/{page.AuthorId}");
-        replies = await HttpClient.GetFromJsonAsync<List<Reply>>($"http://localhost:5005/api/Replies/ByPage/{PageId}");
         account = (await MySession.GetAsync<Account>("user")).Value;
         if (account == null)
         { 
             account = new(); 
             account.Id = 0;
         }
+
+        //load the page from api
+        var response = await HttpClient.GetAsync($"http://localhost:5005/api/Pages/{PageId}");
+        if (response.IsSuccessStatusCode)
+            page = await response.Content.ReadFromJsonAsync<Page>();
+        else
+        {
+            return;
+        }
+        if (page != null) 
+        {
+            response = await HttpClient.GetAsync($"http://localhost:5005/api/Accounts/{page.AuthorId}");
+            if (response.IsSuccessStatusCode)
+                author = await response.Content.ReadFromJsonAsync<Account>();
+        }
+
+        response = await HttpClient.GetAsync($"http://localhost:5005/api/Replies/ByPage/{PageId}");
+        if (response.IsSuccessStatusCode)
+            replies = await response.Content.ReadFromJsonAsync<List<Reply>>();
+
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        replies = await HttpClient.GetFromJsonAsync<List<Reply>>($"http://localhost:5005/api/Replies/ByPage/{PageId}");
+    protected override async Task OnAfterRenderAsync(bool firstRender) {
+        var response = await HttpClient.GetAsync($"http://localhost:5005/api/Replies/ByPage/{PageId}");
+        if (response.IsSuccessStatusCode)
+            replies = await response.Content.ReadFromJsonAsync<List<Reply>>();
+
         account = (await MySession.GetAsync<Account>("user")).Value;
         if (account == null)
         { 
@@ -148,10 +183,13 @@
             r.AuthorId = 0;
         }
         r.PageId = page.Id;
-        var response = await HttpClient.PostAsJsonAsync($"http://localhost:5005/api/Replies/", r);
+
+        var response = await HttpClient.PostAsJsonAsync<Reply>($"http://localhost:5005/api/Replies/" , r);
+        if (response.IsSuccessStatusCode)
+            replies = await HttpClient.GetFromJsonAsync<List<Reply>>($"http://localhost:5005/api/Replies/ByPage/{PageId}");
+
         error = response.Content.ToString();
         replycontent = "";
-        replies = await HttpClient.GetFromJsonAsync<List<Reply>>($"http://localhost:5005/api/Replies/ByPage/{PageId}");
         StateHasChanged();
     }
 
@@ -160,7 +198,11 @@
         if (id != null)
         {
             var response = await HttpClient.DeleteAsync($"http://localhost:5005/api/Replies/" + id );
-            replies = await HttpClient.GetFromJsonAsync<List<Reply>>($"http://localhost:5005/api/Replies/ByPage/{PageId}");
+
+            var repliesResponse = await HttpClient.GetAsync($"http://localhost:5005/api/Replies/ByPage/{PageId}");
+            if (repliesResponse.IsSuccessStatusCode)
+                replies = await response.Content.ReadFromJsonAsync<List<Reply>>();
+
             if (response.IsSuccessStatusCode) 
             {
                 message = "Reply successfully deleted";
@@ -183,5 +225,40 @@
             toastVisible = true;
         }
         Navman.NavigateTo("/");
+    }
+
+    public void ToggleEditReply(int id)
+    {
+        var reply = replies.FirstOrDefault(r => r.Id == id);
+        if (reply != null)
+        {
+            if (reply.isEditing.Value)
+            {
+                // Save changes
+                SaveReply(reply);
+            }
+            reply.isEditing = !reply.isEditing.Value;
+        }
+        StateHasChanged();
+    }
+
+    public async void SaveReply(Reply reply)
+    {
+        var response = await HttpClient.PutAsJsonAsync<Reply>($"http://localhost:5005/api/Replies/{reply.Id}", reply);
+        if (response.IsSuccessStatusCode)
+        {
+            message = "Reply successfully updated";
+            if (toastVisible == true)
+                toastVisible = false;
+            toastVisible = true;
+        }
+        else
+        {
+            message = "Failed to update reply";
+            if (toastVisible == true)
+                toastVisible = false;
+            toastVisible = true;
+        }
+        StateHasChanged();
     }
 }

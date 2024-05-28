@@ -1,0 +1,118 @@
+﻿@page "/user/{uid}"
+
+@rendermode InteractiveServer
+
+@using System.Text.Json
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@using blazor
+@using DataObjects
+@using System.Text.RegularExpressions;
+
+@inject NavigationManager Navman
+@inject HttpClient HttpClient
+@inject ProtectedSessionStorage MySession
+@inject IJSRuntime JSRuntime
+@inject Stack<string> redirStack;
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4315688409988285"
+        crossorigin="anonymous"></script>
+
+@if (account != null)
+    {
+        <div id="ProtectedContent"> 
+            <Jumbotron>
+                <JumbotronTitle>
+                    @account.UserName
+                </JumbotronTitle>
+                <JumbotronSubtitle>
+                    <Icon Name="IconName.BirthdayCake"/> &nbsp; @account.DateOfBirth.Date
+                </JumbotronSubtitle>
+            </Jumbotron>
+            @if (AuthoredPages != null && AuthoredPages.Any()) {
+                <Heading>Authored pages:</Heading>
+				<ListGroup Overflow="Overflow.Hidden" Style="margin-right: 60%;">
+					@foreach (Page page in AuthoredPages) 
+					{
+						if (page.Content != null) 
+						{
+							<ListGroupItem Style="overflow:hidden; text-overflow:ellipsis;">
+                                <Card>
+                                    <CardBody>
+										<CardTitle Style="font-size: 16pt; overflow:hidden; max-height 20px; line-clamp:2">
+                                            <strong>@(page.Title)</strong>
+										</CardTitle>
+										<CardText Style="overflow: hidden; text-overflow:ellipsis; font-size: 10pt;">
+                                            <p style="-webkit-line-clamp: 3; -webkit-box-orient: vertical; display: -webkit-box; overflow: hidden;">
+                                                @(StringHtmlExtensions.StripHtml(page.Content)) 
+                                            </p>
+										</CardText>
+										@if (page.Tags != null) {
+											foreach (string tag in page.Tags.Split(',')) {
+												<Badge Color="Color.Primary" Pill>@tag</Badge> <span> </span>
+											}
+										}
+                                        <br/>
+										<Button Color="Color.Primary" Margin="Margin.Is2.FromTop" @onclick='() => {Navman.NavigateTo($"/content/{page.Id}");}'>
+											Read more <Icon Name="IconName.ArrowRight" />
+										</Button>
+										@if (loggedUser != null && loggedUser.PermGroup == "admin")
+										{
+											<Button Color="Color.Danger" Margin="Margin.Is2.FromTop" Class="inline-flex justify-content-end" @onclick='() => {DeletePage(page.Id); }'> Delete</Button>
+											<Button Color="Color.Primary" Margin="Margin.Is2.FromTop" Class="inline-flex justify-content-end" @onclick='() => {DeletePage(page.Id); }'> Edit</Button>
+										}
+									</CardBody>
+                                </Card>
+							</ListGroupItem>
+						}
+					}
+				</ListGroup>
+            }
+            else 
+            {
+                <Heading>Hasn't published any articles yet</Heading>
+            }
+        </div>
+    }
+
+
+@code 
+{
+    [Parameter]
+    public string uid { get; set; } 
+
+    Account? loggedUser;
+    Account? account;
+
+    List<Page>? AuthoredPages;
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        loggedUser = (await MySession.GetAsync<Account>("user")).Value;
+        account = await HttpClient.GetFromJsonAsync<Account>($"http://localhost:5005/api/Accounts/{uid}");
+        if (firstRender) 
+        {
+            StateHasChanged();
+        }
+
+        if (account != null)
+        {
+            AuthoredPages = await HttpClient.GetFromJsonAsync<List<Page>>($"http://localhost:5005/api/Pages/ByAuthor/{uid}");
+            if (firstRender)
+            {
+                StateHasChanged();
+            }
+        }
+    }
+    
+    protected async Task SignOut() {
+        await MySession.DeleteAsync("user");
+        Navman.NavigateTo("/login");
+		await JSRuntime.InvokeVoidAsync("location.reload");
+    }
+
+    public async void DeletePage(int? id) 
+    {
+        var response = await HttpClient.DeleteAsync($"http://localhost:5005/api/Pages/" + id);
+		AuthoredPages = await HttpClient.GetFromJsonAsync<List<Page>>($"http://localhost:5005/api/Pages/ByAuthor/{uid}");
+        StateHasChanged();
+    }
+}
