@@ -199,9 +199,10 @@ else
         {
             var response = await HttpClient.DeleteAsync($"http://localhost:5005/api/Replies/" + id );
 
-            var repliesResponse = await HttpClient.GetAsync($"http://localhost:5005/api/Replies/ByPage/{PageId}");
-            if (repliesResponse.IsSuccessStatusCode)
-                replies = await response.Content.ReadFromJsonAsync<List<Reply>>();
+            // var repliesResponse = await HttpClient.GetAsync($"http://localhost:5005/api/Replies/ByPage/{PageId}");
+            // if (repliesResponse.IsSuccessStatusCode)
+            //     replies = await response.Content.ReadFromJsonAsync<List<Reply>>();
+            replies = await HttpClient.GetFromJsonAsync<List<Reply>>($"http://localhost:5005/api/Replies/ByPage/{PageId}");
 
             if (response.IsSuccessStatusCode) 
             {
