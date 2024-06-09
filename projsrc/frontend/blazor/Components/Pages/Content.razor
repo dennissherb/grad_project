@@ -63,7 +63,7 @@
                                                 }
                                                 @if (account.Id == reply.AuthorId)
                                                 {
-                                                    <Button Color="Color.Primary" Class="inline-flex" @onclick='() => { ToggleEditReply(reply.Id.Value); }'>@(reply.isEditing.Value ? "Save" : "Edit")</Button>
+                                                    <Button Color="Color.Primary" Class="inline-flex" @onclick='() => { ToggleEditReply(reply); }'>@(reply.isEditing.Value ? "Save" : "Edit")</Button>
                                                 }
                                             </div>
                                         </Text>
@@ -71,7 +71,7 @@
                                     </div>
                                     @if (reply.isEditing.Value)
                                     {
-                                        <InputText @bind-Value="reply.Content" style="width: 100%; margin-bottom: 10px;"></InputText>
+                                        <InputText @bind-Value="newvalue" style="width: 100%; margin-bottom: 10px;"></InputText>
                                     }
                                     else
                                     {
@@ -126,6 +126,7 @@ else
     string replycontent;
     bool toastVisible = false;
     string message;
+    string newvalue;
 
     protected override async Task OnInitializedAsync()
     {
@@ -228,9 +229,8 @@ else
         Navman.NavigateTo("/");
     }
 
-    public void ToggleEditReply(int id)
+    public void ToggleEditReply(Reply reply)
     {
-        var reply = replies.FirstOrDefault(r => r.Id == id);
         if (reply != null)
         {
             if (reply.isEditing.Value)
@@ -238,13 +238,17 @@ else
                 // Save changes
                 SaveReply(reply);
             }
+            else
+            {
+                newvalue = reply.Content;
+            }
             reply.isEditing = !reply.isEditing.Value;
         }
-        StateHasChanged();
     }
 
     public async void SaveReply(Reply reply)
     {
+        reply.Content = newvalue;
         var response = await HttpClient.PutAsJsonAsync<Reply>($"http://localhost:5005/api/Replies/{reply.Id}", reply);
         if (response.IsSuccessStatusCode)
         {
@@ -260,6 +264,5 @@ else
                 toastVisible = false;
             toastVisible = true;
         }
-        StateHasChanged();
     }
 }
